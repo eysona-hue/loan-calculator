@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import {
   Area,
   AreaChart,
@@ -77,7 +79,8 @@ const copy = {
       extraImpact: "Extra payment impact",
       extraImpactText: "With your extra payment, estimated interest saved is {saved}. Estimated payoff changes from {oldPayoff} to {newPayoff}.",
     },
-    schedule: { title: "Amortization schedule", text: "Yearly summary of your principal, interest, PMI, and balance.", download: "Download CSV", year: "Year", balance: "Balance", principalPaid: "Principal Paid", interestPaid: "Interest Paid", pmiPaid: "PMI Paid" },
+    schedule: { title: "Amortization schedule", text: "Yearly summary of your principal, interest, PMI, and balance.", download: "Download CSV", downloadPdf: "Download PDF Report", year: "Year", month: "Month", balance: "Balance", principalPaid: "Principal Paid", interestPaid: "Interest Paid", pmiPaid: "PMI Paid" },
+    pdf: { title: "LoanFlow Loan Report", subtitle: "Professional loan calculation report", loanType: "Loan Type", generated: "Generated", visit: "Create your own loan report at", inputs: "Inputs", results: "Results", yearly: "Yearly Amortization", note: "This report is an estimate for planning purposes only and is not a loan offer or financial advice." },
     education: {
       title: "How to use this calculator",
       steps: ["Enter the price of the home or vehicle.", "Set your down payment in dollars.", "Choose the loan term in years.", "Input your expected interest rate.", "Adjust taxes, insurance, fees, PMI, or HOA if applicable.", "Add optional extra monthly payments to see potential savings."],
@@ -165,7 +168,8 @@ const copy = {
       extraImpact: "Impacto del pago extra",
       extraImpactText: "Con tu pago extra, el interés ahorrado estimado es {saved}. El pago final cambia de {oldPayoff} a {newPayoff}.",
     },
-    schedule: { title: "Tabla de amortización", text: "Resumen anual de principal, interés, PMI y balance.", download: "Descargar CSV", year: "Año", balance: "Balance", principalPaid: "Principal Pagado", interestPaid: "Interés Pagado", pmiPaid: "PMI Pagado" },
+    schedule: { title: "Tabla de amortización", text: "Resumen anual de principal, interés, PMI y balance.", download: "Descargar CSV", downloadPdf: "Descargar Reporte PDF", year: "Año", month: "Mes", balance: "Balance", principalPaid: "Principal Pagado", interestPaid: "Interés Pagado", pmiPaid: "PMI Pagado" },
+    pdf: { title: "Reporte de Préstamo LoanFlow", subtitle: "Reporte profesional de cálculo de préstamo", loanType: "Tipo de préstamo", generated: "Generado", visit: "Crea tu propio reporte en", inputs: "Datos", results: "Resultados", yearly: "Amortización Anual", note: "Este reporte es un estimado para planificación únicamente y no es una oferta de préstamo ni asesoría financiera." },
     education: {
       title: "Cómo usar esta calculadora",
       steps: ["Ingresa el precio de la vivienda o vehículo.", "Indica tu inicial en dólares.", "Selecciona el plazo del préstamo en años.", "Ingresa la tasa de interés esperada.", "Ajusta impuestos, seguro, cargos, PMI u HOA si aplica.", "Agrega pagos mensuales extra opcionales para ver posibles ahorros."],
@@ -224,6 +228,7 @@ function calculateLoan({ price, downPayment, rate, years, taxes, insurance, hoa,
   let totalPrincipal = 0;
   let totalPmi = 0;
   const schedule = [];
+  const balanceData = principal > 0 ? [{ month: 0, label: "0", balance: Math.round(principal), interestPaid: 0, principalPaid: 0, pmiPaid: 0 }] : [];
   let payoffMonth = principal === 0 ? 0 : months;
   let pmiEndMonth = monthlyPmiEstimate > 0 ? null : 0;
   for (let m = 1; m <= months && balance > 0.01; m += 1) {
@@ -237,6 +242,7 @@ function calculateLoan({ price, downPayment, rate, years, taxes, insurance, hoa,
     totalInterest += interest;
     totalPrincipal += principalPaid;
     totalPmi += pmiThisMonth;
+    balanceData.push({ month: m, label: m % 12 === 0 ? String(Math.round(m / 12)) : "", balance: Math.round(balance), interestPaid: Math.round(totalInterest), principalPaid: Math.round(totalPrincipal), pmiPaid: Math.round(totalPmi) });
     if (m % 12 === 0 || balance === 0) {
       schedule.push({ year: Math.ceil(m / 12), balance: Math.round(balance), interestPaid: Math.round(totalInterest), principalPaid: Math.round(totalPrincipal), pmiPaid: Math.round(totalPmi) });
     }
@@ -262,7 +268,7 @@ function calculateLoan({ price, downPayment, rate, years, taxes, insurance, hoa,
   const monthlyTotal = requiredMonthlyPayment + optionalExtra;
   const totalNonLoanCostsPaid = (monthlyTaxes + monthlyInsurance + monthlyHoaOrAddOns) * payoffMonth;
   const totalPaidIncludingDownPayment = safeDownPayment + principal + totalInterest + totalNonLoanCostsPaid + totalPmi;
-  return { purchasePrice, safeDownPayment, principal, basePayment, monthlyTaxes, monthlyInsurance, monthlyHoaOrAddOns, monthlyPmiEstimate, totalPmi, pmiEndMonth, requiredMonthlyPayment, monthlyTotal, totalInterest, totalPaidIncludingDownPayment, payoffMonth, schedule, interestSaved: Math.max(noExtraInterest - totalInterest, 0) };
+  return { purchasePrice, safeDownPayment, principal, basePayment, monthlyTaxes, monthlyInsurance, monthlyHoaOrAddOns, monthlyPmiEstimate, totalPmi, pmiEndMonth, requiredMonthlyPayment, monthlyTotal, totalInterest, totalPaidIncludingDownPayment, payoffMonth, schedule, balanceData, interestSaved: Math.max(noExtraInterest - totalInterest, 0) };
 }
 
 function Card({ children, className = "" }) {
@@ -328,13 +334,13 @@ function App() {
   }, [lang]);
 
   const pieData = [
-    { name: t.stat.principalInterest, value: result.basePayment },
-    { name: isCar ? t.fields.annualFees : "Taxes", value: result.monthlyTaxes },
-    { name: t.fields.annualInsurance, value: result.monthlyInsurance },
-    { name: isCar ? t.fields.warranty : "HOA", value: hoa },
-    { name: "PMI", value: result.monthlyPmiEstimate },
-    { name: t.fields.extra, value: extraPayment },
-  ].filter((item) => item.value > 0);
+    { name: t.stat.principalInterest, value: result.basePayment, color: "#22d3ee" },
+    { name: isCar ? t.fields.annualFees : "Taxes", value: result.monthlyTaxes, color: "#a78bfa" },
+    { name: t.fields.annualInsurance, value: result.monthlyInsurance, color: "#34d399" },
+    { name: isCar ? t.fields.warranty : "HOA", value: hoa, color: "#fbbf24" },
+    { name: "PMI", value: result.monthlyPmiEstimate, color: "#fb7185" },
+    { name: t.fields.extra, value: extraPayment, color: "#60a5fa" },
+  ].filter((item) => item.value > 0.005);
 
   function navigate(nextPath) {
     window.history.pushState({}, "", nextPath);
@@ -359,6 +365,94 @@ function App() {
     link.download = `${loanType}-loan-amortization.csv`;
     link.click();
     URL.revokeObjectURL(url);
+  }
+
+  function downloadPdf() {
+    const doc = new jsPDF({ orientation: "portrait", unit: "pt", format: "letter" });
+    const siteUrl = "https://loan-calculator-neon-two.vercel.app/";
+    const now = new Date().toLocaleDateString(lang === "es" ? "es-US" : "en-US", { year: "numeric", month: "short", day: "numeric" });
+    const loanName = isCar ? t.carLoan : t.homeLoan;
+
+    doc.setFillColor(15, 23, 42);
+    doc.rect(0, 0, 612, 100, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(24);
+    doc.text(t.pdf.title, 42, 42);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.text(t.pdf.subtitle, 42, 62);
+    doc.setTextColor(103, 232, 249);
+    doc.text(`${t.pdf.visit} ${siteUrl}`, 42, 80);
+
+    doc.setTextColor(15, 23, 42);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text(currency(result.monthlyTotal, lang), 42, 140);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(t.results.firstPayment, 42, 156);
+    doc.text(`${t.pdf.loanType}: ${loanName}`, 42, 174);
+    doc.text(`${t.pdf.generated}: ${now}`, 42, 190);
+
+    autoTable(doc, {
+      startY: 220,
+      head: [[t.pdf.inputs, ""]],
+      body: [
+        [isCar ? t.fields.vehiclePrice : t.fields.homePrice, currency(price, lang)],
+        [t.fields.downPayment, currency(safeDownPayment, lang)],
+        [t.fields.interestRate, `${number(rate, lang)}%`],
+        [t.fields.loanTerm, `${years} ${t.fields.years}`],
+        [isCar ? t.fields.annualFees : t.fields.annualTaxes, currency(taxes, lang)],
+        [t.fields.annualInsurance, currency(insurance, lang)],
+        [isCar ? t.fields.warranty : t.fields.hoa, currency(hoa, lang)],
+        [t.fields.extra, currency(extraPayment, lang)],
+      ],
+      theme: "grid",
+      headStyles: { fillColor: [8, 145, 178], textColor: 255 },
+      styles: { fontSize: 9, cellPadding: 6 },
+      margin: { left: 42, right: 42 },
+    });
+
+    autoTable(doc, {
+      startY: doc.lastAutoTable.finalY + 18,
+      head: [[t.pdf.results, ""]],
+      body: [
+        [t.results.required, currency(result.requiredMonthlyPayment, lang)],
+        [t.results.totalInterest, currency(result.totalInterest, lang)],
+        [t.results.interestSaved, currency(result.interestSaved, lang)],
+        [t.results.payoff, `${payoffYears}y ${payoffMonths}m`],
+        [t.stat.totalPaid, currency(result.totalPaidIncludingDownPayment, lang)],
+        [isCar ? t.results.debtRatio : t.results.housingRatio, `${number(isCar ? totalDebtRatio : housingRatio, lang)}%`],
+      ],
+      theme: "grid",
+      headStyles: { fillColor: [14, 165, 233], textColor: 255 },
+      styles: { fontSize: 9, cellPadding: 6 },
+      margin: { left: 42, right: 42 },
+    });
+
+    autoTable(doc, {
+      startY: doc.lastAutoTable.finalY + 18,
+      head: [[t.schedule.year, t.schedule.balance, t.schedule.principalPaid, t.schedule.interestPaid, t.schedule.pmiPaid]],
+      body: result.schedule.slice(0, 35).map((r) => [r.year, currency(r.balance, lang), currency(r.principalPaid, lang), currency(r.interestPaid, lang), currency(r.pmiPaid || 0, lang)]),
+      theme: "striped",
+      headStyles: { fillColor: [15, 23, 42], textColor: 255 },
+      styles: { fontSize: 8, cellPadding: 5 },
+      margin: { left: 42, right: 42 },
+    });
+
+    const pageCount = doc.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i += 1) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139);
+      doc.text(t.pdf.note, 42, 760, { maxWidth: 420 });
+      doc.setTextColor(8, 145, 178);
+      doc.text("LoanFlow", 500, 760);
+      doc.text(siteUrl, 430, 774);
+    }
+
+    doc.save(`${loanType}-loanflow-report.pdf`);
   }
 
   const inputs = [
@@ -410,7 +504,7 @@ function App() {
         </motion.div>
         <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="space-y-5"><AdSlot id="sidebar-square" label={t.adSide} compact /><Card className="border-cyan-200/40 bg-slate-900 ring-1 ring-cyan-300/20"><div className="p-7"><p className="mb-2 text-sm font-semibold uppercase tracking-widest text-cyan-200">{t.results.firstPayment}</p><p className="text-5xl font-black tracking-tight text-white drop-shadow-lg">{currency(result.monthlyTotal, lang)}</p><p className="mt-3 text-sm text-slate-200">{t.results.required}: <strong className="text-white">{currency(result.requiredMonthlyPayment, lang)}</strong>. {t.results.extra}: <strong className="text-white">{currency(extraPayment, lang)}</strong>.</p><p className="mt-2 text-xs text-slate-400">{isCar ? t.results.includesCar : t.results.includesHome}</p></div></Card><div className="grid grid-cols-2 gap-4"><Metric iconName={isCar ? "car" : "home"} label={t.results.loanAmount} value={currency(result.principal, lang)} /><Metric iconName="piggy" label={t.results.interestSaved} value={currency(result.interestSaved, lang)} /><Metric iconName="chart" label={t.results.totalInterest} value={currency(result.totalInterest, lang)} /><Metric iconName="calculator" label={t.results.payoff} value={`${payoffYears}y ${payoffMonths}m`} /><Metric iconName="shield" label={isCar ? t.results.debtRatio : t.results.housingRatio} value={`${number(isCar ? totalDebtRatio : housingRatio, lang)}%`} /><Metric iconName="clock" label={t.results.noExtraPayoff} value={`${payoffYearsNoExtra}y ${payoffMonthsNoExtra}m`} /></div></motion.aside>
       </section>
-      <section className="mt-8"><AdSlot id="in-content" label={t.adContent} /><div className="mt-6"><TabButtons activeTab={activeTab} setActiveTab={setActiveTab} t={t} /></div>{activeTab === "charts" && <Charts t={t} result={result} pieData={pieData} lang={lang} />}{activeTab === "breakdown" && <Card><div className="grid gap-4 p-6 md:grid-cols-3"><BigStat label={t.stat.principalInterest} value={currency(result.basePayment, lang)} /><BigStat label={isCar ? t.stat.feesInsurance : t.stat.taxesInsurance} value={currency(result.monthlyTaxes + result.monthlyInsurance, lang)} /><BigStat label={t.stat.totalPaid} value={currency(result.totalPaidIncludingDownPayment, lang)} /></div></Card>}{activeTab === "compare" && <Compare t={t} lang={lang} result={result} noExtraResult={noExtraResult} higherRateResult={higherRateResult} housingRatio={housingRatio} totalDebtRatio={totalDebtRatio} payoffYears={payoffYears} payoffMonths={payoffMonths} payoffYearsNoExtra={payoffYearsNoExtra} payoffMonthsNoExtra={payoffMonthsNoExtra} />}{activeTab === "schedule" && <Schedule t={t} lang={lang} result={result} downloadCsv={downloadCsv} />}<Education t={t} /></section>
+      <section className="mt-8"><AdSlot id="in-content" label={t.adContent} /><div className="mt-6"><TabButtons activeTab={activeTab} setActiveTab={setActiveTab} t={t} /></div>{activeTab === "charts" && <Charts t={t} result={result} pieData={pieData} lang={lang} />}{activeTab === "breakdown" && <Card><div className="grid gap-4 p-6 md:grid-cols-3"><BigStat label={t.stat.principalInterest} value={currency(result.basePayment, lang)} /><BigStat label={isCar ? t.stat.feesInsurance : t.stat.taxesInsurance} value={currency(result.monthlyTaxes + result.monthlyInsurance, lang)} /><BigStat label={t.stat.totalPaid} value={currency(result.totalPaidIncludingDownPayment, lang)} /></div></Card>}{activeTab === "compare" && <Compare t={t} lang={lang} result={result} noExtraResult={noExtraResult} higherRateResult={higherRateResult} housingRatio={housingRatio} totalDebtRatio={totalDebtRatio} payoffYears={payoffYears} payoffMonths={payoffMonths} payoffYearsNoExtra={payoffYearsNoExtra} payoffMonthsNoExtra={payoffMonthsNoExtra} />}{activeTab === "schedule" && <Schedule t={t} lang={lang} result={result} downloadCsv={downloadCsv} downloadPdf={downloadPdf} />}<Education t={t} /></section>
     </>;
   }
 }
@@ -418,9 +512,12 @@ function App() {
 function NavButton({ children, active, onClick }) { return <button type="button" onClick={onClick} className={`rounded-2xl px-3 py-2 text-sm font-semibold transition ${active ? "bg-cyan-300 text-slate-950" : "text-slate-300 hover:bg-white/10 hover:text-white"}`}>{children}</button>; }
 function InputControl({ item }) { return <div className="space-y-3"><div className="flex items-center justify-between gap-3"><label className="text-sm font-semibold text-slate-200">{item.label}</label>{item.helper && <span className="rounded-full bg-cyan-400/10 px-2 py-1 text-xs text-cyan-200">{item.helper}</span>}</div><div className="flex items-center gap-3 rounded-2xl bg-slate-950/70 px-4 py-3 ring-1 ring-white/10">{item.prefix && <span className="text-slate-400">{item.prefix}</span>}<input type="number" value={item.value} onChange={(e) => item.set(Number(e.target.value))} className="w-full border-0 bg-transparent p-0 text-lg font-bold text-white outline-none" />{item.suffix && <span className="text-slate-400">{item.suffix}</span>}</div><input type="range" value={item.value} min={item.min} max={item.max} step={item.step} onChange={(e) => item.set(Number(e.target.value))} className="w-full accent-cyan-300" /></div>; }
 function TabButtons({ activeTab, setActiveTab, t }) { return <div className="mb-5 grid w-full max-w-2xl grid-cols-4 rounded-2xl bg-white/10 p-1 text-slate-300">{Object.entries(t.tabs).map(([key, label]) => <button type="button" key={key} onClick={() => setActiveTab(key)} className={`rounded-xl px-3 py-2 text-sm font-semibold ${activeTab === key ? "bg-cyan-300 text-slate-950" : "hover:bg-white/10"}`}>{label}</button>)}</div>; }
-function Charts({ t, result, pieData, lang }) { return <div className="grid gap-5 lg:grid-cols-2"><Card><div className="p-6"><h2 className="mb-5 text-xl font-bold">{t.charts.balance}</h2><div className="h-80"><ResponsiveContainer width="100%" height="100%"><AreaChart data={result.schedule}><defs><linearGradient id="balance" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="currentColor" stopOpacity={0.45} /><stop offset="95%" stopColor="currentColor" stopOpacity={0} /></linearGradient></defs><CartesianGrid strokeDasharray="3 3" opacity={0.15} /><XAxis dataKey="year" stroke="#94a3b8" /><YAxis stroke="#94a3b8" tickFormatter={(v) => `$${Math.round(v / 1000)}k`} /><Tooltip formatter={(v) => currency(v, lang)} contentStyle={{ background: "#020617", border: "1px solid rgba(255,255,255,.1)", borderRadius: 16 }} /><Area type="monotone" dataKey="balance" stroke="currentColor" fill="url(#balance)" className="text-cyan-300" /></AreaChart></ResponsiveContainer></div></div></Card><Card><div className="p-6"><h2 className="mb-5 text-xl font-bold">{t.charts.breakdown}</h2><div className="h-80"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={pieData} dataKey="value" nameKey="name" innerRadius={70} outerRadius={110} paddingAngle={4}>{pieData.map((_, index) => <Cell key={index} />)}</Pie><Tooltip formatter={(v) => currency(v, lang)} contentStyle={{ background: "#020617", border: "1px solid rgba(255,255,255,.1)", borderRadius: 16 }} /></PieChart></ResponsiveContainer></div><div className="grid gap-2 text-sm text-slate-300">{pieData.map((item) => <div key={item.name} className="flex justify-between rounded-xl bg-slate-950/40 px-3 py-2"><span>{item.name}</span><strong>{currency(item.value, lang)}</strong></div>)}</div></div></Card></div>; }
+function Charts({ t, result, pieData, lang }) {
+  const totalPayment = pieData.reduce((sum, item) => sum + item.value, 0);
+  return <div className="grid gap-5 lg:grid-cols-2"><Card><div className="p-6"><h2 className="mb-5 text-xl font-bold">{t.charts.balance}</h2><div className="h-80"><ResponsiveContainer width="100%" height="100%"><AreaChart data={result.balanceData}><defs><linearGradient id="balance" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#22d3ee" stopOpacity={0.45} /><stop offset="95%" stopColor="#22d3ee" stopOpacity={0.02} /></linearGradient></defs><CartesianGrid strokeDasharray="3 3" opacity={0.15} /><XAxis dataKey="month" stroke="#94a3b8" tickFormatter={(v) => v % 12 === 0 ? `${Math.round(v / 12)}y` : ""} minTickGap={18} /><YAxis stroke="#94a3b8" tickFormatter={(v) => `$${Math.round(v / 1000)}k`} /><Tooltip formatter={(v) => currency(v, lang)} labelFormatter={(v) => `${t.schedule.month} ${v}`} contentStyle={{ background: "#020617", border: "1px solid rgba(255,255,255,.1)", borderRadius: 16 }} /><Area type="monotone" dataKey="balance" stroke="#22d3ee" strokeWidth={3} fill="url(#balance)" /></AreaChart></ResponsiveContainer></div></div></Card><Card><div className="p-6"><div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><h2 className="text-xl font-bold">{t.charts.breakdown}</h2><p className="text-sm text-slate-400">{currency(totalPayment, lang)}</p></div><div className="h-80"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={pieData} dataKey="value" nameKey="name" innerRadius={72} outerRadius={116} paddingAngle={3} stroke="#0f172a" strokeWidth={3}>{pieData.map((item) => <Cell key={item.name} fill={item.color} />)}</Pie><Tooltip formatter={(v) => currency(v, lang)} contentStyle={{ background: "#020617", border: "1px solid rgba(255,255,255,.1)", borderRadius: 16 }} /></PieChart></ResponsiveContainer></div><div className="grid gap-2 text-sm text-slate-300">{pieData.map((item) => <div key={item.name} className="flex items-center justify-between rounded-xl bg-slate-950/40 px-3 py-2"><span className="flex items-center gap-2"><span className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />{item.name}</span><strong>{currency(item.value, lang)}</strong></div>)}</div></div></Card></div>;
+}
 function Compare({ t, lang, result, noExtraResult, higherRateResult, housingRatio, totalDebtRatio, payoffYears, payoffMonths, payoffYearsNoExtra, payoffMonthsNoExtra }) { const afford = t.compare.affordabilityText.replace("{housing}", number(housingRatio, lang)).replace("{debt}", number(totalDebtRatio, lang)); const impact = t.compare.extraImpactText.replace("{saved}", currency(result.interestSaved, lang)).replace("{oldPayoff}", `${payoffYearsNoExtra}y ${payoffMonthsNoExtra}m`).replace("{newPayoff}", `${payoffYears}y ${payoffMonths}m`); return <><Card><div className="grid gap-4 p-6 md:grid-cols-3"><BigStat label={t.compare.current} value={currency(result.monthlyTotal, lang)} /><BigStat label={t.compare.noExtra} value={`${currency(noExtraResult.requiredMonthlyPayment, lang)} ${t.compare.monthly}`} /><BigStat label={t.compare.higherRate} value={currency(higherRateResult.monthlyTotal, lang)} /></div></Card><div className="mt-5 grid gap-5 md:grid-cols-2"><Card><div className="p-6"><h3 className="text-xl font-bold text-white">{t.compare.affordability}</h3><p className="mt-3 text-sm leading-6 text-slate-300">{afford}</p></div></Card><Card><div className="p-6"><h3 className="text-xl font-bold text-white">{t.compare.extraImpact}</h3><p className="mt-3 text-sm leading-6 text-slate-300">{impact}</p></div></Card></div></>; }
-function Schedule({ t, lang, result, downloadCsv }) { return <Card><div className="p-6"><div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-xl font-bold">{t.schedule.title}</h2><p className="text-sm text-slate-400">{t.schedule.text}</p></div><Button onClick={downloadCsv} className="bg-cyan-300 text-slate-950 hover:bg-cyan-200"><Icon name="download" className="mr-2 h-4 w-4" />{t.schedule.download}</Button></div><div className="overflow-x-auto rounded-2xl ring-1 ring-white/10"><table className="w-full text-left text-sm"><thead className="bg-slate-950/70 text-slate-300"><tr><th className="p-4">{t.schedule.year}</th><th className="p-4">{t.schedule.balance}</th><th className="p-4">{t.schedule.principalPaid}</th><th className="p-4">{t.schedule.interestPaid}</th><th className="p-4">{t.schedule.pmiPaid}</th></tr></thead><tbody>{result.schedule.map((row) => <tr key={row.year} className="border-t border-white/10 text-slate-200"><td className="p-4 font-bold">{row.year}</td><td className="p-4">{currency(row.balance, lang)}</td><td className="p-4">{currency(row.principalPaid, lang)}</td><td className="p-4">{currency(row.interestPaid, lang)}</td><td className="p-4">{currency(row.pmiPaid || 0, lang)}</td></tr>)}</tbody></table></div></div></Card>; }
+function Schedule({ t, lang, result, downloadCsv, downloadPdf }) { return <Card><div className="p-6"><div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-xl font-bold">{t.schedule.title}</h2><p className="text-sm text-slate-400">{t.schedule.text}</p></div><div className="flex flex-col gap-2 sm:flex-row"><Button onClick={downloadPdf} className="bg-white text-slate-950 hover:bg-slate-200"><Icon name="download" className="mr-2 h-4 w-4" />{t.schedule.downloadPdf}</Button><Button onClick={downloadCsv} className="bg-cyan-300 text-slate-950 hover:bg-cyan-200"><Icon name="download" className="mr-2 h-4 w-4" />{t.schedule.download}</Button></div></div><div className="overflow-x-auto rounded-2xl ring-1 ring-white/10"><table className="w-full text-left text-sm"><thead className="bg-slate-950/70 text-slate-300"><tr><th className="p-4">{t.schedule.year}</th><th className="p-4">{t.schedule.balance}</th><th className="p-4">{t.schedule.principalPaid}</th><th className="p-4">{t.schedule.interestPaid}</th><th className="p-4">{t.schedule.pmiPaid}</th></tr></thead><tbody>{result.schedule.map((row) => <tr key={row.year} className="border-t border-white/10 text-slate-200"><td className="p-4 font-bold">{row.year}</td><td className="p-4">{currency(row.balance, lang)}</td><td className="p-4">{currency(row.principalPaid, lang)}</td><td className="p-4">{currency(row.interestPaid, lang)}</td><td className="p-4">{currency(row.pmiPaid || 0, lang)}</td></tr>)}</tbody></table></div></div></Card>; }
 function Education({ t }) { return <div className="mt-8 rounded-[2rem] bg-white/[0.06] p-5 text-sm leading-6 text-slate-300 ring-1 ring-white/10"><Section title={t.education.title} items={t.education.steps} /><Section title={t.education.factorsTitle} items={t.education.factors} /><strong className="mt-5 block text-white">{t.education.formulaTitle}</strong><p className="mt-2">{t.education.formulaIntro}</p><p className="mt-2 font-mono text-xs text-cyan-300">M = P × [ r(1+r)^n / ((1+r)^n − 1) ]</p><ul className="mt-3 list-disc space-y-2 pl-5">{t.education.formulaNotes.map((x) => <li key={x}>{x}</li>)}</ul><Section title={t.education.understandTitle} items={t.education.understand} /><Section title={t.education.tipsTitle} items={t.education.tips} /><p className="mt-5 text-xs text-slate-400">{t.education.disclaimer}</p></div>; }
 function Section({ title, items }) { return <><strong className="mt-5 block text-white first:mt-0">{title}</strong><ul className="mt-3 list-disc space-y-2 pl-5">{items.map((item) => <li key={item}>{item}</li>)}</ul></>; }
 function InfoPage({ pageKey, t }) { const map = { about: [t.pages.aboutTitle, t.pages.aboutBody], privacy: [t.pages.privacyTitle, t.pages.privacyBody], terms: [t.pages.termsTitle, t.pages.termsBody], contact: [t.pages.contactTitle, t.pages.contactBody] }; const [title, body] = map[pageKey] || map.about; return <section className="mx-auto max-w-4xl"><Card><div className="p-7 sm:p-10"><h1 className="text-4xl font-black tracking-tight text-white">{title}</h1><div className="mt-6 space-y-4 text-lg leading-8 text-slate-300">{body.map((p) => <p key={p}>{p.includes(CONTACT_EMAIL) ? <>{p.replace(CONTACT_EMAIL, "")}<a className="text-cyan-300 underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></> : p}</p>)}</div></div></Card></section>; }
