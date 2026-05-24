@@ -1,19 +1,25 @@
 # LoanFlow Calculator
 
-A modern mortgage and car loan calculator built with React, Vite, Tailwind CSS, Framer Motion, and Recharts.
+Modern bilingual loan calculator for home and car loans.
 
 ## Features
 
 1. Home loan calculator
 2. Car loan calculator
-3. Fixed rate amortization formula
-4. Extra monthly payment impact
-5. PMI estimate for mortgages below 20 percent down
-6. Affordability ratios
-7. Scenario comparison
-8. Amortization table
-9. CSV export
-10. Google AdSense ready placeholder areas
+3. English and Spanish selector
+4. Fixed rate amortization formula
+5. Extra monthly payment impact
+6. PMI estimate for mortgages below 20 percent down
+7. Affordability ratios
+8. Scenario comparison
+9. Amortization table
+10. CSV export
+11. Privacy Policy, Terms of Use, About, and Contact pages
+12. Google AdSense ready placeholder areas
+
+## Contact
+
+loancal@altmail.kr
 
 ## Local testing
 
@@ -24,26 +30,15 @@ npm install
 npm run dev
 ```
 
-Open the local link shown in the terminal.
-
 ## Build test
 
 ```bash
 npm run build
 ```
 
-The production files will be created in the `dist` folder.
+Production files will be created in the `dist` folder.
 
 ## Deploy to Vercel
-
-1. Create a GitHub account.
-2. Create a Vercel account.
-3. Create a new GitHub repository.
-4. Upload all files from this project into the repository.
-5. In Vercel, choose Add New Project.
-6. Select the GitHub repository.
-7. Vercel should detect Vite automatically.
-8. Confirm these settings:
 
 Build Command:
 
@@ -56,9 +51,6 @@ Output Directory:
 ```bash
 dist
 ```
-
-9. Click Deploy.
-10. After deployment, Vercel will give you a public website URL.
 
 ## Google AdSense notes
 
