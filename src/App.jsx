@@ -235,20 +235,37 @@ function calculateLoan({ price, downPayment, rate, years, taxes, insurance, hoa,
   let totalPrincipal = 0;
   let totalPmi = 0;
   const schedule = [];
+  const monthlySchedule = [];
   const balanceData = principal > 0 ? [{ month: 0, label: "0", balance: Math.round(principal), interestPaid: 0, principalPaid: 0, pmiPaid: 0 }] : [];
   let payoffMonth = principal === 0 ? 0 : months;
   let pmiEndMonth = monthlyPmiEstimate > 0 ? null : 0;
   for (let m = 1; m <= months && balance > 0.01; m += 1) {
-    const interest = balance * monthlyRate;
-    const currentLtv = purchasePrice > 0 ? balance / purchasePrice : 0;
+    const startingBalance = balance;
+    const interest = startingBalance * monthlyRate;
+    const currentLtv = purchasePrice > 0 ? startingBalance / purchasePrice : 0;
     const pmiThisMonth = monthlyPmiEstimate > 0 && currentLtv > 0.8 ? monthlyPmiEstimate : 0;
     if (monthlyPmiEstimate > 0 && pmiThisMonth === 0 && pmiEndMonth === null) pmiEndMonth = m;
     const scheduledPrincipal = Math.max(basePayment - interest, 0);
-    const principalPaid = Math.min(scheduledPrincipal + optionalExtra, balance);
-    balance = Math.max(balance - principalPaid, 0);
+    const principalPaid = Math.min(scheduledPrincipal + optionalExtra, startingBalance);
+    const loanPaymentThisMonth = interest + principalPaid;
+    const totalPaymentThisMonth = loanPaymentThisMonth + monthlyTaxes + monthlyInsurance + monthlyHoaOrAddOns + pmiThisMonth;
+    balance = Math.max(startingBalance - principalPaid, 0);
     totalInterest += interest;
     totalPrincipal += principalPaid;
     totalPmi += pmiThisMonth;
+    monthlySchedule.push({
+      month: m,
+      year: Math.ceil(m / 12),
+      startingBalance: Math.round(startingBalance),
+      payment: Math.round(totalPaymentThisMonth),
+      principalPaid: Math.round(principalPaid),
+      interestPaid: Math.round(interest),
+      pmiPaid: Math.round(pmiThisMonth),
+      endingBalance: Math.round(balance),
+      cumulativePrincipal: Math.round(totalPrincipal),
+      cumulativeInterest: Math.round(totalInterest),
+      cumulativePmi: Math.round(totalPmi),
+    });
     balanceData.push({ month: m, label: m % 12 === 0 ? String(Math.round(m / 12)) : "", balance: Math.round(balance), interestPaid: Math.round(totalInterest), principalPaid: Math.round(totalPrincipal), pmiPaid: Math.round(totalPmi) });
     if (m % 12 === 0 || balance === 0) {
       schedule.push({ year: Math.ceil(m / 12), balance: Math.round(balance), interestPaid: Math.round(totalInterest), principalPaid: Math.round(totalPrincipal), pmiPaid: Math.round(totalPmi) });
@@ -275,7 +292,7 @@ function calculateLoan({ price, downPayment, rate, years, taxes, insurance, hoa,
   const monthlyTotal = requiredMonthlyPayment + optionalExtra;
   const totalNonLoanCostsPaid = (monthlyTaxes + monthlyInsurance + monthlyHoaOrAddOns) * payoffMonth;
   const totalPaidIncludingDownPayment = safeDownPayment + principal + totalInterest + totalNonLoanCostsPaid + totalPmi;
-  return { purchasePrice, safeDownPayment, principal, basePayment, monthlyTaxes, monthlyInsurance, monthlyHoaOrAddOns, monthlyPmiEstimate, totalPmi, pmiEndMonth, requiredMonthlyPayment, monthlyTotal, totalInterest, totalPaidIncludingDownPayment, payoffMonth, schedule, balanceData, interestSaved: Math.max(noExtraInterest - totalInterest, 0) };
+  return { purchasePrice, safeDownPayment, principal, basePayment, monthlyTaxes, monthlyInsurance, monthlyHoaOrAddOns, monthlyPmiEstimate, totalPmi, pmiEndMonth, requiredMonthlyPayment, monthlyTotal, totalInterest, totalPaidIncludingDownPayment, payoffMonth, schedule, monthlySchedule, balanceData, interestSaved: Math.max(noExtraInterest - totalInterest, 0) };
 }
 
 function Card({ children, className = "" }) {
@@ -382,8 +399,8 @@ function App() {
       [t.results.totalInterest, Math.round(result.totalInterest)],
       [t.results.interestSaved, Math.round(result.interestSaved)],
       [],
-      [t.schedule.year, t.schedule.balance, t.schedule.principalPaid, t.schedule.interestPaid, t.schedule.pmiPaid],
-      ...result.schedule.map((r) => [r.year, r.balance, r.principalPaid, r.interestPaid, r.pmiPaid || 0]),
+      [t.schedule.month, t.schedule.year, "Starting Balance", "Total Payment", t.schedule.principalPaid, t.schedule.interestPaid, t.schedule.pmiPaid, t.schedule.balance],
+      ...result.monthlySchedule.map((r) => [r.month, r.year, r.startingBalance, r.payment, r.principalPaid, r.interestPaid, r.pmiPaid || 0, r.endingBalance]),
     ];
     const csv = "sep=,\n" + rows.map((row) => row.map(escapeCsvCell).join(",")).join("\n");
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
@@ -461,12 +478,12 @@ function App() {
 
     autoTable(doc, {
       startY: doc.lastAutoTable.finalY + 18,
-      head: [[t.schedule.year, t.schedule.balance, t.schedule.principalPaid, t.schedule.interestPaid, t.schedule.pmiPaid]],
-      body: result.schedule.slice(0, 35).map((r) => [r.year, currency(r.balance, lang), currency(r.principalPaid, lang), currency(r.interestPaid, lang), currency(r.pmiPaid || 0, lang)]),
+      head: [[t.schedule.month, t.schedule.year, lang === "es" ? "Pago" : "Payment", t.schedule.principalPaid, t.schedule.interestPaid, t.schedule.pmiPaid, t.schedule.balance]],
+      body: result.monthlySchedule.map((r) => [r.month, r.year, currency(r.payment, lang), currency(r.principalPaid, lang), currency(r.interestPaid, lang), currency(r.pmiPaid || 0, lang), currency(r.endingBalance, lang)]),
       theme: "striped",
       headStyles: { fillColor: [15, 23, 42], textColor: 255 },
-      styles: { fontSize: 8, cellPadding: 5 },
-      margin: { left: 42, right: 42 },
+      styles: { fontSize: 7, cellPadding: 4 },
+      margin: { left: 36, right: 36 },
     });
 
     const pageCount = doc.getNumberOfPages();
@@ -685,7 +702,54 @@ function DonutBreakdown({ data, lang, totalPayment }) {
   );
 }
 
-function Schedule({ t, lang, result, downloadCsv, downloadPdf }) { return <Card><div className="p-6"><div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-xl font-bold">{t.schedule.title}</h2><p className="text-sm text-slate-400">{t.schedule.text}</p></div><div className="flex flex-col gap-2 sm:flex-row"><Button onClick={downloadPdf} className="bg-white text-slate-950 hover:bg-slate-200"><Icon name="download" className="mr-2 h-4 w-4" />{t.schedule.downloadPdf}</Button><Button onClick={downloadCsv} className="bg-cyan-300 text-slate-950 hover:bg-cyan-200"><Icon name="download" className="mr-2 h-4 w-4" />{t.schedule.download}</Button></div></div><div className="overflow-x-auto rounded-2xl ring-1 ring-white/10"><table className="w-full text-left text-sm"><thead className="bg-slate-950/70 text-slate-300"><tr><th className="p-4">{t.schedule.year}</th><th className="p-4">{t.schedule.balance}</th><th className="p-4">{t.schedule.principalPaid}</th><th className="p-4">{t.schedule.interestPaid}</th><th className="p-4">{t.schedule.pmiPaid}</th></tr></thead><tbody>{result.schedule.map((row) => <tr key={row.year} className="border-t border-white/10 text-slate-200"><td className="p-4 font-bold">{row.year}</td><td className="p-4">{currency(row.balance, lang)}</td><td className="p-4">{currency(row.principalPaid, lang)}</td><td className="p-4">{currency(row.interestPaid, lang)}</td><td className="p-4">{currency(row.pmiPaid || 0, lang)}</td></tr>)}</tbody></table></div></div></Card>; }
+function Schedule({ t, lang, result, downloadCsv, downloadPdf }) {
+  return (
+    <Card>
+      <div className="p-6">
+        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-xl font-bold">{t.schedule.title}</h2>
+            <p className="text-sm text-slate-400">{lang === "es" ? "Calendario mensual completo de pagos, principal, interés, PMI y balance." : "Complete monthly payment schedule with principal, interest, PMI, and balance."}</p>
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button onClick={downloadPdf} className="bg-white text-slate-950 hover:bg-slate-200"><Icon name="download" className="mr-2 h-4 w-4" />{t.schedule.downloadPdf}</Button>
+            <Button onClick={downloadCsv} className="bg-cyan-300 text-slate-950 hover:bg-cyan-200"><Icon name="download" className="mr-2 h-4 w-4" />{t.schedule.download}</Button>
+          </div>
+        </div>
+        <div className="max-h-[620px] overflow-auto rounded-2xl ring-1 ring-white/10">
+          <table className="w-full min-w-[900px] text-left text-sm">
+            <thead className="sticky top-0 bg-slate-950 text-slate-300">
+              <tr>
+                <th className="p-4">{t.schedule.month}</th>
+                <th className="p-4">{t.schedule.year}</th>
+                <th className="p-4">{lang === "es" ? "Balance inicial" : "Starting Balance"}</th>
+                <th className="p-4">{lang === "es" ? "Pago total" : "Total Payment"}</th>
+                <th className="p-4">{t.schedule.principalPaid}</th>
+                <th className="p-4">{t.schedule.interestPaid}</th>
+                <th className="p-4">{t.schedule.pmiPaid}</th>
+                <th className="p-4">{t.schedule.balance}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {result.monthlySchedule.map((row) => (
+                <tr key={row.month} className="border-t border-white/10 text-slate-200">
+                  <td className="p-4 font-bold">{row.month}</td>
+                  <td className="p-4">{row.year}</td>
+                  <td className="p-4">{currency(row.startingBalance, lang)}</td>
+                  <td className="p-4">{currency(row.payment, lang)}</td>
+                  <td className="p-4">{currency(row.principalPaid, lang)}</td>
+                  <td className="p-4">{currency(row.interestPaid, lang)}</td>
+                  <td className="p-4">{currency(row.pmiPaid || 0, lang)}</td>
+                  <td className="p-4">{currency(row.endingBalance, lang)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </Card>
+  );
+}
 function Education({ t }) { return <div className="mt-8 rounded-[2rem] bg-white/[0.06] p-5 text-sm leading-6 text-slate-300 ring-1 ring-white/10"><Section title={t.education.title} items={t.education.steps} /><Section title={t.education.factorsTitle} items={t.education.factors} /><strong className="mt-5 block text-white">{t.education.formulaTitle}</strong><p className="mt-2">{t.education.formulaIntro}</p><p className="mt-2 font-mono text-xs text-cyan-300">M = P × [ r(1+r)^n / ((1+r)^n − 1) ]</p><ul className="mt-3 list-disc space-y-2 pl-5">{t.education.formulaNotes.map((x) => <li key={x}>{x}</li>)}</ul><Section title={t.education.understandTitle} items={t.education.understand} /><Section title={t.education.tipsTitle} items={t.education.tips} /><p className="mt-5 text-xs text-slate-400">{t.education.disclaimer}</p></div>; }
 function Section({ title, items }) { return <><strong className="mt-5 block text-white first:mt-0">{title}</strong><ul className="mt-3 list-disc space-y-2 pl-5">{items.map((item) => <li key={item}>{item}</li>)}</ul></>; }
 function InfoPage({ pageKey, t }) { const map = { about: [t.pages.aboutTitle, t.pages.aboutBody], privacy: [t.pages.privacyTitle, t.pages.privacyBody], terms: [t.pages.termsTitle, t.pages.termsBody], contact: [t.pages.contactTitle, t.pages.contactBody] }; const [title, body] = map[pageKey] || map.about; return <section className="mx-auto max-w-4xl"><Card><div className="p-7 sm:p-10"><h1 className="text-4xl font-black tracking-tight text-white">{title}</h1><div className="mt-6 space-y-4 text-lg leading-8 text-slate-300">{body.map((p) => <p key={p}>{p.includes(CONTACT_EMAIL) ? <>{p.replace(CONTACT_EMAIL, "")}<a className="text-cyan-300 underline" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></> : p}</p>)}</div></div></Card></section>; }
