@@ -362,14 +362,35 @@ function App() {
     setLoanType("car"); setPrice(38000); setDownPayment(5000); setRate(7.25); setYears(5); setTaxes(950); setInsurance(1800); setHoa(0); setExtraPayment(50); setPmiAnnualRate(0); setGrossIncome(65000); setMonthlyDebt(400);
   }
   function resetDefaults() { isCar ? applyCarDefaults() : applyHomeDefaults(); }
+  function escapeCsvCell(value) {
+    const text = String(value ?? "");
+    if (/[",\n]/.test(text)) return `"${text.replace(/"/g, '""')}"`;
+    return text;
+  }
+
   function downloadCsv() {
-    const rows = [[t.schedule.year, t.schedule.balance, t.schedule.principalPaid, t.schedule.interestPaid, t.schedule.pmiPaid], ...result.schedule.map((r) => [r.year, r.balance, r.principalPaid, r.interestPaid, r.pmiPaid || 0])];
-    const csv = rows.map((row) => row.join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const loanName = isCar ? t.carLoan : t.homeLoan;
+    const rows = [
+      ["LoanFlow Calculator"],
+      [t.pdf.loanType, loanName],
+      [isCar ? t.fields.vehiclePrice : t.fields.homePrice, price],
+      [t.fields.downPayment, safeDownPayment],
+      [t.fields.interestRate, `${number(rate, lang)}%`],
+      [t.fields.loanTerm, `${years} ${t.fields.years}`],
+      [t.results.firstPayment, Math.round(result.monthlyTotal)],
+      [t.results.required, Math.round(result.requiredMonthlyPayment)],
+      [t.results.totalInterest, Math.round(result.totalInterest)],
+      [t.results.interestSaved, Math.round(result.interestSaved)],
+      [],
+      [t.schedule.year, t.schedule.balance, t.schedule.principalPaid, t.schedule.interestPaid, t.schedule.pmiPaid],
+      ...result.schedule.map((r) => [r.year, r.balance, r.principalPaid, r.interestPaid, r.pmiPaid || 0]),
+    ];
+    const csv = "sep=,\n" + rows.map((row) => row.map(escapeCsvCell).join(",")).join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `${loanType}-loan-amortization.csv`;
+    link.download = `${loanType}-loanflow-report.csv`;
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -590,48 +611,50 @@ function LineTooltip({ active, payload, label, t, lang }) {
 
 function DonutBreakdown({ data, lang, totalPayment }) {
   const [hovered, setHovered] = useState(null);
-  const size = 270;
-  const center = size / 2;
+  const activeItem = hovered || data[0];
+  const size = 320;
+  const center = 160;
   const radius = 92;
   const strokeWidth = 34;
   const circumference = 2 * Math.PI * radius;
   let offset = 0;
-  const activeItem = hovered ?? data[0];
 
   return (
     <div className="grid gap-6 lg:grid-cols-[320px_1fr] lg:items-center">
       <div className="relative mx-auto h-[320px] w-[320px]">
-        <svg width="320" height="320" viewBox="0 0 320 320" className="drop-shadow-2xl">
-          <circle cx="160" cy="160" r={radius} fill="none" stroke="#0f172a" strokeWidth={strokeWidth} />
+        <svg width={size} height={size} viewBox="0 0 320 320" className="drop-shadow-2xl" role="img" aria-label="Monthly payment breakdown">
+          <circle cx={center} cy={center} r={radius} fill="none" stroke="#0f172a" strokeWidth={strokeWidth} />
           {data.map((item) => {
             const fraction = totalPayment > 0 ? item.value / totalPayment : 0;
-            const dash = Math.max(fraction * circumference - 3, 0);
-            const segment = (
+            const dash = Math.max(fraction * circumference - 4, 0);
+            const gap = circumference - dash;
+            const segmentOffset = offset;
+            offset += fraction * circumference;
+            return (
               <circle
                 key={item.name}
-                cx="160"
-                cy="160"
+                cx={center}
+                cy={center}
                 r={radius}
                 fill="none"
                 stroke={item.color}
                 strokeWidth={hovered?.name === item.name ? strokeWidth + 4 : strokeWidth}
-                strokeDasharray={`${dash} ${circumference - dash}`}
-                strokeDashoffset={-offset}
+                strokeDasharray={`${dash} ${gap}`}
+                strokeDashoffset={-segmentOffset}
                 strokeLinecap="round"
-                transform={`rotate(-90 ${center + 25} ${center + 25})`}
+                transform={`rotate(-90 ${center} ${center})`}
                 className="cursor-pointer transition-all duration-200"
                 onMouseEnter={() => setHovered(item)}
                 onMouseLeave={() => setHovered(null)}
               />
             );
-            offset += fraction * circumference;
-            return segment;
           })}
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Monthly</p>
+        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-400">{lang === "es" ? "Mensual" : "Monthly"}</p>
           <p className="text-3xl font-black text-white">{currency(totalPayment, lang)}</p>
-          <p className="mt-1 max-w-40 text-xs text-slate-400">{activeItem?.name}</p>
+          <p className="mt-1 max-w-44 text-xs text-slate-300">{activeItem?.name}</p>
+          {activeItem && <p className="mt-1 text-xs font-bold text-cyan-200">{currency(activeItem.value, lang)} · {number((activeItem.value / totalPayment) * 100, lang)}%</p>}
         </div>
       </div>
 
@@ -651,7 +674,7 @@ function DonutBreakdown({ data, lang, totalPayment }) {
                 <span className="truncate">{item.name}</span>
               </span>
               <span className="ml-3 flex flex-none items-center gap-3">
-                <span className="hidden text-xs text-slate-400 sm:inline">{number(percent)}%</span>
+                <span className="hidden text-xs text-slate-400 sm:inline">{number(percent, lang)}%</span>
                 <strong className="text-white">{currency(item.value, lang)}</strong>
               </span>
             </button>
