@@ -6,9 +6,6 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
-  Cell,
-  Pie,
-  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -41,6 +38,11 @@ const copy = {
       loanTerm: "Loan Term",
       annualTaxes: "Annual Property Taxes",
       annualFees: "Annual Registration / Fees",
+      feesChart: "Registration / Fees",
+      taxesChart: "Taxes",
+      insuranceChart: "Insurance",
+      hoaChart: "HOA",
+      addOnsChart: "Warranty / Add ons",
       annualInsurance: "Annual Insurance",
       hoa: "Monthly HOA",
       warranty: "Monthly Warranty / Add ons",
@@ -67,7 +69,7 @@ const copy = {
       noExtraPayoff: "No Extra Payoff",
     },
     tabs: { charts: "Charts", breakdown: "Breakdown", compare: "Compare", schedule: "Schedule" },
-    charts: { balance: "Balance over time", breakdown: "Monthly payment breakdown" },
+    charts: { balance: "Balance over time", breakdown: "Monthly payment breakdown", balanceHint: "Updates with every input" },
     stat: { principalInterest: "Principal and Interest", feesInsurance: "Fees + Insurance", taxesInsurance: "Taxes + Insurance", totalPaid: "Estimated Total Paid" },
     compare: {
       current: "Current Scenario",
@@ -130,6 +132,11 @@ const copy = {
       loanTerm: "Plazo del Préstamo",
       annualTaxes: "Impuestos Anuales de Propiedad",
       annualFees: "Registro / Cargos Anuales",
+      feesChart: "Registro / Cargos",
+      taxesChart: "Impuestos",
+      insuranceChart: "Seguro",
+      hoaChart: "HOA",
+      addOnsChart: "Garantía / Adicionales",
       annualInsurance: "Seguro Anual",
       hoa: "HOA Mensual",
       warranty: "Garantía / Adicionales Mensuales",
@@ -156,7 +163,7 @@ const copy = {
       noExtraPayoff: "Sin Pago Extra",
     },
     tabs: { charts: "Gráficos", breakdown: "Desglose", compare: "Comparar", schedule: "Amortización" },
-    charts: { balance: "Balance en el tiempo", breakdown: "Desglose del pago mensual" },
+    charts: { balance: "Balance en el tiempo", breakdown: "Desglose del pago mensual", balanceHint: "Se actualiza con cada cambio" },
     stat: { principalInterest: "Principal e Interés", feesInsurance: "Cargos + Seguro", taxesInsurance: "Impuestos + Seguro", totalPaid: "Total Estimado Pagado" },
     compare: {
       current: "Escenario Actual",
@@ -335,11 +342,11 @@ function App() {
 
   const pieData = [
     { name: t.stat.principalInterest, value: result.basePayment, color: "#22d3ee" },
-    { name: isCar ? t.fields.annualFees : "Taxes", value: result.monthlyTaxes, color: "#a78bfa" },
-    { name: t.fields.annualInsurance, value: result.monthlyInsurance, color: "#34d399" },
-    { name: isCar ? t.fields.warranty : "HOA", value: hoa, color: "#fbbf24" },
+    { name: isCar ? t.fields.feesChart : t.fields.taxesChart, value: result.monthlyTaxes, color: "#a78bfa" },
+    { name: t.fields.insuranceChart, value: result.monthlyInsurance, color: "#34d399" },
+    { name: isCar ? t.fields.addOnsChart : t.fields.hoaChart, value: result.monthlyHoaOrAddOns, color: "#fbbf24" },
     { name: "PMI", value: result.monthlyPmiEstimate, color: "#fb7185" },
-    { name: t.fields.extra, value: extraPayment, color: "#60a5fa" },
+    { name: t.fields.extra, value: Math.max(Number(extraPayment) || 0, 0), color: "#60a5fa" },
   ].filter((item) => item.value > 0.005);
 
   function navigate(nextPath) {
@@ -514,9 +521,147 @@ function InputControl({ item }) { return <div className="space-y-3"><div classNa
 function TabButtons({ activeTab, setActiveTab, t }) { return <div className="mb-5 grid w-full max-w-2xl grid-cols-4 rounded-2xl bg-white/10 p-1 text-slate-300">{Object.entries(t.tabs).map(([key, label]) => <button type="button" key={key} onClick={() => setActiveTab(key)} className={`rounded-xl px-3 py-2 text-sm font-semibold ${activeTab === key ? "bg-cyan-300 text-slate-950" : "hover:bg-white/10"}`}>{label}</button>)}</div>; }
 function Charts({ t, result, pieData, lang }) {
   const totalPayment = pieData.reduce((sum, item) => sum + item.value, 0);
-  return <div className="grid gap-5 lg:grid-cols-2"><Card><div className="p-6"><h2 className="mb-5 text-xl font-bold">{t.charts.balance}</h2><div className="h-80"><ResponsiveContainer width="100%" height="100%"><AreaChart data={result.balanceData}><defs><linearGradient id="balance" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#22d3ee" stopOpacity={0.45} /><stop offset="95%" stopColor="#22d3ee" stopOpacity={0.02} /></linearGradient></defs><CartesianGrid strokeDasharray="3 3" opacity={0.15} /><XAxis dataKey="month" stroke="#94a3b8" tickFormatter={(v) => v % 12 === 0 ? `${Math.round(v / 12)}y` : ""} minTickGap={18} /><YAxis stroke="#94a3b8" tickFormatter={(v) => `$${Math.round(v / 1000)}k`} /><Tooltip formatter={(v) => currency(v, lang)} labelFormatter={(v) => `${t.schedule.month} ${v}`} contentStyle={{ background: "#020617", border: "1px solid rgba(255,255,255,.1)", borderRadius: 16 }} /><Area type="monotone" dataKey="balance" stroke="#22d3ee" strokeWidth={3} fill="url(#balance)" /></AreaChart></ResponsiveContainer></div></div></Card><Card><div className="p-6"><div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><h2 className="text-xl font-bold">{t.charts.breakdown}</h2><p className="text-sm text-slate-400">{currency(totalPayment, lang)}</p></div><div className="h-80"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={pieData} dataKey="value" nameKey="name" innerRadius={72} outerRadius={116} paddingAngle={3} stroke="#0f172a" strokeWidth={3}>{pieData.map((item) => <Cell key={item.name} fill={item.color} />)}</Pie><Tooltip formatter={(v) => currency(v, lang)} contentStyle={{ background: "#020617", border: "1px solid rgba(255,255,255,.1)", borderRadius: 16 }} /></PieChart></ResponsiveContainer></div><div className="grid gap-2 text-sm text-slate-300">{pieData.map((item) => <div key={item.name} className="flex items-center justify-between rounded-xl bg-slate-950/40 px-3 py-2"><span className="flex items-center gap-2"><span className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />{item.name}</span><strong>{currency(item.value, lang)}</strong></div>)}</div></div></Card></div>;
+  const chartData = result.balanceData.filter((point) => point.month > 0 || result.balanceData.length <= 1);
+  const payoffYears = result.payoffMonth > 0 ? result.payoffMonth / 12 : 0;
+
+  return (
+    <div className="grid gap-5 lg:grid-cols-2">
+      <Card>
+        <div className="p-6">
+          <div className="mb-5 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <h2 className="text-xl font-bold">{t.charts.balance}</h2>
+            <p className="text-sm text-slate-400">{t.charts.balanceHint}</p>
+          </div>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 18, bottom: 8, left: 10 }}>
+                <defs>
+                  <linearGradient id="balance" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#22d3ee" stopOpacity={0.45} />
+                    <stop offset="95%" stopColor="#22d3ee" stopOpacity={0.02} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.7} />
+                <XAxis
+                  dataKey="month"
+                  stroke="#cbd5e1"
+                  tick={{ fill: "#cbd5e1" }}
+                  tickFormatter={(v) => {
+                    if (v === 1) return "1m";
+                    if (v % 12 === 0) return `${Math.round(v / 12)}y`;
+                    if (payoffYears <= 2 && v % 3 === 0) return `${v}m`;
+                    return "";
+                  }}
+                  interval="preserveStartEnd"
+                  minTickGap={14}
+                />
+                <YAxis stroke="#cbd5e1" tick={{ fill: "#cbd5e1" }} tickFormatter={(v) => `$${Math.round(v / 1000)}k`} />
+                <Tooltip content={<LineTooltip t={t} lang={lang} />} cursor={{ stroke: "#67e8f9", strokeWidth: 1 }} />
+                <Area type="monotone" dataKey="balance" stroke="#22d3ee" strokeWidth={3} fill="url(#balance)" dot={false} activeDot={{ r: 5, fill: "#22d3ee", stroke: "#ffffff", strokeWidth: 2 }} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </Card>
+
+      <Card>
+        <div className="p-6">
+          <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <h2 className="text-xl font-bold">{t.charts.breakdown}</h2>
+            <p className="text-sm text-slate-400">{currency(totalPayment, lang)}</p>
+          </div>
+          <DonutBreakdown data={pieData} lang={lang} totalPayment={totalPayment} />
+        </div>
+      </Card>
+    </div>
+  );
 }
-function Compare({ t, lang, result, noExtraResult, higherRateResult, housingRatio, totalDebtRatio, payoffYears, payoffMonths, payoffYearsNoExtra, payoffMonthsNoExtra }) { const afford = t.compare.affordabilityText.replace("{housing}", number(housingRatio, lang)).replace("{debt}", number(totalDebtRatio, lang)); const impact = t.compare.extraImpactText.replace("{saved}", currency(result.interestSaved, lang)).replace("{oldPayoff}", `${payoffYearsNoExtra}y ${payoffMonthsNoExtra}m`).replace("{newPayoff}", `${payoffYears}y ${payoffMonths}m`); return <><Card><div className="grid gap-4 p-6 md:grid-cols-3"><BigStat label={t.compare.current} value={currency(result.monthlyTotal, lang)} /><BigStat label={t.compare.noExtra} value={`${currency(noExtraResult.requiredMonthlyPayment, lang)} ${t.compare.monthly}`} /><BigStat label={t.compare.higherRate} value={currency(higherRateResult.monthlyTotal, lang)} /></div></Card><div className="mt-5 grid gap-5 md:grid-cols-2"><Card><div className="p-6"><h3 className="text-xl font-bold text-white">{t.compare.affordability}</h3><p className="mt-3 text-sm leading-6 text-slate-300">{afford}</p></div></Card><Card><div className="p-6"><h3 className="text-xl font-bold text-white">{t.compare.extraImpact}</h3><p className="mt-3 text-sm leading-6 text-slate-300">{impact}</p></div></Card></div></>; }
+
+function LineTooltip({ active, payload, label, t, lang }) {
+  if (!active || !payload || !payload.length) return null;
+  const value = payload[0]?.value ?? 0;
+  return (
+    <div className="rounded-2xl border border-cyan-300/30 bg-slate-950 px-4 py-3 text-sm text-white shadow-2xl">
+      <p className="font-bold text-cyan-200">{t.schedule.month} {label}</p>
+      <p className="mt-1 text-slate-100">{t.schedule.balance}: <strong>{currency(value, lang)}</strong></p>
+    </div>
+  );
+}
+
+function DonutBreakdown({ data, lang, totalPayment }) {
+  const [hovered, setHovered] = useState(null);
+  const size = 270;
+  const center = size / 2;
+  const radius = 92;
+  const strokeWidth = 34;
+  const circumference = 2 * Math.PI * radius;
+  let offset = 0;
+  const activeItem = hovered ?? data[0];
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[320px_1fr] lg:items-center">
+      <div className="relative mx-auto h-[320px] w-[320px]">
+        <svg width="320" height="320" viewBox="0 0 320 320" className="drop-shadow-2xl">
+          <circle cx="160" cy="160" r={radius} fill="none" stroke="#0f172a" strokeWidth={strokeWidth} />
+          {data.map((item) => {
+            const fraction = totalPayment > 0 ? item.value / totalPayment : 0;
+            const dash = Math.max(fraction * circumference - 3, 0);
+            const segment = (
+              <circle
+                key={item.name}
+                cx="160"
+                cy="160"
+                r={radius}
+                fill="none"
+                stroke={item.color}
+                strokeWidth={hovered?.name === item.name ? strokeWidth + 4 : strokeWidth}
+                strokeDasharray={`${dash} ${circumference - dash}`}
+                strokeDashoffset={-offset}
+                strokeLinecap="round"
+                transform={`rotate(-90 ${center + 25} ${center + 25})`}
+                className="cursor-pointer transition-all duration-200"
+                onMouseEnter={() => setHovered(item)}
+                onMouseLeave={() => setHovered(null)}
+              />
+            );
+            offset += fraction * circumference;
+            return segment;
+          })}
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+          <p className="text-xs uppercase tracking-[0.2em] text-slate-400">Monthly</p>
+          <p className="text-3xl font-black text-white">{currency(totalPayment, lang)}</p>
+          <p className="mt-1 max-w-40 text-xs text-slate-400">{activeItem?.name}</p>
+        </div>
+      </div>
+
+      <div className="grid gap-2 text-sm text-slate-300">
+        {data.map((item) => {
+          const percent = totalPayment > 0 ? (item.value / totalPayment) * 100 : 0;
+          return (
+            <button
+              type="button"
+              key={item.name}
+              onMouseEnter={() => setHovered(item)}
+              onMouseLeave={() => setHovered(null)}
+              className={`flex items-center justify-between rounded-xl px-3 py-2 text-left transition ${hovered?.name === item.name ? "bg-white/15" : "bg-slate-950/40 hover:bg-white/10"}`}
+            >
+              <span className="flex min-w-0 items-center gap-2">
+                <span className="h-3 w-3 flex-none rounded-full ring-2 ring-white/20" style={{ backgroundColor: item.color }} />
+                <span className="truncate">{item.name}</span>
+              </span>
+              <span className="ml-3 flex flex-none items-center gap-3">
+                <span className="hidden text-xs text-slate-400 sm:inline">{number(percent)}%</span>
+                <strong className="text-white">{currency(item.value, lang)}</strong>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function Schedule({ t, lang, result, downloadCsv, downloadPdf }) { return <Card><div className="p-6"><div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-xl font-bold">{t.schedule.title}</h2><p className="text-sm text-slate-400">{t.schedule.text}</p></div><div className="flex flex-col gap-2 sm:flex-row"><Button onClick={downloadPdf} className="bg-white text-slate-950 hover:bg-slate-200"><Icon name="download" className="mr-2 h-4 w-4" />{t.schedule.downloadPdf}</Button><Button onClick={downloadCsv} className="bg-cyan-300 text-slate-950 hover:bg-cyan-200"><Icon name="download" className="mr-2 h-4 w-4" />{t.schedule.download}</Button></div></div><div className="overflow-x-auto rounded-2xl ring-1 ring-white/10"><table className="w-full text-left text-sm"><thead className="bg-slate-950/70 text-slate-300"><tr><th className="p-4">{t.schedule.year}</th><th className="p-4">{t.schedule.balance}</th><th className="p-4">{t.schedule.principalPaid}</th><th className="p-4">{t.schedule.interestPaid}</th><th className="p-4">{t.schedule.pmiPaid}</th></tr></thead><tbody>{result.schedule.map((row) => <tr key={row.year} className="border-t border-white/10 text-slate-200"><td className="p-4 font-bold">{row.year}</td><td className="p-4">{currency(row.balance, lang)}</td><td className="p-4">{currency(row.principalPaid, lang)}</td><td className="p-4">{currency(row.interestPaid, lang)}</td><td className="p-4">{currency(row.pmiPaid || 0, lang)}</td></tr>)}</tbody></table></div></div></Card>; }
 function Education({ t }) { return <div className="mt-8 rounded-[2rem] bg-white/[0.06] p-5 text-sm leading-6 text-slate-300 ring-1 ring-white/10"><Section title={t.education.title} items={t.education.steps} /><Section title={t.education.factorsTitle} items={t.education.factors} /><strong className="mt-5 block text-white">{t.education.formulaTitle}</strong><p className="mt-2">{t.education.formulaIntro}</p><p className="mt-2 font-mono text-xs text-cyan-300">M = P × [ r(1+r)^n / ((1+r)^n − 1) ]</p><ul className="mt-3 list-disc space-y-2 pl-5">{t.education.formulaNotes.map((x) => <li key={x}>{x}</li>)}</ul><Section title={t.education.understandTitle} items={t.education.understand} /><Section title={t.education.tipsTitle} items={t.education.tips} /><p className="mt-5 text-xs text-slate-400">{t.education.disclaimer}</p></div>; }
 function Section({ title, items }) { return <><strong className="mt-5 block text-white first:mt-0">{title}</strong><ul className="mt-3 list-disc space-y-2 pl-5">{items.map((item) => <li key={item}>{item}</li>)}</ul></>; }
