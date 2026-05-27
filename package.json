@@ -1,6 +1,6 @@
 {
   "name": "loanflow-calculator",
-  "version": "8.0.0",
+  "version": "9.0.0",
   "private": true,
   "description": "Static bilingual home and car loan calculator with monthly amortization, SVG charts, CSV export and printable PDF report.",
   "engines": {
