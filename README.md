@@ -1,41 +1,19 @@
-# LoanFlow Calculator
+# LoanFlow Calculator v10
 
-A static bilingual loan calculator for home and car loans.
+Stable static bilingual loan calculator for home and car loans.
 
-## Features
+## Improvements in v10
 
-- English and Spanish interface
-- Home loan and car loan modes
-- Fixed rate amortization formula
-- Optional extra monthly payments
-- PMI estimate for mortgage down payments below 20 percent
-- Monthly amortization table
-- CSV export with full monthly schedule
-- Printable professional report that can be saved as PDF
-- Custom SVG charts with no external chart library
-- Privacy, Terms, About and Contact pages
-- AdSense ready placeholder areas
+- Mobile layout revised so visitors enter loan details before reviewing results.
+- Inputs, mode selector, charts, CSV export and PDF report remain available.
+- Monthly amortization schedule powers the chart, CSV, table and report.
+- Fixed-rate amortization formula audited.
+- Static build for reliable Vercel deployment.
 
-## Deployment
-
-This version is intentionally static and dependency free. Vercel can build it with:
+## Build
 
 ```bash
-npm ci --no-audit --no-fund
 npm run build
 ```
 
-Output directory:
-
-```bash
-dist
-```
-
-## Contact
-
-loancal@altmail.kr
-
-
-## Version 9
-
-Fixed the PDF report generation by opening a dedicated printable report window with inline print-safe styles, avoiding blank browser print previews.
+Output directory: `dist`

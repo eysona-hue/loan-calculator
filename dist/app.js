@@ -29,6 +29,7 @@ const t = {
     topAd: 'Future Google AdSense banner', sideAd: 'Future Google AdSense sidebar ad', midAd: 'Future Google AdSense in-content ad',
     kicker: 'Smart calculator for home and auto loans', hero: 'Plan any major loan with clarity, speed, and confidence.',
     lead: 'Compare mortgage and car payments using the standard fixed rate amortization formula, with total interest, payoff date, extra payment savings, taxes, insurance, fees, PMI estimates, affordability ratios and complete monthly amortization in one panel.',
+    startNote: 'Start here: enter your loan details below, then review the payment, charts, CSV, and PDF report.',
     homeLoan: 'Home Loan', homeSub: 'Mortgage, taxes, insurance, HOA', carLoan: 'Car Loan', carSub: 'Financing, insurance, fees, add ons',
     labels: { priceHome: 'Home Price', priceCar: 'Vehicle Price', downPayment: 'Down Payment', rate: 'Interest Rate', years: 'Loan Term', taxesHome: 'Annual Property Taxes', taxesCar: 'Annual Registration / Fees', insurance: 'Annual Insurance', hoaHome: 'Monthly HOA', hoaCar: 'Monthly Warranty / Add Ons', extra: 'Extra Monthly Payment', pmi: 'PMI Annual Rate', income: 'Gross Annual Income', debt: 'Other Monthly Debt' },
     noPmi: 'Not needed at 20% down', pmiNeeded: 'Estimated until 80% LTV', down: 'down', yearsUnit: 'years',
@@ -57,6 +58,7 @@ const t = {
     topAd: 'Espacio futuro para anuncio superior de Google AdSense', sideAd: 'Espacio futuro para anuncio lateral de Google AdSense', midAd: 'Espacio futuro para anuncio interno de Google AdSense',
     kicker: 'Calculadora inteligente para préstamos de vivienda y autos', hero: 'Planifica cualquier préstamo importante con claridad, rapidez y confianza.',
     lead: 'Compara pagos de hipoteca y préstamos de auto usando la fórmula estándar de amortización a tasa fija, con interés total, fecha de pago, ahorro por pagos extra, impuestos, seguro, cargos, estimado de PMI, ratios de capacidad de pago y amortización mensual completa en un solo panel.',
+    startNote: 'Empieza aquí: ingresa los datos de tu préstamo abajo, luego revisa el pago, las gráficas, el CSV y el reporte PDF.',
     homeLoan: 'Préstamo de Vivienda', homeSub: 'Hipoteca, impuestos, seguro, HOA', carLoan: 'Préstamo de Auto', carSub: 'Financiamiento, seguro, cargos, adicionales',
     labels: { priceHome: 'Precio de la Vivienda', priceCar: 'Precio del Vehículo', downPayment: 'Inicial', rate: 'Tasa de Interés', years: 'Plazo del Préstamo', taxesHome: 'Impuestos Anuales de Propiedad', taxesCar: 'Registro / Cargos Anuales', insurance: 'Seguro Anual', hoaHome: 'HOA Mensual', hoaCar: 'Garantía / Adicionales Mensuales', extra: 'Pago Extra Mensual', pmi: 'Tasa Anual de PMI', income: 'Ingreso Bruto Anual', debt: 'Otras Deudas Mensuales' },
     noPmi: 'No se necesita con 20% inicial', pmiNeeded: 'Estimado hasta 80% LTV', down: 'inicial', yearsUnit: 'años',
@@ -210,6 +212,7 @@ function calcPage() {
         <div class="kicker">${icon('spark')} ${L.kicker}</div>
         <h1>${L.hero}</h1>
         <p class="lead">${L.lead}</p>
+        <div class="mobile-start-note">${L.startNote}</div>
         <div class="mode-toggle">
           <button class="mode-btn ${state.loanType === 'home' ? 'active' : ''}" data-mode="home"><strong>${icon('home')} ${L.homeLoan}</strong><span>${L.homeSub}</span></button>
           <button class="mode-btn ${state.loanType === 'car' ? 'active' : ''}" data-mode="car"><strong>${icon('car')} ${L.carLoan}</strong><span>${L.carSub}</span></button>
@@ -400,14 +403,31 @@ function attachEvents() {
   document.getElementById('langBtn')?.addEventListener('click', () => { state.lang = state.lang === 'en' ? 'es' : 'en'; localStorage.setItem('loanflow_lang', state.lang); document.documentElement.lang = state.lang; render(); });
   document.getElementById('resetBtn')?.addEventListener('click', reset);
   document.querySelectorAll('[data-mode]').forEach(btn => btn.addEventListener('click', () => { setMode(btn.dataset.mode); }));
-  document.querySelectorAll('[data-input]').forEach(input => input.addEventListener('input', () => { state.inputs[input.dataset.input] = Number(input.value); render(); }));
-  document.querySelectorAll('[data-range]').forEach(input => input.addEventListener('input', () => { state.inputs[input.dataset.range] = Number(input.value); render(); }));
+  document.querySelectorAll('[data-input]').forEach(input => input.addEventListener('input', () => { setInputValue(input.dataset.input, input.value); }));
+  document.querySelectorAll('[data-range]').forEach(input => input.addEventListener('input', () => { setInputValue(input.dataset.range, input.value); }));
   document.querySelectorAll('[data-tab]').forEach(tab => tab.addEventListener('click', () => { state.activeTab = tab.dataset.tab; render(); }));
   document.querySelectorAll('[data-slice]').forEach(slice => slice.addEventListener('mouseenter', () => { state.selectedSlice = Number(slice.dataset.slice); render(); }));
   document.querySelectorAll('[data-slice]').forEach(slice => slice.addEventListener('click', () => { state.selectedSlice = Number(slice.dataset.slice); render(); }));
   document.getElementById('csvBtn')?.addEventListener('click', exportCsv);
   document.getElementById('pdfBtn')?.addEventListener('click', printPdf);
 }
+
+function setInputValue(key, value) {
+  const numeric = Number(value);
+  state.inputs[key] = Number.isFinite(numeric) ? numeric : 0;
+  if (key === 'price') {
+    state.inputs.price = Math.max(state.inputs.price, 0);
+    if (state.inputs.downPayment > state.inputs.price) state.inputs.downPayment = state.inputs.price;
+  }
+  if (key === 'downPayment') {
+    state.inputs.downPayment = Math.min(Math.max(state.inputs.downPayment, 0), Math.max(Number(state.inputs.price) || 0, 0));
+  }
+  if (['rate','years','taxes','insurance','hoa','extraPayment','pmiAnnualRate','grossIncome','monthlyDebt'].includes(key)) {
+    state.inputs[key] = Math.max(state.inputs[key], 0);
+  }
+  render();
+}
+
 function setMode(mode) {
   state.loanType = mode;
   state.selectedSlice = 0;
