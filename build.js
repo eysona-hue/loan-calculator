@@ -3,4 +3,7 @@ const path = require('path');
 const out = path.join(__dirname, 'dist');
 fs.rmSync(out, { recursive: true, force: true });
 fs.mkdirSync(out, { recursive: true });
-fs.copyFileSync(path.join(__dirname, 'index.html'), path.join(out, 'index.html'));
+for (const file of ['index.html', 'styles.css', 'app.js', 'README.md']) {
+  fs.copyFileSync(path.join(__dirname, file), path.join(out, file));
+}
+console.log('Static build completed in dist folder.');

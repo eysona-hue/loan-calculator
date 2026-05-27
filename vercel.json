@@ -1,8 +1,13 @@
 {
-  "installCommand": "npm install --no-audit --no-fund --ignore-scripts",
+  "version": 2,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "installCommand": "npm ci --no-audit --no-fund",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/about", "destination": "/index.html" },
+    { "source": "/privacy", "destination": "/index.html" },
+    { "source": "/terms", "destination": "/index.html" },
+    { "source": "/contact", "destination": "/index.html" },
+    { "source": "/calculator", "destination": "/index.html" }
   ]
 }
