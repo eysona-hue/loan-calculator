@@ -8,6 +8,12 @@
     { "source": "/privacy", "destination": "/index.html" },
     { "source": "/terms", "destination": "/index.html" },
     { "source": "/contact", "destination": "/index.html" },
-    { "source": "/calculator", "destination": "/index.html" }
+    { "source": "/calculator", "destination": "/index.html" },
+    { "source": "/mortgage-calculator", "destination": "/index.html" },
+    { "source": "/car-loan-calculator", "destination": "/index.html" },
+    { "source": "/amortization-calculator", "destination": "/index.html" },
+    { "source": "/extra-payment-calculator", "destination": "/index.html" },
+    { "source": "/affordability-calculator", "destination": "/index.html" },
+    { "source": "/pmi-calculator", "destination": "/index.html" }
   ]
 }

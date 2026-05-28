@@ -84,6 +84,72 @@ const t = {
   }
 };
 
+
+const seoPages = {
+  '/mortgage-calculator': {
+    en: {
+      title: 'Mortgage Calculator with Taxes, PMI and Amortization',
+      description: 'Estimate a home loan payment with principal, interest, property taxes, insurance, PMI, HOA, extra payments and a monthly amortization schedule.',
+      heading: 'Mortgage Calculator',
+      intro: 'Use LoanFlow to estimate the real monthly cost of a home loan, not just principal and interest. The calculator can include property taxes, homeowners insurance, HOA dues, PMI, extra payments and a full monthly amortization schedule.',
+      sections: [
+        ['What this mortgage calculator includes', ['Principal and interest payment using the standard fixed rate amortization formula.', 'Property taxes and homeowners insurance as monthly estimated costs.', 'PMI estimate when the down payment is below 20 percent.', 'HOA dues when applicable.', 'Extra monthly payments to estimate interest savings and faster payoff.']],
+        ['How to use it well', ['Start with a realistic home price and down payment.', 'Use an interest rate close to what a lender has quoted or test several rates.', 'Enter taxes, insurance and HOA instead of leaving them out.', 'Review the payment breakdown and amortization schedule before making a decision.']],
+        ['Important note', ['This tool provides estimates only. A real lender quote may include APR, closing costs, escrow rules, discount points, mortgage insurance rules and local taxes that change the final payment.']]
+      ]
+    },
+    es: {
+      title: 'Calculadora de Hipoteca con Impuestos, PMI y Amortización',
+      description: 'Estima el pago de una hipoteca con principal, interés, impuestos, seguro, PMI, HOA, pagos extra y calendario mensual de amortización.',
+      heading: 'Calculadora de Hipoteca',
+      intro: 'Usa LoanFlow para estimar el costo mensual real de una hipoteca, no solo principal e interés. La calculadora puede incluir impuestos, seguro, HOA, PMI, pagos extra y amortización mensual completa.',
+      sections: [
+        ['Qué incluye esta calculadora', ['Pago de principal e interés con la fórmula estándar de amortización a tasa fija.', 'Impuestos y seguro como costos mensuales estimados.', 'PMI estimado cuando el inicial es menor de 20 por ciento.', 'HOA si aplica.', 'Pagos extra para estimar ahorro de interés y pago más rápido.']],
+        ['Cómo usarla bien', ['Empieza con un precio de vivienda y un inicial realistas.', 'Usa una tasa cercana a la cotización de un prestamista o prueba varias tasas.', 'Incluye impuestos, seguro y HOA en vez de dejarlos fuera.', 'Revisa el desglose del pago y el calendario de amortización antes de decidir.']],
+        ['Nota importante', ['Esta herramienta ofrece estimados solamente. Una cotización real puede incluir APR, costos de cierre, reglas de escrow, puntos, seguro hipotecario e impuestos locales que cambien el pago final.']]
+      ]
+    }
+  },
+  '/car-loan-calculator': {
+    en: {
+      title: 'Car Loan Calculator with Fees, Insurance and Amortization',
+      description: 'Estimate auto loan payments, interest, fees, insurance, extra payments, payoff timing and a monthly amortization schedule.',
+      heading: 'Car Loan Calculator',
+      intro: 'Use LoanFlow to estimate an auto loan with the vehicle price, down payment, interest rate, loan term, registration fees, insurance and optional add ons.',
+      sections: [
+        ['What this car loan calculator helps you see', ['Estimated first monthly payment.', 'Total interest over the life of the loan.', 'How extra payments can shorten payoff time.', 'The monthly schedule showing interest, principal and remaining balance.']],
+        ['Smart car loan tips', ['Compare shorter and longer terms before accepting a loan.', 'A lower monthly payment can cost more in total interest.', 'Separate optional add ons from the vehicle price when possible so you can see the true cost.', 'Check whether insurance and registration fees fit your monthly budget.']]
+      ]
+    },
+    es: {
+      title: 'Calculadora de Préstamo de Auto con Cargos, Seguro y Amortización',
+      description: 'Estima pagos de auto, interés, cargos, seguro, pagos extra, fecha final y amortización mensual.',
+      heading: 'Calculadora de Préstamo de Auto',
+      intro: 'Usa LoanFlow para estimar un préstamo de auto con precio del vehículo, inicial, tasa, plazo, registro, seguro y adicionales opcionales.',
+      sections: [
+        ['Qué te ayuda a ver', ['Primer pago mensual estimado.', 'Interés total durante la vida del préstamo.', 'Cómo los pagos extra pueden reducir el plazo.', 'Calendario mensual con interés, principal y balance restante.']],
+        ['Consejos útiles', ['Compara plazos cortos y largos antes de aceptar un préstamo.', 'Un pago mensual más bajo puede costar más en interés total.', 'Separa adicionales opcionales del precio del vehículo cuando sea posible.', 'Verifica si el seguro y los cargos caben en tu presupuesto mensual.']]
+      ]
+    }
+  },
+  '/amortization-calculator': {
+    en: { title: 'Loan Amortization Calculator', description: 'View a monthly amortization schedule showing payment, principal, interest, PMI and remaining balance.', heading: 'Loan Amortization Calculator', intro: 'Amortization shows how each loan payment is divided between interest and principal. Early payments usually go more toward interest. Later payments go more toward reducing the balance.', sections: [['Why amortization matters', ['It helps you see the true cost of borrowing.', 'It shows how extra payments reduce interest.', 'It helps you compare loan terms and payoff dates.']], ['What LoanFlow shows', ['Every payment month.', 'Starting and ending balance.', 'Principal paid, interest paid and PMI if applicable.', 'CSV and PDF export options.']]] },
+    es: { title: 'Calculadora de Amortización de Préstamos', description: 'Ve un calendario mensual con pago, principal, interés, PMI y balance restante.', heading: 'Calculadora de Amortización', intro: 'La amortización muestra cómo cada pago se divide entre interés y principal. Al inicio, normalmente se paga más interés. Más adelante, más del pago reduce el balance.', sections: [['Por qué importa', ['Ayuda a ver el costo real de tomar dinero prestado.', 'Muestra cómo los pagos extra reducen interés.', 'Ayuda a comparar plazos y fechas de pago final.']], ['Qué muestra LoanFlow', ['Cada mes de pago.', 'Balance inicial y final.', 'Principal, interés y PMI si aplica.', 'Exportación en CSV y PDF.']]] }
+  },
+  '/extra-payment-calculator': {
+    en: { title: 'Extra Payment Calculator', description: 'Calculate how extra monthly payments can reduce interest and shorten the loan payoff timeline.', heading: 'Extra Payment Calculator', intro: 'Even a small extra payment can reduce interest and shorten the payoff timeline because extra money goes directly toward principal in the calculator.', sections: [['What to test', ['Try an extra monthly payment of 50, 100 or 200 dollars.', 'Compare the payoff time with and without extra payments.', 'Look at total interest saved before deciding.']], ['Important note', ['Some lenders have rules about prepayment or how extra payments are applied. Confirm with your lender before relying on extra payments as a payoff strategy.']]] },
+    es: { title: 'Calculadora de Pagos Extra', description: 'Calcula cómo pagos extra mensuales pueden reducir interés y acortar el tiempo de pago.', heading: 'Calculadora de Pagos Extra', intro: 'Incluso un pago extra pequeño puede reducir interés y acortar el plazo porque el dinero extra se aplica directamente al principal en la calculadora.', sections: [['Qué probar', ['Prueba pagos extra de 50, 100 o 200 dólares mensuales.', 'Compara el plazo con y sin pagos extra.', 'Revisa el interés ahorrado antes de decidir.']], ['Nota importante', ['Algunos prestamistas tienen reglas sobre prepago o cómo se aplican pagos extra. Confirma con tu prestamista antes de depender de esta estrategia.']]] }
+  },
+  '/affordability-calculator': {
+    en: { title: 'Loan Affordability Calculator', description: 'Estimate housing ratio, total debt ratio and whether a loan payment may feel comfortable, stretched or risky.', heading: 'Affordability Calculator', intro: 'Affordability is about more than the monthly payment. LoanFlow compares the estimated payment with gross income and other monthly debt to show whether the loan appears comfortable, stretched or risky.', sections: [['The 28 and 36 guideline', ['A common rule of thumb is to keep housing near 28 percent of gross income.', 'Another common rule is to keep total debt near 36 percent of gross income.', 'Real lender limits can be different, so this is only a planning guide.']], ['What to include', ['Mortgage or auto payment.', 'Taxes, insurance, HOA or fees.', 'Credit cards, student loans, car loans and other recurring debts.']]] },
+    es: { title: 'Calculadora de Capacidad de Pago', description: 'Estima ratio de vivienda, ratio total de deuda y si el préstamo parece cómodo, estirado o riesgoso.', heading: 'Calculadora de Capacidad de Pago', intro: 'La capacidad de pago es más que el pago mensual. LoanFlow compara el pago estimado con el ingreso bruto y otras deudas mensuales para indicar si el préstamo parece cómodo, estirado o riesgoso.', sections: [['Guía 28 y 36', ['Una guía común es mantener vivienda cerca del 28 por ciento del ingreso bruto.', 'Otra guía común es mantener deuda total cerca del 36 por ciento.', 'Los límites reales de prestamistas pueden ser diferentes. Esto es solo una guía de planificación.']], ['Qué incluir', ['Pago de hipoteca o auto.', 'Impuestos, seguro, HOA o cargos.', 'Tarjetas, préstamos estudiantiles, autos y otras deudas recurrentes.']]] }
+  },
+  '/pmi-calculator': {
+    en: { title: 'PMI Calculator for Mortgages', description: 'Estimate private mortgage insurance for home loans below 20 percent down and see when it may drop off.', heading: 'PMI Calculator', intro: 'Private mortgage insurance, often called PMI, may apply when a home buyer puts less than 20 percent down. LoanFlow estimates PMI as a monthly cost and removes it around 80 percent loan to value.', sections: [['How PMI is estimated', ['LoanFlow uses the annual PMI rate entered by the user.', 'The annual estimate is divided by 12 to estimate monthly PMI.', 'PMI is shown only while the balance is above about 80 percent of the original home value.']], ['Why PMI matters', ['PMI can materially change the first monthly payment.', 'A larger down payment may reduce or remove PMI.', 'Actual PMI depends on lender rules, credit profile and loan type.']]] },
+    es: { title: 'Calculadora de PMI para Hipotecas', description: 'Estima seguro hipotecario privado para hipotecas con menos de 20 por ciento inicial y cuándo puede desaparecer.', heading: 'Calculadora de PMI', intro: 'El seguro hipotecario privado, conocido como PMI, puede aplicar cuando el comprador aporta menos de 20 por ciento inicial. LoanFlow estima el PMI como costo mensual y lo elimina cerca de 80 por ciento LTV.', sections: [['Cómo se estima', ['LoanFlow usa la tasa anual de PMI indicada por el usuario.', 'El estimado anual se divide entre 12 para estimar el PMI mensual.', 'El PMI aparece solo mientras el balance esté por encima de aproximadamente 80 por ciento del valor original.']], ['Por qué importa', ['El PMI puede cambiar mucho el primer pago mensual.', 'Un inicial mayor puede reducir o eliminar PMI.', 'El PMI real depende de reglas del prestamista, crédito y tipo de préstamo.']]] }
+  }
+};
+
 function money(value) { return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number.isFinite(value) ? value : 0); }
 function money2(value) { return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number.isFinite(value) ? value : 0); }
 function num(value) { return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(Number.isFinite(value) ? value : 0); }
@@ -188,9 +254,20 @@ function layout(content) {
       ${content}
       <footer class="footer">
         <div><strong>LoanFlow</strong><br>${L.footerNote}</div>
-        <div class="footer-links">${navLink('/about', L.about)} ${navLink('/privacy', L.privacy)} ${navLink('/terms', L.terms)} ${navLink('/contact', L.contact)}</div>
+        <div class="footer-links">${navLink('/about', L.about)} ${navLink('/privacy', L.privacy)} ${navLink('/terms', L.terms)} ${navLink('/contact', L.contact)}</div><div class="footer-guides">${guideLinks()}</div>
       </footer>
     </div>`;
+}
+function guideLinks() {
+  const links = [
+    ['/mortgage-calculator', state.lang === 'es' ? 'Calculadora de Hipoteca' : 'Mortgage Calculator'],
+    ['/car-loan-calculator', state.lang === 'es' ? 'Calculadora de Auto' : 'Car Loan Calculator'],
+    ['/amortization-calculator', state.lang === 'es' ? 'Amortización' : 'Amortization'],
+    ['/extra-payment-calculator', state.lang === 'es' ? 'Pagos Extra' : 'Extra Payments'],
+    ['/affordability-calculator', state.lang === 'es' ? 'Capacidad de Pago' : 'Affordability'],
+    ['/pmi-calculator', 'PMI']
+  ];
+  return links.map(([path, label]) => `<a href="${path}" data-nav="${path}">${label}</a>`).join('');
 }
 function navLink(path, label) { return `<a href="${path}" data-nav="${path}" class="navlink ${state.route === path ? 'active' : ''}">${label}</a>`; }
 
@@ -407,7 +484,50 @@ function scheduleTable(L, r, full = false) {
   return `<div class="card panel"><h2>${L.scheduleTitle}</h2><p class="copy">${L.scheduleSub}</p><div class="table-wrap"><table><thead><tr>${L.table.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr><td>${row.month}</td><td>${row.year}</td><td>${money2(row.startBalance)}</td><td>${money2(row.totalPayment)}</td><td>${money2(row.principalPaid)}</td><td>${money2(row.interestPaid)}</td><td>${money2(row.pmiPaid)}</td><td>${money2(row.endingBalance)}</td></tr>`).join('')}</tbody></table></div></div>`;
 }
 function education(L) { return `<section class="card education"><h2>${L.eduTitle}</h2><ul>${L.edu.map(x=>`<li>${x}</li>`).join('')}</ul><h2>${L.factorsTitle}</h2><ul>${L.factors.map(x=>`<li>${x}</li>`).join('')}</ul><h2>${L.formulaTitle}</h2><p>${L.formulaText}</p><p><strong>${L.disclaimer}</strong></p></section>`; }
-function page(kind) { const L = currentText(); const map = { about: [L.pageAboutTitle, L.pageAbout], privacy: [L.pagePrivacyTitle, L.pagePrivacy], terms: [L.pageTermsTitle, L.pageTerms], contact: [L.pageContactTitle, `${L.pageContact} <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`] }; const [title, body] = map[kind] || map.about; return `<main class="card page"><h1>${title}</h1><p>${body}</p><p>${L.disclaimer}</p></main>`; }
+function page(kind) {
+  const L = currentText();
+  const map = {
+    about: [L.pageAboutTitle, L.pageAbout, aboutExtra()],
+    privacy: [L.pagePrivacyTitle, L.pagePrivacy, privacyExtra()],
+    terms: [L.pageTermsTitle, L.pageTerms, termsExtra()],
+    contact: [L.pageContactTitle, `${L.pageContact} <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.`, contactExtra()]
+  };
+  const [title, body, extra] = map[kind] || map.about;
+  return `<main class="card page"><h1>${title}</h1><p>${body}</p>${extra}<p class="fine-print">${L.disclaimer}</p></main>`;
+}
+function aboutExtra() {
+  return state.lang === 'es'
+    ? `<h2>Qué hace LoanFlow</h2><ul><li>Calcula pagos de préstamos de vivienda y auto.</li><li>Muestra amortización mensual completa.</li><li>Compara escenarios y capacidad de pago.</li><li>Genera CSV y reportes PDF para compartir.</li></ul>`
+    : `<h2>What LoanFlow does</h2><ul><li>Calculates home and auto loan payments.</li><li>Shows a complete monthly amortization schedule.</li><li>Compares scenarios and affordability.</li><li>Generates CSV and PDF reports to share.</li></ul>`;
+}
+function privacyExtra() {
+  return state.lang === 'es'
+    ? `<h2>Privacidad de los cálculos</h2><p>Los cálculos se realizan en tu navegador. No necesitas crear cuenta para usar la calculadora.</p>`
+    : `<h2>Calculation privacy</h2><p>Calculations run in your browser. You do not need to create an account to use the calculator.</p>`;
+}
+function termsExtra() {
+  return state.lang === 'es'
+    ? `<h2>Uso responsable</h2><p>Los resultados pueden ayudarte a planificar, pero no sustituyen una cotización formal de un prestamista.</p>`
+    : `<h2>Responsible use</h2><p>Results can help with planning, but they do not replace a formal lender quote.</p>`;
+}
+function contactExtra() {
+  return state.lang === 'es'
+    ? `<h2>Correcciones y sugerencias</h2><p>Si encuentras un error o quieres sugerir una mejora, escríbenos. Revisamos la precisión de los cálculos con cuidado.</p>`
+    : `<h2>Corrections and suggestions</h2><p>If you find an error or want to suggest an improvement, contact us. We review calculation accuracy carefully.</p>`;
+}
+function seoPage(path) {
+  const page = seoPages[path];
+  if (!page) return null;
+  const data = page[state.lang] || page.en;
+  return `<main class="card page seo-page">
+    <div class="kicker">${icon('spark')} ${state.lang === 'es' ? 'Guía de LoanFlow' : 'LoanFlow Guide'}</div>
+    <h1>${data.heading}</h1>
+    <p class="page-intro">${data.intro}</p>
+    <a class="inline-cta" href="/" data-nav="/">${state.lang === 'es' ? 'Abrir calculadora' : 'Open calculator'}</a>
+    ${data.sections.map(([title, items]) => `<section><h2>${title}</h2><ul>${items.map(item => `<li>${item}</li>`).join('')}</ul></section>`).join('')}
+    <section class="trust-box"><h2>${state.lang === 'es' ? 'Transparencia de cálculo' : 'Calculation transparency'}</h2><p>${currentText().formulaText}</p><p>${currentText().disclaimer}</p></section>
+  </main>`;
+}
 
 function printReport(L, r, housingRatio, totalDebtRatio) {
   const rows = r.schedule.slice(0, 360).map(row => `<tr><td>${row.month}</td><td>${money2(row.startBalance)}</td><td>${money2(row.totalPayment)}</td><td>${money2(row.principalPaid)}</td><td>${money2(row.interestPaid)}</td><td>${money2(row.pmiPaid)}</td><td>${money2(row.endingBalance)}</td></tr>`).join('');
@@ -564,14 +684,64 @@ function render() {
   const path = window.location.pathname;
   state.route = path;
   let body = calcPage();
+  const seoBody = seoPage(path);
+  if (seoBody) body = seoBody;
   if (path === '/about') body = page('about');
   if (path === '/privacy') body = page('privacy');
   if (path === '/terms') body = page('terms');
   if (path === '/contact') body = page('contact');
   document.getElementById('app').innerHTML = layout(body);
-  document.title = path === '/' ? 'LoanFlow Loan Calculator | Home and Car Loan Planner' : `LoanFlow | ${path.slice(1).replace(/^./, c => c.toUpperCase())}`;
+  updateSeo(path);
   document.documentElement.lang = state.lang;
   attachEvents();
+}
+function setMeta(name, value, property = false) {
+  const selector = property ? `meta[property="${name}"]` : `meta[name="${name}"]`;
+  let el = document.querySelector(selector);
+  if (!el) {
+    el = document.createElement('meta');
+    if (property) el.setAttribute('property', name); else el.setAttribute('name', name);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', value);
+}
+function updateSeo(path) {
+  const page = seoPages[path]?.[state.lang] || seoPages[path]?.en;
+  let title = state.lang === 'es' ? 'LoanFlow Calculadora de Préstamos' : 'LoanFlow Loan Calculator | Home and Car Loan Planner';
+  let description = state.lang === 'es' ? 'Calcula préstamos de vivienda y auto con amortización mensual, PMI, capacidad de pago, CSV y reporte PDF.' : 'Plan home and car loans with monthly payments, amortization, PMI estimates, affordability ratios, CSV export and printable PDF reports.';
+  if (page) { title = `LoanFlow | ${page.title}`; description = page.description; }
+  if (path === '/about') { title = state.lang === 'es' ? 'LoanFlow | Acerca de' : 'LoanFlow | About'; description = state.lang === 'es' ? 'Conoce LoanFlow, una herramienta bilingüe para planificar préstamos de vivienda y auto.' : 'Learn about LoanFlow, a bilingual planning tool for home and auto loans.'; }
+  if (path === '/privacy') { title = state.lang === 'es' ? 'LoanFlow | Privacidad' : 'LoanFlow | Privacy Policy'; description = state.lang === 'es' ? 'Política de privacidad de LoanFlow.' : 'LoanFlow privacy policy.'; }
+  if (path === '/terms') { title = state.lang === 'es' ? 'LoanFlow | Términos' : 'LoanFlow | Terms of Use'; description = state.lang === 'es' ? 'Términos de uso de LoanFlow.' : 'LoanFlow terms of use.'; }
+  if (path === '/contact') { title = state.lang === 'es' ? 'LoanFlow | Contacto' : 'LoanFlow | Contact'; description = state.lang === 'es' ? 'Contacta a LoanFlow para preguntas o correcciones.' : 'Contact LoanFlow for questions or corrections.'; }
+  document.title = title;
+  setMeta('description', description);
+  setMeta('og:title', title, true);
+  setMeta('og:description', description, true);
+  let canonical = document.querySelector('link[rel="canonical"]');
+  if (!canonical) { canonical = document.createElement('link'); canonical.rel = 'canonical'; document.head.appendChild(canonical); }
+  canonical.href = SITE_URL + path;
+  updateSchema(path, title, description);
+}
+function updateSchema(path, title, description) {
+  document.querySelectorAll('script[data-schema="loanflow"]').forEach(el => el.remove());
+  const graph = [
+    { '@type': 'WebSite', '@id': `${SITE_URL}/#website`, name: 'LoanFlow', url: SITE_URL, inLanguage: state.lang },
+    { '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'LoanFlow', url: SITE_URL, email: CONTACT_EMAIL },
+    { '@type': 'WebPage', '@id': `${SITE_URL}${path}#webpage`, url: `${SITE_URL}${path}`, name: title, description, isPartOf: { '@id': `${SITE_URL}/#website` }, inLanguage: state.lang }
+  ];
+  if (path === '/' || path.includes('calculator')) {
+    graph.push({ '@type': 'SoftwareApplication', name: 'LoanFlow Loan Calculator', applicationCategory: 'FinanceApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, url: `${SITE_URL}${path}` });
+    graph.push({ '@type': 'FAQPage', mainEntity: [
+      { '@type': 'Question', name: state.lang === 'es' ? '¿Cómo calcula LoanFlow el pago mensual?' : 'How does LoanFlow calculate the monthly payment?', acceptedAnswer: { '@type': 'Answer', text: currentText().formulaText } },
+      { '@type': 'Question', name: state.lang === 'es' ? '¿Los resultados son una cotización de préstamo?' : 'Are the results a lender quote?', acceptedAnswer: { '@type': 'Answer', text: currentText().disclaimer } }
+    ]});
+  }
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.dataset.schema = 'loanflow';
+  script.textContent = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph });
+  document.head.appendChild(script);
 }
 
 function runInternalCalculationAudit() {
