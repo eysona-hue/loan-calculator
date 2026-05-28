@@ -37,7 +37,7 @@ const t = {
     metrics: { amount: 'Loan Amount', saved: 'Interest Saved', interest: 'Total Interest', payoff: 'Final Payment', ratioHome: 'Housing Ratio', ratioCar: 'Debt Ratio', noExtra: 'No Extra Payoff' },
     buttons: { csv: 'Download CSV', pdf: 'Download PDF Report' },
     tabs: { charts: 'Charts', breakdown: 'Breakdown', compare: 'Compare', schedule: 'Schedule' },
-    balance: 'Balance over time', breakdown: 'Monthly payment breakdown', pi: 'Principal and Interest', taxes: 'Taxes', fees: 'Registration / Fees', insurance: 'Insurance', hoa: 'HOA', addons: 'Add Ons', pmi: 'PMI', extraPayment: 'Extra Monthly Payment',
+    balance: 'Balance over time', breakdown: 'Monthly payment breakdown', breakdownTotal: 'Total estimated first monthly payment', breakdownNote: 'The chart total matches the payment card above. Category amounts are rounded for display.', pi: 'Principal and Interest', taxes: 'Taxes', fees: 'Registration / Fees', insurance: 'Insurance', hoa: 'HOA', addons: 'Add Ons', pmi: 'PMI', extraPayment: 'Extra Monthly Payment',
     bigStats: { pi: 'Principal and Interest', ti: 'Taxes and Insurance', fi: 'Fees and Insurance', totalPaid: 'Estimated Total Paid' },
     compareTitle1: 'Affordability check', compareText: 'Housing ratio: {housing}%. Total debt ratio: {debt}%. A common planning guideline is to keep housing near 28% of gross income and total debt near 36%, although lenders may use different limits.',
     compareTitle2: 'Extra payment impact', compareExtra: 'With your extra payment, estimated interest saved is {saved}. Estimated payoff changes from {old} to {now}.',
@@ -66,7 +66,7 @@ const t = {
     metrics: { amount: 'Monto del Préstamo', saved: 'Interés Ahorrado', interest: 'Interés Total', payoff: 'Pago Final', ratioHome: 'Ratio de Vivienda', ratioCar: 'Ratio de Deuda', noExtra: 'Sin Pago Extra' },
     buttons: { csv: 'Descargar CSV', pdf: 'Descargar Reporte PDF' },
     tabs: { charts: 'Gráficas', breakdown: 'Desglose', compare: 'Comparar', schedule: 'Calendario' },
-    balance: 'Balance a través del tiempo', breakdown: 'Desglose del pago mensual', pi: 'Principal e Interés', taxes: 'Impuestos', fees: 'Registro / Cargos', insurance: 'Seguro', hoa: 'HOA', addons: 'Adicionales', pmi: 'PMI', extraPayment: 'Pago Extra Mensual',
+    balance: 'Balance a través del tiempo', breakdown: 'Desglose del pago mensual', breakdownTotal: 'Primer pago mensual estimado total', breakdownNote: 'El total de la gráfica coincide con la tarjeta de pago de arriba. Los montos por categoría se redondean para mostrar.', pi: 'Principal e Interés', taxes: 'Impuestos', fees: 'Registro / Cargos', insurance: 'Seguro', hoa: 'HOA', addons: 'Adicionales', pmi: 'PMI', extraPayment: 'Pago Extra Mensual',
     bigStats: { pi: 'Principal e Interés', ti: 'Impuestos y Seguro', fi: 'Cargos y Seguro', totalPaid: 'Total Estimado Pagado' },
     compareTitle1: 'Revisión de capacidad de pago', compareText: 'Ratio de vivienda: {housing}%. Ratio total de deuda: {debt}%. Una guía común es mantener vivienda cerca del 28% del ingreso bruto y deuda total cerca del 36%, aunque los prestamistas pueden usar límites diferentes.',
     compareTitle2: 'Impacto del pago extra', compareExtra: 'Con tu pago extra, el interés ahorrado estimado es {saved}. El pago final estimado cambia de {old} a {now}.',
@@ -300,23 +300,26 @@ function breakdownItems(L, r) {
 }
 function donutChart(L, r) {
   const items = breakdownItems(L, r);
-  const total = items.reduce((s, x) => s + x.value, 0);
+  const total = r.monthlyTotal;
   if (!items.length || total <= 0) return `<p class="copy">${money(0)}</p>`;
 
-  // The donut uses the same first-month values shown in the payment card.
-  // This makes the visual match the displayed estimated first monthly payment.
-  state.selectedSlice = Math.min(Math.max(Number(state.selectedSlice) || 0, 0), items.length - 1);
-
+  // The donut is based on the exact first-month payment components.
+  // Center total uses r.monthlyTotal, the same value shown in the main payment card.
   let cumulative = -90;
   const segs = items.map((it, idx) => {
     const angle = Math.max((it.value / total) * 360, 0.001);
     const start = cumulative;
     const end = cumulative + angle;
     cumulative = end;
-    return `<path class="donut-seg" data-slice="${idx}" d="${arcPath(150,150,98,58,start,end)}" fill="${palette[idx % palette.length]}"></path>`;
+    return `<path class="donut-seg" d="${arcPath(150,150,98,58,start,end)}" fill="${palette[idx % palette.length]}"></path>`;
   }).join('');
 
-  return `<div class="donut-area"><div><div class="donut"><svg viewBox="0 0 300 300" role="img" aria-label="${L.breakdown}"><circle cx="150" cy="150" r="98" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="40"/>${segs}</svg></div><div class="donut-center"><div><strong>${money(total)}</strong><span>${L.firstPayment}</span></div></div></div><div class="legend">${items.map((it, idx)=>{ const pct = total ? (it.value / total) * 100 : 0; return `<div class="legend-row" data-slice="${idx}"><span class="legend-left"><span class="dot" style="background:${palette[idx % palette.length]}"></span><span>${it.name}<em>${num(pct)}%</em></span></span><strong>${money(it.value)}</strong></div>`; }).join('')}</div></div>`;
+  const legendRows = items.map((it, idx) => {
+    const pct = total ? (it.value / total) * 100 : 0;
+    return `<div class="legend-row"><span class="legend-left"><span class="dot" style="background:${palette[idx % palette.length]}"></span><span>${it.name}<em>${num(pct)}%</em></span></span><strong>${money(it.value)}</strong></div>`;
+  }).join('');
+
+  return `<div class="breakdown-summary"><span>${L.breakdownTotal}</span><strong>${money(total)}</strong></div><div class="donut-area"><div><div class="donut"><svg viewBox="0 0 300 300" role="img" aria-label="${L.breakdown}"><circle cx="150" cy="150" r="98" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="40"/>${segs}</svg></div><div class="donut-center"><div><strong>${money(total)}</strong><span>${L.breakdownTotal}</span></div></div></div><div class="legend">${legendRows}</div></div><p class="chart-note">${L.breakdownNote}</p>`;
 }
 function arcPath(cx, cy, rOuter, rInner, startAngle, endAngle) {
   const startOuter = polar(cx, cy, rOuter, endAngle);
