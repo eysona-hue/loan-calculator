@@ -280,3 +280,162 @@ th { position: sticky; top: 0; z-index: 1; background: #11172b; color: var(--sof
 .breakdown-summary strong{font-size:1.45rem;color:#fff}
 .chart-note{margin:1rem 0 0;color:#a9b6cf;font-size:.9rem;line-height:1.5}
 @media(max-width:760px){.breakdown-summary{align-items:flex-start;flex-direction:column}.breakdown-summary strong{font-size:1.25rem}.chart-note{font-size:.82rem}}
+
+/* Phase 1 upgrade: scenario comparison and affordability decision tool */
+.compare-panel { min-height: 0; }
+.compare-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.confidence-badge {
+  flex: 0 0 auto;
+  color: #071024;
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.scenario-card {
+  background: rgba(4, 8, 20, .46);
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 18px;
+}
+.scenario-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.scenario-title strong { font-size: 17px; }
+.scenario-title span {
+  background: rgba(102,228,242,.14);
+  color: var(--accent2);
+  border: 1px solid rgba(102,228,242,.26);
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+.scenario-card p {
+  min-height: 42px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0 0 14px;
+}
+.scenario-numbers {
+  display: grid;
+  gap: 10px;
+}
+.scenario-numbers div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.scenario-numbers small {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.scenario-numbers b {
+  color: var(--text);
+  font-size: 15px;
+  text-align: right;
+}
+.affordability-card {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 20px;
+  align-items: center;
+  border-radius: 28px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: rgba(4, 8, 20, .46);
+}
+.affordability-card.safe { border-color: rgba(52,211,153,.45); background: rgba(52,211,153,.08); }
+.affordability-card.stretch { border-color: rgba(251,191,36,.48); background: rgba(251,191,36,.07); }
+.affordability-card.risk { border-color: rgba(251,113,133,.5); background: rgba(251,113,133,.08); }
+.affordability-card small {
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-weight: 900;
+}
+.affordability-card h3 {
+  margin: 8px 0;
+  font-size: 28px;
+}
+.affordability-card p { color: var(--soft); line-height: 1.65; margin: 0; }
+.ratio-bars { display: grid; gap: 14px; }
+.ratio-row > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 800;
+  margin-bottom: 7px;
+}
+.ratio-row span { color: var(--soft); }
+.ratio-row strong { color: var(--text); }
+.ratio-track {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.14);
+  overflow: hidden;
+}
+.ratio-track i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #34d399, #fbbf24, #fb7185);
+}
+.ratio-track em {
+  position: absolute;
+  top: -4px;
+  width: 2px;
+  height: 20px;
+  background: #fff;
+  opacity: .75;
+}
+.ratio-row small {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.affordability-note {
+  grid-column: 1 / -1;
+  color: var(--soft);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 18px;
+  padding: 14px 16px;
+}
+@media (max-width: 1100px) {
+  .scenario-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .affordability-card { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .compare-header { flex-direction: column; }
+  .scenario-grid { grid-template-columns: 1fr; }
+  .confidence-badge { width: 100%; text-align: center; }
+  .scenario-card p { min-height: 0; }
+}

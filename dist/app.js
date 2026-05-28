@@ -265,11 +265,82 @@ function metric(i, label, value) { return `<div class="card metric"><span class=
 function tabs(L) { return `<div class="tabs">${['charts','breakdown','compare','schedule'].map(k => `<button class="tab ${state.activeTab === k ? 'active' : ''}" data-tab="${k}">${L.tabs[k]}</button>`).join('')}</div>`; }
 function tabContent(L, r, noExtra, rateUp, housingRatio, totalDebtRatio) {
   if (state.activeTab === 'breakdown') return `<div class="card panel"><div class="stat-grid">${bigStat(L.bigStats.pi, money(r.basePayment))}${bigStat(state.loanType === 'home' ? L.bigStats.ti : L.bigStats.fi, money(r.taxesMonthly + r.insuranceMonthly))}${bigStat(L.bigStats.totalPaid, money(r.totalPaidIncludingDownPayment))}</div></div>`;
-  if (state.activeTab === 'compare') return `<div class="card panel"><div class="stat-grid">${bigStat(L.current, money(r.monthlyTotal))}${bigStat(L.noExtraPay, `${money(noExtra.requiredMonthlyPayment)} ${L.monthly}`)}${bigStat(L.rateUp, money(rateUp.monthlyTotal))}</div><div class="compare-grid"><div class="card metric"><h2>${L.compareTitle1}</h2><p class="copy">${L.compareText.replace('{housing}', num(housingRatio)).replace('{debt}', num(totalDebtRatio))}</p></div><div class="card metric"><h2>${L.compareTitle2}</h2><p class="copy">${L.compareExtra.replace('{saved}', money(r.interestSaved)).replace('{old}', formatMonths(noExtra.payoffMonth)).replace('{now}', formatMonths(r.payoffMonth))}</p></div></div></div>`;
+  if (state.activeTab === 'compare') return comparisonPanel(L, r, noExtra, rateUp, housingRatio, totalDebtRatio);
   if (state.activeTab === 'schedule') return scheduleTable(L, r, true);
   return `<div class="panel-grid"><div class="card panel"><h2>${L.balance}</h2>${lineChart(r)}</div><div class="card panel"><h2>${L.breakdown}</h2>${donutChart(L, r)}</div></div>`;
 }
 function bigStat(label, value) { return `<div class="big-stat"><small>${label}</small><strong>${value}</strong></div>`; }
+
+function comparisonPanel(L, r, noExtra, rateUp, housingRatio, totalDebtRatio) {
+  const shortYears = state.loanType === 'home'
+    ? Math.min(Math.max(15, 1), Math.max(Number(state.inputs.years) || 30, 1))
+    : Math.max(1, Math.min((Number(state.inputs.years) || 5) - 1, Number(state.inputs.years) || 5));
+  const shortScenarioInputs = { ...state.inputs, years: shortYears };
+  const shorter = loanCalc(shortScenarioInputs, state.loanType, Number(state.inputs.extraPayment) || 0, Number(state.inputs.rate) || 0);
+  const scenarios = [
+    { label: state.lang === 'es' ? 'Actual' : 'Current', result: r, note: state.lang === 'es' ? 'Tus datos actuales' : 'Your current inputs' },
+    { label: state.lang === 'es' ? 'Sin pago extra' : 'No extra payment', result: noExtra, note: state.lang === 'es' ? 'Mide el valor real del pago extra' : 'Shows the true value of extra payments' },
+    { label: state.lang === 'es' ? 'Tasa +0.50%' : 'Rate +0.50%', result: rateUp, note: state.lang === 'es' ? 'Prueba sensibilidad a tasas' : 'Tests rate sensitivity' },
+    { label: state.lang === 'es' ? `Plazo ${shortYears} años` : `${shortYears}-year term`, result: shorter, note: state.lang === 'es' ? 'Menos interés, mayor pago' : 'Less interest, higher payment' }
+  ];
+  const bestMonthly = Math.min(...scenarios.map(s => s.result.monthlyTotal));
+  const bestInterest = Math.min(...scenarios.map(s => s.result.totalInterest));
+  const score = affordabilityStatus(housingRatio, totalDebtRatio, state.lang);
+  const monthlyIncome = Math.max(Number(state.inputs.grossIncome) || 0, 0) / 12;
+  const safeHousingPayment = monthlyIncome * 0.28;
+  const safeTotalDebtPayment = Math.max(monthlyIncome * 0.36 - Math.max(Number(state.inputs.monthlyDebt) || 0, 0), 0);
+  const targetPayment = Math.min(safeHousingPayment || Infinity, safeTotalDebtPayment || Infinity);
+  const estimatedRoom = Number.isFinite(targetPayment) ? targetPayment - r.requiredMonthlyPayment : 0;
+  return `<div class="card panel compare-panel">
+    <div class="compare-header">
+      <div><h2>${state.lang === 'es' ? 'Comparador de escenarios' : 'Scenario comparison'}</h2><p class="copy">${state.lang === 'es' ? 'Compara el pago mensual, interés total, pago final y costo total para tomar una mejor decisión.' : 'Compare monthly payment, total interest, payoff timing, and total paid so visitors can make a clearer decision.'}</p></div>
+      <div class="confidence-badge">${state.lang === 'es' ? 'Auditoría interna activa' : 'Internal calculation audit active'}</div>
+    </div>
+    <div class="scenario-grid">
+      ${scenarios.map(s => scenarioCard(s, bestMonthly, bestInterest)).join('')}
+    </div>
+    <div class="affordability-card ${score.className}">
+      <div>
+        <small>${state.lang === 'es' ? 'Lectura de capacidad de pago' : 'Affordability reading'}</small>
+        <h3>${score.title}</h3>
+        <p>${score.message}</p>
+      </div>
+      <div class="ratio-bars">
+        ${ratioBar(state.lang === 'es' ? 'Vivienda' : 'Housing', housingRatio, 28)}
+        ${ratioBar(state.lang === 'es' ? 'Deuda total' : 'Total debt', totalDebtRatio, 36)}
+      </div>
+      <div class="affordability-note">
+        <strong>${state.lang === 'es' ? 'Espacio estimado frente a guía 28/36:' : 'Estimated room vs 28/36 guide:'}</strong> ${money(estimatedRoom)} ${state.lang === 'es' ? 'mensual' : 'per month'}
+      </div>
+    </div>
+  </div>`;
+}
+function scenarioCard(item, bestMonthly, bestInterest) {
+  const r = item.result;
+  const tags = [];
+  if (Math.abs(r.monthlyTotal - bestMonthly) < 0.5) tags.push(state.lang === 'es' ? 'Pago más bajo' : 'Lowest payment');
+  if (Math.abs(r.totalInterest - bestInterest) < 0.5) tags.push(state.lang === 'es' ? 'Menor interés' : 'Lowest interest');
+  return `<article class="scenario-card">
+    <div class="scenario-title"><strong>${item.label}</strong>${tags.map(t => `<span>${t}</span>`).join('')}</div>
+    <p>${item.note}</p>
+    <div class="scenario-numbers">
+      <div><small>${state.lang === 'es' ? 'Pago mensual' : 'Monthly payment'}</small><b>${money(r.monthlyTotal)}</b></div>
+      <div><small>${state.lang === 'es' ? 'Interés total' : 'Total interest'}</small><b>${money(r.totalInterest)}</b></div>
+      <div><small>${state.lang === 'es' ? 'Pago final' : 'Payoff'}</small><b>${formatMonths(r.payoffMonth)}</b></div>
+      <div><small>${state.lang === 'es' ? 'Total pagado' : 'Total paid'}</small><b>${money(r.totalPaidIncludingDownPayment)}</b></div>
+    </div>
+  </article>`;
+}
+function affordabilityStatus(housingRatio, totalDebtRatio, lang) {
+  if (housingRatio <= 28 && totalDebtRatio <= 36) return { className: 'safe', title: lang === 'es' ? 'Zona cómoda' : 'Comfort zone', message: lang === 'es' ? 'Según la guía 28/36, este escenario parece relativamente cómodo. Confirma siempre con un prestamista.' : 'Using the 28/36 guide, this scenario appears relatively comfortable. Always confirm with a lender.' };
+  if (housingRatio <= 33 && totalDebtRatio <= 43) return { className: 'stretch', title: lang === 'es' ? 'Zona de cuidado' : 'Stretch zone', message: lang === 'es' ? 'El pago puede ser posible, pero deja menos margen para ahorro, emergencias y gastos variables.' : 'The payment may be possible, but it leaves less room for savings, emergencies, and variable expenses.' };
+  return { className: 'risk', title: lang === 'es' ? 'Zona riesgosa' : 'Risk zone', message: lang === 'es' ? 'Este escenario luce pesado frente al ingreso indicado. Considera bajar el precio, aumentar inicial o extender plazo.' : 'This scenario looks heavy compared with the income entered. Consider a lower price, larger down payment, or longer term.' };
+}
+function ratioBar(label, value, guide) {
+  const width = Math.min(value, 80) / 80 * 100;
+  return `<div class="ratio-row"><div><span>${label}</span><strong>${num(value)}%</strong></div><div class="ratio-track"><i style="width:${width}%"></i><em style="left:${Math.min(guide/80*100,100)}%"></em></div><small>${state.lang === 'es' ? 'Guía' : 'Guide'}: ${guide}%</small></div>`;
+}
+
 
 function lineChart(r) {
   const data = r.schedule;
@@ -340,7 +411,8 @@ function page(kind) { const L = currentText(); const map = { about: [L.pageAbout
 
 function printReport(L, r, housingRatio, totalDebtRatio) {
   const rows = r.schedule.slice(0, 360).map(row => `<tr><td>${row.month}</td><td>${money2(row.startBalance)}</td><td>${money2(row.totalPayment)}</td><td>${money2(row.principalPaid)}</td><td>${money2(row.interestPaid)}</td><td>${money2(row.pmiPaid)}</td><td>${money2(row.endingBalance)}</td></tr>`).join('');
-  return `<h1>LoanFlow Loan Report</h1><div class="brand-line">Generated at ${SITE_URL}</div><p>${L.disclaimer}</p><div class="report-grid">${bigStat('Loan Type', state.loanType === 'home' ? L.homeLoan : L.carLoan)}${bigStat(L.firstPayment, money(r.monthlyTotal))}${bigStat(L.metrics.amount, money(r.principal))}${bigStat(L.metrics.interest, money(r.totalInterest))}${bigStat(L.metrics.saved, money(r.interestSaved))}${bigStat(L.metrics.payoff, formatMonths(r.payoffMonth))}</div><h2>${L.scheduleTitle}</h2><table><thead><tr><th>Month</th><th>Starting Balance</th><th>Payment</th><th>Principal</th><th>Interest</th><th>PMI</th><th>Ending Balance</th></tr></thead><tbody>${rows}</tbody></table><p class="report-note">Create your own loan report at ${SITE_URL}. Contact: ${CONTACT_EMAIL}</p>`;
+  const score = affordabilityStatus(housingRatio, totalDebtRatio, state.lang);
+  return `<h1>LoanFlow Loan Report</h1><div class="brand-line">Generated at ${SITE_URL}</div><p>${L.disclaimer}</p><div class="report-grid">${bigStat('Loan Type', state.loanType === 'home' ? L.homeLoan : L.carLoan)}${bigStat(L.firstPayment, money(r.monthlyTotal))}${bigStat(L.metrics.amount, money(r.principal))}${bigStat(L.metrics.interest, money(r.totalInterest))}${bigStat(L.metrics.saved, money(r.interestSaved))}${bigStat(L.metrics.payoff, formatMonths(r.payoffMonth))}</div><h2>${state.lang === 'es' ? 'Lectura de capacidad de pago' : 'Affordability reading'}</h2><p><strong>${score.title}.</strong> ${score.message} ${state.lang === 'es' ? 'Ratio de vivienda' : 'Housing ratio'}: ${num(housingRatio)}%. ${state.lang === 'es' ? 'Ratio total de deuda' : 'Total debt ratio'}: ${num(totalDebtRatio)}%.</p><h2>${L.scheduleTitle}</h2><table><thead><tr><th>Month</th><th>Starting Balance</th><th>Payment</th><th>Principal</th><th>Interest</th><th>PMI</th><th>Ending Balance</th></tr></thead><tbody>${rows}</tbody></table><p class="report-note">Create your own loan report at ${SITE_URL}. Contact: ${CONTACT_EMAIL}</p>`;
 }
 function formatMonths(m) { const L = currentText(); const y = Math.floor(m / 12); const mo = m % 12; return state.lang === 'es' ? `${y}a ${mo}m` : `${y}y ${mo}m`; }
 
