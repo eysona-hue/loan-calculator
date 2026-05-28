@@ -403,8 +403,25 @@ function attachEvents() {
   document.getElementById('langBtn')?.addEventListener('click', () => { state.lang = state.lang === 'en' ? 'es' : 'en'; localStorage.setItem('loanflow_lang', state.lang); document.documentElement.lang = state.lang; render(); });
   document.getElementById('resetBtn')?.addEventListener('click', reset);
   document.querySelectorAll('[data-mode]').forEach(btn => btn.addEventListener('click', () => { setMode(btn.dataset.mode); }));
-  document.querySelectorAll('[data-input]').forEach(input => input.addEventListener('input', () => { setInputValue(input.dataset.input, input.value); }));
-  document.querySelectorAll('[data-range]').forEach(input => input.addEventListener('input', () => { setInputValue(input.dataset.range, input.value); }));
+
+  document.querySelectorAll('[data-input]').forEach(input => {
+    input.addEventListener('change', () => { setInputValue(input.dataset.input, input.value, true); });
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') setInputValue(input.dataset.input, input.value, true); });
+  });
+
+  document.querySelectorAll('[data-range]').forEach(input => {
+    const finishSlide = () => { state.isSliding = false; setInputValue(input.dataset.range, input.value, true); };
+    input.addEventListener('pointerdown', () => { state.isSliding = true; });
+    input.addEventListener('touchstart', () => { state.isSliding = true; }, { passive: true });
+    input.addEventListener('input', () => {
+      setInputValue(input.dataset.range, input.value, false);
+      syncVisibleControl(input.dataset.range);
+    });
+    input.addEventListener('change', finishSlide);
+    input.addEventListener('pointerup', finishSlide);
+    input.addEventListener('touchend', finishSlide);
+  });
+
   document.querySelectorAll('[data-tab]').forEach(tab => tab.addEventListener('click', () => { state.activeTab = tab.dataset.tab; render(); }));
   document.querySelectorAll('[data-slice]').forEach(slice => slice.addEventListener('mouseenter', () => { state.selectedSlice = Number(slice.dataset.slice); render(); }));
   document.querySelectorAll('[data-slice]').forEach(slice => slice.addEventListener('click', () => { state.selectedSlice = Number(slice.dataset.slice); render(); }));
@@ -412,7 +429,13 @@ function attachEvents() {
   document.getElementById('pdfBtn')?.addEventListener('click', printPdf);
 }
 
-function setInputValue(key, value) {
+function syncVisibleControl(key) {
+  const value = state.inputs[key];
+  document.querySelectorAll(`[data-input="${key}"]`).forEach(el => { el.value = value; });
+  document.querySelectorAll(`[data-range="${key}"]`).forEach(el => { el.value = value; });
+}
+
+function setInputValue(key, value, shouldRender = true) {
   const numeric = Number(value);
   state.inputs[key] = Number.isFinite(numeric) ? numeric : 0;
   if (key === 'price') {
@@ -425,7 +448,7 @@ function setInputValue(key, value) {
   if (['rate','years','taxes','insurance','hoa','extraPayment','pmiAnnualRate','grossIncome','monthlyDebt'].includes(key)) {
     state.inputs[key] = Math.max(state.inputs[key], 0);
   }
-  render();
+  if (shouldRender) render();
 }
 
 function setMode(mode) {
