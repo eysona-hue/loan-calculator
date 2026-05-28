@@ -410,16 +410,32 @@ function attachEvents() {
   });
 
   document.querySelectorAll('[data-range]').forEach(input => {
-    const finishSlide = () => { state.isSliding = false; setInputValue(input.dataset.range, input.value, true); };
-    input.addEventListener('pointerdown', () => { state.isSliding = true; });
+    let raf = null;
+    const key = input.dataset.range;
+    const setFromSlider = (shouldRender) => {
+      setInputValue(key, input.value, shouldRender);
+      syncVisibleControl(key);
+    };
+    const finishSlide = () => {
+      state.isSliding = false;
+      if (raf) cancelAnimationFrame(raf);
+      setFromSlider(true);
+    };
+    input.addEventListener('pointerdown', e => {
+      state.isSliding = true;
+      try { input.setPointerCapture(e.pointerId); } catch (_) {}
+      input.focus({ preventScroll: true });
+    });
     input.addEventListener('touchstart', () => { state.isSliding = true; }, { passive: true });
     input.addEventListener('input', () => {
-      setInputValue(input.dataset.range, input.value, false);
-      syncVisibleControl(input.dataset.range);
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setFromSlider(false));
     });
     input.addEventListener('change', finishSlide);
     input.addEventListener('pointerup', finishSlide);
-    input.addEventListener('touchend', finishSlide);
+    input.addEventListener('pointercancel', finishSlide);
+    input.addEventListener('lostpointercapture', finishSlide);
+    input.addEventListener('touchend', finishSlide, { passive: true });
   });
 
   document.querySelectorAll('[data-tab]').forEach(tab => tab.addEventListener('click', () => { state.activeTab = tab.dataset.tab; render(); }));
