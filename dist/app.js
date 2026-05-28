@@ -300,18 +300,23 @@ function breakdownItems(L, r) {
 }
 function donutChart(L, r) {
   const items = breakdownItems(L, r);
-  const total = items.reduce((s, x) => s + x.value, 0) || 1;
-  const selected = Math.min(state.selectedSlice, items.length - 1);
+  const total = items.reduce((s, x) => s + x.value, 0);
+  if (!items.length || total <= 0) return `<p class="copy">${money(0)}</p>`;
+
+  // The donut uses the same first-month values shown in the payment card.
+  // This makes the visual match the displayed estimated first monthly payment.
+  state.selectedSlice = Math.min(Math.max(Number(state.selectedSlice) || 0, 0), items.length - 1);
+
   let cumulative = -90;
   const segs = items.map((it, idx) => {
-    const angle = (it.value / total) * 360;
+    const angle = Math.max((it.value / total) * 360, 0.001);
     const start = cumulative;
     const end = cumulative + angle;
     cumulative = end;
-    return `<path class="donut-seg ${selected === idx ? 'active' : ''}" data-slice="${idx}" d="${arcPath(150,150,98,58,start,end)}" fill="${palette[idx % palette.length]}"></path>`;
+    return `<path class="donut-seg" data-slice="${idx}" d="${arcPath(150,150,98,58,start,end)}" fill="${palette[idx % palette.length]}"></path>`;
   }).join('');
-  const sel = items[selected] || items[0] || { name: '', value: 0 };
-  return `<div class="donut-area"><div><div class="donut"><svg viewBox="0 0 300 300" role="img" aria-label="${L.breakdown}"><circle cx="150" cy="150" r="98" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="40"/>${segs}</svg></div><div class="donut-center"><div><strong>${money(sel.value)}</strong><span>${sel.name}</span></div></div></div><div class="legend">${items.map((it, idx)=>`<div class="legend-row ${selected===idx?'active':''}" data-slice="${idx}"><span class="legend-left"><span class="dot" style="background:${palette[idx % palette.length]}"></span>${it.name}</span><strong>${money(it.value)}</strong></div>`).join('')}</div></div>`;
+
+  return `<div class="donut-area"><div><div class="donut"><svg viewBox="0 0 300 300" role="img" aria-label="${L.breakdown}"><circle cx="150" cy="150" r="98" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="40"/>${segs}</svg></div><div class="donut-center"><div><strong>${money(total)}</strong><span>${L.firstPayment}</span></div></div></div><div class="legend">${items.map((it, idx)=>{ const pct = total ? (it.value / total) * 100 : 0; return `<div class="legend-row" data-slice="${idx}"><span class="legend-left"><span class="dot" style="background:${palette[idx % palette.length]}"></span><span>${it.name}<em>${num(pct)}%</em></span></span><strong>${money(it.value)}</strong></div>`; }).join('')}</div></div>`;
 }
 function arcPath(cx, cy, rOuter, rInner, startAngle, endAngle) {
   const startOuter = polar(cx, cy, rOuter, endAngle);
@@ -405,26 +410,47 @@ function attachEvents() {
   document.querySelectorAll('[data-mode]').forEach(btn => btn.addEventListener('click', () => { setMode(btn.dataset.mode); }));
 
   document.querySelectorAll('[data-input]').forEach(input => {
+    let timer = null;
+    input.addEventListener('input', () => {
+      setInputValue(input.dataset.input, input.value, false);
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => render(), 250);
+    });
     input.addEventListener('change', () => { setInputValue(input.dataset.input, input.value, true); });
     input.addEventListener('keydown', e => { if (e.key === 'Enter') setInputValue(input.dataset.input, input.value, true); });
   });
 
   document.querySelectorAll('[data-range]').forEach(input => {
-    const finishSlide = () => { state.isSliding = false; setInputValue(input.dataset.range, input.value, true); };
-    input.addEventListener('pointerdown', () => { state.isSliding = true; });
+    let raf = null;
+    const key = input.dataset.range;
+    const setFromSlider = (shouldRender) => {
+      setInputValue(key, input.value, shouldRender);
+      syncVisibleControl(key);
+    };
+    const finishSlide = () => {
+      state.isSliding = false;
+      if (raf) cancelAnimationFrame(raf);
+      setFromSlider(true);
+    };
+    input.addEventListener('pointerdown', e => {
+      state.isSliding = true;
+      try { input.setPointerCapture(e.pointerId); } catch (_) {}
+      input.focus({ preventScroll: true });
+    });
     input.addEventListener('touchstart', () => { state.isSliding = true; }, { passive: true });
     input.addEventListener('input', () => {
-      setInputValue(input.dataset.range, input.value, false);
-      syncVisibleControl(input.dataset.range);
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => setFromSlider(false));
     });
     input.addEventListener('change', finishSlide);
     input.addEventListener('pointerup', finishSlide);
-    input.addEventListener('touchend', finishSlide);
+    input.addEventListener('pointercancel', finishSlide);
+    input.addEventListener('lostpointercapture', finishSlide);
+    input.addEventListener('touchend', finishSlide, { passive: true });
   });
 
   document.querySelectorAll('[data-tab]').forEach(tab => tab.addEventListener('click', () => { state.activeTab = tab.dataset.tab; render(); }));
-  document.querySelectorAll('[data-slice]').forEach(slice => slice.addEventListener('mouseenter', () => { state.selectedSlice = Number(slice.dataset.slice); render(); }));
-  document.querySelectorAll('[data-slice]').forEach(slice => slice.addEventListener('click', () => { state.selectedSlice = Number(slice.dataset.slice); render(); }));
+  document.querySelectorAll('[data-slice]').forEach(slice => slice.addEventListener('click', () => { state.selectedSlice = Number(slice.dataset.slice); }));
   document.getElementById('csvBtn')?.addEventListener('click', exportCsv);
   document.getElementById('pdfBtn')?.addEventListener('click', printPdf);
 }
@@ -472,4 +498,20 @@ function render() {
   document.documentElement.lang = state.lang;
   attachEvents();
 }
+
+function runInternalCalculationAudit() {
+  const cases = [
+    { loanType: 'home', inputs: { price: 450000, downPayment: 90000, rate: 6.75, years: 30, taxes: 5200, insurance: 1800, hoa: 0, extraPayment: 200, pmiAnnualRate: 0.75, grossIncome: 90000, monthlyDebt: 600 } },
+    { loanType: 'car', inputs: { price: 38000, downPayment: 5000, rate: 7.25, years: 5, taxes: 950, insurance: 1800, hoa: 0, extraPayment: 50, pmiAnnualRate: 0, grossIncome: 65000, monthlyDebt: 400 } },
+    { loanType: 'home', inputs: { price: 300000, downPayment: 0, rate: 0, years: 30, taxes: 0, insurance: 0, hoa: 0, extraPayment: 0, pmiAnnualRate: 0, grossIncome: 0, monthlyDebt: 0 } }
+  ];
+  for (const test of cases) {
+    const r = loanCalc(test.inputs, test.loanType);
+    const last = r.schedule[r.schedule.length - 1];
+    if (r.principal < -0.01 || r.totalInterest < -0.01 || (last && Math.abs(last.endingBalance) > 0.02)) {
+      console.warn('LoanFlow calculation audit warning', test, r);
+    }
+  }
+}
+runInternalCalculationAudit();
 render();
