@@ -1,23 +1,20 @@
-# LoanFlow v16 SEO and trust foundation
+# LoanFlow v18 Mobile Input Fix
 
-Stable bilingual static loan calculator with scenario comparison, affordability guidance, monthly amortization, CSV export, printable report, SEO content pages, sitemap, robots file and structured data.
+Stable bilingual LoanFlow calculator with corrected mobile number input behavior.
 
-## New in v16
+## What changed
 
-1. Mortgage calculator SEO page
-2. Car loan calculator SEO page
-3. Amortization calculator SEO page
-4. Extra payment calculator SEO page
-5. Affordability calculator SEO page
-6. PMI calculator SEO page
-7. Footer guide links
-8. Dynamic titles and meta descriptions
-9. JSON-LD structured data
-10. Sitemap.xml and robots.txt
+- Fixed phone keyboard issue by preventing full page re-render while typing.
+- Number inputs now keep focus on mobile until the user finishes editing.
+- Matching sliders still sync while typing.
+- Full recalculation happens on blur, change, or Enter.
+- Keeps scenario comparison, affordability guidance, SEO pages, monthly CSV export, and professional PDF report.
 
 ## Build
 
+```bash
 npm run build
+```
 
 ## Contact
 

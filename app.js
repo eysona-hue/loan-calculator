@@ -336,7 +336,7 @@ function inputList(L, downPct) {
   return list;
 }
 function field(f) {
-  return `<div class="field"><label>${f.label}${f.help ? `<span class="help">${f.help}</span>` : ''}</label><div class="input-wrap">${f.prefix ? `<span>${f.prefix}</span>` : ''}<input type="number" data-input="${f.key}" value="${state.inputs[f.key]}" step="${f.step}">${f.suffix ? `<span>${f.suffix}</span>` : ''}</div><input type="range" data-range="${f.key}" min="${f.min}" max="${f.max}" step="${f.step}" value="${state.inputs[f.key]}"></div>`;
+  return `<div class="field"><label>${f.label}${f.help ? `<span class="help">${f.help}</span>` : ''}</label><div class="input-wrap">${f.prefix ? `<span>${f.prefix}</span>` : ''}<input type="number" inputmode="decimal" autocomplete="off" data-input="${f.key}" value="${state.inputs[f.key]}" step="${f.step}">${f.suffix ? `<span>${f.suffix}</span>` : ''}</div><input type="range" data-range="${f.key}" min="${f.min}" max="${f.max}" step="${f.step}" value="${state.inputs[f.key]}"></div>`;
 }
 function metric(i, label, value) { return `<div class="card metric"><span class="icon">${icon(i)}</span><small>${label}</small><strong>${value}</strong></div>`; }
 function tabs(L) { return `<div class="tabs">${['charts','breakdown','compare','schedule'].map(k => `<button class="tab ${state.activeTab === k ? 'active' : ''}" data-tab="${k}">${L.tabs[k]}</button>`).join('')}</div>`; }
@@ -529,10 +529,53 @@ function seoPage(path) {
   </main>`;
 }
 
+
+function reportScenarios() {
+  const r = loanCalc(state.inputs, state.loanType);
+  const noExtra = loanCalc(state.inputs, state.loanType, 0);
+  const rateUp = loanCalc(state.inputs, state.loanType, state.inputs.extraPayment, (Number(state.inputs.rate) || 0) + 0.5);
+  const shortYears = state.loanType === 'home'
+    ? Math.min(Math.max(15, 1), Math.max(Number(state.inputs.years) || 30, 1))
+    : Math.max(1, Math.min((Number(state.inputs.years) || 5) - 1, Number(state.inputs.years) || 5));
+  const shorter = loanCalc({ ...state.inputs, years: shortYears }, state.loanType, Number(state.inputs.extraPayment) || 0, Number(state.inputs.rate) || 0);
+  return [
+    { label: state.lang === 'es' ? 'Escenario actual' : 'Current scenario', result: r },
+    { label: state.lang === 'es' ? 'Sin pago extra' : 'No extra payment', result: noExtra },
+    { label: state.lang === 'es' ? 'Tasa +0.50%' : 'Rate +0.50%', result: rateUp },
+    { label: state.lang === 'es' ? `Plazo ${shortYears} años` : `${shortYears} year term`, result: shorter }
+  ];
+}
+
+function reportPaymentRows(L, r) {
+  return breakdownItems(L, r).map(item => {
+    const pct = r.monthlyTotal ? (item.value / r.monthlyTotal) * 100 : 0;
+    return `<tr><td>${item.name}</td><td>${money2(item.value)}</td><td>${num(pct)}%</td></tr>`;
+  }).join('');
+}
+
+function reportScenarioRows() {
+  return reportScenarios().map(item => `<tr><td>${item.label}</td><td>${money2(item.result.monthlyTotal)}</td><td>${money2(item.result.totalInterest)}</td><td>${formatMonths(item.result.payoffMonth)}</td><td>${money2(item.result.totalPaidIncludingDownPayment)}</td></tr>`).join('');
+}
+
+function reportNextSteps(score) {
+  if (state.lang === 'es') {
+    return `<ol><li>Compara este escenario contra una tasa más alta y un plazo más corto.</li><li>Confirma impuestos, seguro, PMI, cargos y reglas de pago extra con el prestamista.</li><li>Guarda este reporte y compártelo con tu familia, asesor o prestamista antes de decidir.</li></ol>`;
+  }
+  return `<ol><li>Compare this scenario against a higher rate and a shorter term.</li><li>Confirm taxes, insurance, PMI, fees, and extra payment rules with the lender.</li><li>Save this report and share it with your family, adviser, or lender before deciding.</li></ol>`;
+}
+
 function printReport(L, r, housingRatio, totalDebtRatio) {
   const rows = r.schedule.slice(0, 360).map(row => `<tr><td>${row.month}</td><td>${money2(row.startBalance)}</td><td>${money2(row.totalPayment)}</td><td>${money2(row.principalPaid)}</td><td>${money2(row.interestPaid)}</td><td>${money2(row.pmiPaid)}</td><td>${money2(row.endingBalance)}</td></tr>`).join('');
   const score = affordabilityStatus(housingRatio, totalDebtRatio, state.lang);
-  return `<h1>LoanFlow Loan Report</h1><div class="brand-line">Generated at ${SITE_URL}</div><p>${L.disclaimer}</p><div class="report-grid">${bigStat('Loan Type', state.loanType === 'home' ? L.homeLoan : L.carLoan)}${bigStat(L.firstPayment, money(r.monthlyTotal))}${bigStat(L.metrics.amount, money(r.principal))}${bigStat(L.metrics.interest, money(r.totalInterest))}${bigStat(L.metrics.saved, money(r.interestSaved))}${bigStat(L.metrics.payoff, formatMonths(r.payoffMonth))}</div><h2>${state.lang === 'es' ? 'Lectura de capacidad de pago' : 'Affordability reading'}</h2><p><strong>${score.title}.</strong> ${score.message} ${state.lang === 'es' ? 'Ratio de vivienda' : 'Housing ratio'}: ${num(housingRatio)}%. ${state.lang === 'es' ? 'Ratio total de deuda' : 'Total debt ratio'}: ${num(totalDebtRatio)}%.</p><h2>${L.scheduleTitle}</h2><table><thead><tr><th>Month</th><th>Starting Balance</th><th>Payment</th><th>Principal</th><th>Interest</th><th>PMI</th><th>Ending Balance</th></tr></thead><tbody>${rows}</tbody></table><p class="report-note">Create your own loan report at ${SITE_URL}. Contact: ${CONTACT_EMAIL}</p>`;
+  const title = state.lang === 'es' ? 'Reporte Profesional de Préstamo' : 'Professional Loan Report';
+  const generated = state.lang === 'es' ? 'Generado por LoanFlow' : 'Generated by LoanFlow';
+  const summaryTitle = state.lang === 'es' ? 'Resumen ejecutivo' : 'Executive summary';
+  const paymentTitle = state.lang === 'es' ? 'Desglose del primer pago mensual' : 'First monthly payment breakdown';
+  const scenarioTitle = state.lang === 'es' ? 'Comparación de escenarios' : 'Scenario comparison';
+  const nextTitle = state.lang === 'es' ? 'Próximos pasos recomendados' : 'Recommended next steps';
+  const scheduleTitle = state.lang === 'es' ? 'Calendario mensual de amortización' : 'Monthly amortization schedule';
+  const promo = state.lang === 'es' ? `Crea tu propio reporte gratis en ${SITE_URL}` : `Create your own free loan report at ${SITE_URL}`;
+  return `<section class="report-cover"><div><small>${generated}</small><h1>${title}</h1><p>${state.lang === 'es' ? 'Un resumen claro para comparar pagos, interés, capacidad de pago y amortización mensual.' : 'A clear summary for comparing payments, interest, affordability, and monthly amortization.'}</p></div><div class="report-cover-box"><strong>${money(r.monthlyTotal)}</strong><span>${L.firstPayment}</span></div></section><p class="report-disclaimer">${L.disclaimer}</p><h2>${summaryTitle}</h2><div class="report-grid">${bigStat(state.lang === 'es' ? 'Tipo' : 'Loan Type', state.loanType === 'home' ? L.homeLoan : L.carLoan)}${bigStat(L.metrics.amount, money(r.principal))}${bigStat(L.metrics.interest, money(r.totalInterest))}${bigStat(L.metrics.saved, money(r.interestSaved))}${bigStat(L.metrics.payoff, formatMonths(r.payoffMonth))}${bigStat(L.bigStats.totalPaid, money(r.totalPaidIncludingDownPayment))}</div><h2>${paymentTitle}</h2><table class="report-mini-table"><thead><tr><th>${state.lang === 'es' ? 'Categoría' : 'Category'}</th><th>${state.lang === 'es' ? 'Monto' : 'Amount'}</th><th>%</th></tr></thead><tbody>${reportPaymentRows(L, r)}</tbody></table><h2>${state.lang === 'es' ? 'Lectura de capacidad de pago' : 'Affordability reading'}</h2><p><strong>${score.title}.</strong> ${score.message} ${state.lang === 'es' ? 'Ratio de vivienda' : 'Housing ratio'}: ${num(housingRatio)}%. ${state.lang === 'es' ? 'Ratio total de deuda' : 'Total debt ratio'}: ${num(totalDebtRatio)}%.</p><h2>${scenarioTitle}</h2><table class="report-mini-table"><thead><tr><th>${state.lang === 'es' ? 'Escenario' : 'Scenario'}</th><th>${state.lang === 'es' ? 'Pago mensual' : 'Monthly payment'}</th><th>${state.lang === 'es' ? 'Interés total' : 'Total interest'}</th><th>${state.lang === 'es' ? 'Pago final' : 'Payoff'}</th><th>${state.lang === 'es' ? 'Total pagado' : 'Total paid'}</th></tr></thead><tbody>${reportScenarioRows()}</tbody></table><h2>${nextTitle}</h2>${reportNextSteps(score)}<h2>${scheduleTitle}</h2><table><thead><tr><th>Month</th><th>Starting Balance</th><th>Payment</th><th>Principal</th><th>Interest</th><th>PMI</th><th>Ending Balance</th></tr></thead><tbody>${rows}</tbody></table><p class="report-note"><strong>${promo}</strong><br>${SITE_URL} | ${CONTACT_EMAIL}</p>`;
 }
 function formatMonths(m) { const L = currentText(); const y = Math.floor(m / 12); const mo = m % 12; return state.lang === 'es' ? `${y}a ${mo}m` : `${y}y ${mo}m`; }
 
@@ -552,32 +595,42 @@ function exportCsv() {
 function downloadBlob(content, filename, type) { const blob = new Blob([content], { type }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
 function reportStyles() {
   return `
-    @page { margin: 16mm; }
+    @page { margin: 14mm; }
     * { box-sizing: border-box; }
     body { margin: 0; background: #ffffff; color: #172033; font-family: Arial, Helvetica, sans-serif; }
     .report-shell { max-width: 980px; margin: 0 auto; padding: 24px; }
     .report-header { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; border-bottom: 3px solid #5de4f2; padding-bottom: 14px; margin-bottom: 18px; }
-    .report-logo { font-size: 28px; font-weight: 900; color: #0b1225; letter-spacing: -0.03em; }
+    .report-logo { font-size: 30px; font-weight: 900; color: #0b1225; letter-spacing: -0.03em; }
     .report-sub { margin-top: 4px; color: #475569; font-size: 13px; line-height: 1.5; }
     .report-url { text-align: right; font-size: 12px; color: #3b5875; line-height: 1.5; }
+    .report-cover { display: grid; grid-template-columns: 1fr 260px; gap: 18px; align-items: center; padding: 22px; border-radius: 18px; background: linear-gradient(135deg,#0b1225,#143349); color: #fff; margin-bottom: 18px; break-inside: avoid; }
+    .report-cover small { color: #7ee7f2; text-transform: uppercase; letter-spacing: .14em; font-weight: 800; }
+    .report-cover h1 { color: #fff; font-size: 32px; margin: 8px 0; }
+    .report-cover p { color: #dbeafe; margin: 0; }
+    .report-cover-box { border: 1px solid rgba(126,231,242,.55); border-radius: 16px; padding: 18px; background: rgba(255,255,255,.08); text-align: center; }
+    .report-cover-box strong { display: block; color: #fff; font-size: 34px; }
+    .report-cover-box span { display: block; color: #cbd5e1; font-size: 12px; text-transform: uppercase; letter-spacing: .1em; }
     h1 { color: #0b1225; font-size: 26px; margin: 0 0 8px; }
-    h2 { color: #0b1225; font-size: 18px; margin: 24px 0 10px; }
-    p { color: #334155; line-height: 1.55; }
+    h2 { color: #0b1225; font-size: 18px; margin: 24px 0 10px; break-after: avoid; }
+    p, li { color: #334155; line-height: 1.55; }
+    .report-disclaimer { background: #fff7ed; border: 1px solid #fed7aa; padding: 10px 12px; border-radius: 12px; font-size: 12px; color: #7c2d12; }
     .report-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; }
     .report-card { border: 1px solid #cbd5e1; border-radius: 12px; padding: 12px; background: #f8fafc; break-inside: avoid; }
     .report-card small { display: block; color: #64748b; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
     .report-card strong { display: block; color: #0f172a; font-size: 20px; margin-top: 5px; }
     table { width: 100%; border-collapse: collapse; font-size: 9px; margin-top: 10px; }
+    .report-mini-table { font-size: 11px; break-inside: avoid; }
     th, td { color: #0f172a; border-bottom: 1px solid #d7dee8; padding: 5px; text-align: right; }
     th:first-child, td:first-child { text-align: left; }
     th { background: #eef4fb; font-weight: 800; }
     tr { break-inside: avoid; }
-    .report-note { margin-top: 18px; color: #475569; font-size: 12px; border-top: 1px solid #d7dee8; padding-top: 12px; }
+    ol { margin-top: 8px; }
+    .report-note { margin-top: 18px; color: #475569; font-size: 12px; border-top: 1px solid #d7dee8; padding-top: 12px; text-align: center; }
     .print-actions { position: sticky; top: 0; display: flex; justify-content: flex-end; gap: 10px; padding: 12px 0; background: #ffffff; border-bottom: 1px solid #e2e8f0; margin-bottom: 18px; }
     .print-actions button { border: 0; border-radius: 999px; padding: 10px 16px; font-weight: 800; cursor: pointer; }
     .print-actions .primary { background: #5de4f2; color: #061021; }
     .print-actions .secondary { background: #e2e8f0; color: #0f172a; }
-    @media print { .print-actions { display: none; } .report-shell { padding: 0; } }
+    @media print { .print-actions { display: none; } .report-shell { padding: 0; } .report-cover { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
   `;
 }
 
@@ -594,7 +647,7 @@ function printPdf() {
     return;
   }
   win.document.open();
-  win.document.write(`<!doctype html><html lang="${state.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>LoanFlow Loan Report</title><style>${reportStyles()}</style></head><body><div class="report-shell"><div class="print-actions"><button class="secondary" onclick="window.close()">Close</button><button class="primary" onclick="window.print()">Save / Print PDF</button></div><div class="report-header"><div><div class="report-logo">LoanFlow</div><div class="report-sub">Professional loan calculation report</div></div><div class="report-url">${SITE_URL}<br>${CONTACT_EMAIL}</div></div>${reportHtml}</div><script>setTimeout(function(){ window.focus(); window.print(); }, 350);<\/script></body></html>`);
+  win.document.write(`<!doctype html><html lang="${state.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>LoanFlow Loan Report</title><style>${reportStyles()}</style></head><body><div class="report-shell"><div class="print-actions"><button class="secondary" onclick="window.close()">Close</button><button class="primary" onclick="window.print()">Save / Print PDF</button></div><div class="report-header"><div><div class="report-logo">LoanFlow</div><div class="report-sub">${state.lang === 'es' ? 'Reporte profesional de cálculo de préstamo' : 'Professional loan calculation report'}</div></div><div class="report-url">${SITE_URL}<br>${CONTACT_EMAIL}</div></div>${reportHtml}</div><script>setTimeout(function(){ window.focus(); window.print(); }, 350);<\/script></body></html>`);
   win.document.close();
 }
 
@@ -605,14 +658,24 @@ function attachEvents() {
   document.querySelectorAll('[data-mode]').forEach(btn => btn.addEventListener('click', () => { setMode(btn.dataset.mode); }));
 
   document.querySelectorAll('[data-input]').forEach(input => {
-    let timer = null;
+    input.addEventListener('focus', () => { state.isTyping = true; });
     input.addEventListener('input', () => {
+      // Important mobile fix: do not re-render while a user is typing.
+      // Re-rendering destroys and recreates the input, which closes the phone keyboard
+      // and makes values appear to disappear. Store the value, sync the matching slider,
+      // and recalculate only when the user finishes editing.
       setInputValue(input.dataset.input, input.value, false);
-      if (timer) clearTimeout(timer);
-      timer = setTimeout(() => render(), 250);
+      syncMatchingRangeOnly(input.dataset.input);
     });
-    input.addEventListener('change', () => { setInputValue(input.dataset.input, input.value, true); });
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') setInputValue(input.dataset.input, input.value, true); });
+    input.addEventListener('change', () => { state.isTyping = false; setInputValue(input.dataset.input, input.value, true); });
+    input.addEventListener('blur', () => { state.isTyping = false; setInputValue(input.dataset.input, input.value, true); });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        state.isTyping = false;
+        input.blur();
+        setInputValue(input.dataset.input, input.value, true);
+      }
+    });
   });
 
   document.querySelectorAll('[data-range]').forEach(input => {
@@ -653,6 +716,10 @@ function attachEvents() {
 function syncVisibleControl(key) {
   const value = state.inputs[key];
   document.querySelectorAll(`[data-input="${key}"]`).forEach(el => { el.value = value; });
+  document.querySelectorAll(`[data-range="${key}"]`).forEach(el => { el.value = value; });
+}
+function syncMatchingRangeOnly(key) {
+  const value = state.inputs[key];
   document.querySelectorAll(`[data-range="${key}"]`).forEach(el => { el.value = value; });
 }
 
