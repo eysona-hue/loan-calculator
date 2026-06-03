@@ -336,7 +336,11 @@ function inputList(L, downPct) {
   return list;
 }
 function field(f) {
-  return `<div class="field"><label>${f.label}${f.help ? `<span class="help">${f.help}</span>` : ''}</label><div class="input-wrap">${f.prefix ? `<span>${f.prefix}</span>` : ''}<input type="number" inputmode="decimal" autocomplete="off" data-input="${f.key}" value="${state.inputs[f.key]}" step="${f.step}">${f.suffix ? `<span>${f.suffix}</span>` : ''}</div><input type="range" data-range="${f.key}" min="${f.min}" max="${f.max}" step="${f.step}" value="${state.inputs[f.key]}"></div>`;
+  const current = Number(state.inputs[f.key]) || 0;
+  const min = Number(f.min) || 0;
+  const max = Number(f.max) || 0;
+  const pct = max > min ? Math.min(Math.max(((current - min) / (max - min)) * 100, 0), 100) : 0;
+  return `<div class="field"><label>${f.label}${f.help ? `<span class="help">${f.help}</span>` : ''}</label><div class="input-wrap">${f.prefix ? `<span>${f.prefix}</span>` : ''}<input type="number" inputmode="decimal" autocomplete="off" data-input="${f.key}" value="${state.inputs[f.key]}" step="${f.step}">${f.suffix ? `<span>${f.suffix}</span>` : ''}</div><div class="custom-slider" data-slider="${f.key}" data-min="${f.min}" data-max="${f.max}" data-step="${f.step}" aria-hidden="false"><div class="custom-slider-track"><div class="custom-slider-fill" data-slider-fill="${f.key}" style="width:${pct}%"></div></div><button type="button" class="custom-slider-thumb" data-range="${f.key}" aria-label="${f.label}" aria-valuemin="${f.min}" aria-valuemax="${f.max}" aria-valuenow="${state.inputs[f.key]}" style="left:${pct}%"></button></div></div>`;
 }
 function metric(i, label, value) { return `<div class="card metric"><span class="icon">${icon(i)}</span><small>${label}</small><strong>${value}</strong></div>`; }
 function tabs(L) { return `<div class="tabs">${['charts','breakdown','compare','schedule'].map(k => `<button class="tab ${state.activeTab === k ? 'active' : ''}" data-tab="${k}">${L.tabs[k]}</button>`).join('')}</div>`; }
@@ -678,33 +682,80 @@ function attachEvents() {
     });
   });
 
-  document.querySelectorAll('[data-range]').forEach(input => {
+  document.querySelectorAll('.custom-slider-track').forEach(track => {
+    // Intentional mobile safety: touching the line/track does nothing.
+    // Only the circular thumb can change the value, preventing accidental changes while scrolling.
+    track.addEventListener('pointerdown', e => e.preventDefault());
+    track.addEventListener('touchstart', e => e.preventDefault(), { passive: false });
+  });
+
+  document.querySelectorAll('.custom-slider-thumb[data-range]').forEach(thumb => {
+    const key = thumb.dataset.range;
+    const slider = thumb.closest('.custom-slider');
+    if (!slider) return;
+    const min = Number(slider.dataset.min) || 0;
+    const max = Number(slider.dataset.max) || 0;
+    const step = Number(slider.dataset.step) || 1;
+    let dragging = false;
     let raf = null;
-    const key = input.dataset.range;
-    const setFromSlider = (shouldRender) => {
-      setInputValue(key, input.value, shouldRender);
+
+    const valueFromPointer = (clientX) => {
+      const rect = slider.getBoundingClientRect();
+      const ratio = rect.width ? Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1) : 0;
+      const raw = min + ratio * (max - min);
+      const snapped = min + Math.round((raw - min) / step) * step;
+      const decimals = String(step).includes('.') ? String(step).split('.')[1].length : 0;
+      return Number(Math.min(Math.max(snapped, min), max).toFixed(decimals));
+    };
+
+    const updateFromClientX = (clientX, shouldRender) => {
+      const value = valueFromPointer(clientX);
+      setInputValue(key, value, shouldRender);
       syncVisibleControl(key);
     };
-    const finishSlide = () => {
+
+    const move = (e) => {
+      if (!dragging) return;
+      e.preventDefault();
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => updateFromClientX(e.clientX, false));
+    };
+
+    const finish = (e) => {
+      if (!dragging) return;
+      dragging = false;
       state.isSliding = false;
       if (raf) cancelAnimationFrame(raf);
-      setFromSlider(true);
+      updateFromClientX(e.clientX ?? 0, true);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', finish);
+      window.removeEventListener('pointercancel', finish);
     };
-    input.addEventListener('pointerdown', e => {
+
+    thumb.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      dragging = true;
       state.isSliding = true;
-      try { input.setPointerCapture(e.pointerId); } catch (_) {}
-      input.focus({ preventScroll: true });
+      thumb.focus({ preventScroll: true });
+      try { thumb.setPointerCapture(e.pointerId); } catch (_) {}
+      updateFromClientX(e.clientX, false);
+      window.addEventListener('pointermove', move, { passive: false });
+      window.addEventListener('pointerup', finish);
+      window.addEventListener('pointercancel', finish);
     });
-    input.addEventListener('touchstart', () => { state.isSliding = true; }, { passive: true });
-    input.addEventListener('input', () => {
-      if (raf) cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => setFromSlider(false));
+
+    thumb.addEventListener('keydown', e => {
+      const current = Number(state.inputs[key]) || 0;
+      let next = current;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') next = current - step;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') next = current + step;
+      if (e.key === 'Home') next = min;
+      if (e.key === 'End') next = max;
+      if (next !== current) {
+        e.preventDefault();
+        setInputValue(key, Math.min(Math.max(next, min), max), true);
+      }
     });
-    input.addEventListener('change', finishSlide);
-    input.addEventListener('pointerup', finishSlide);
-    input.addEventListener('pointercancel', finishSlide);
-    input.addEventListener('lostpointercapture', finishSlide);
-    input.addEventListener('touchend', finishSlide, { passive: true });
   });
 
   document.querySelectorAll('[data-tab]').forEach(tab => tab.addEventListener('click', () => { state.activeTab = tab.dataset.tab; render(); }));
@@ -713,14 +764,30 @@ function attachEvents() {
   document.getElementById('pdfBtn')?.addEventListener('click', printPdf);
 }
 
+function sliderPercent(key) {
+  const slider = document.querySelector(`[data-slider="${key}"]`);
+  if (!slider) return 0;
+  const min = Number(slider.dataset.min) || 0;
+  const max = Number(slider.dataset.max) || 0;
+  const value = Number(state.inputs[key]) || 0;
+  return max > min ? Math.min(Math.max(((value - min) / (max - min)) * 100, 0), 100) : 0;
+}
+function syncSliderOnly(key) {
+  const value = state.inputs[key];
+  const pct = sliderPercent(key);
+  document.querySelectorAll(`[data-range="${key}"]`).forEach(el => {
+    el.setAttribute('aria-valuenow', value);
+    el.style.left = `${pct}%`;
+  });
+  document.querySelectorAll(`[data-slider-fill="${key}"]`).forEach(el => { el.style.width = `${pct}%`; });
+}
 function syncVisibleControl(key) {
   const value = state.inputs[key];
   document.querySelectorAll(`[data-input="${key}"]`).forEach(el => { el.value = value; });
-  document.querySelectorAll(`[data-range="${key}"]`).forEach(el => { el.value = value; });
+  syncSliderOnly(key);
 }
 function syncMatchingRangeOnly(key) {
-  const value = state.inputs[key];
-  document.querySelectorAll(`[data-range="${key}"]`).forEach(el => { el.value = value; });
+  syncSliderOnly(key);
 }
 
 function setInputValue(key, value, shouldRender = true) {

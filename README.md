@@ -19,3 +19,7 @@ npm run build
 ## Contact
 
 loancal@altmail.kr
+
+
+## v19 update
+Mobile sliders are now thumb-only. Touching the track while scrolling will not change values; dragging the circular handle still works with finger, mouse, and trackpad.

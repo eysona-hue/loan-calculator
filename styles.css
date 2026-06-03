@@ -128,6 +128,50 @@ input[type=range]::-moz-range-thumb {
   box-shadow: 0 8px 24px rgba(0,0,0,.35), 0 0 0 4px rgba(102,228,242,.18);
 }
 input[type=range]:focus-visible { outline: 3px solid rgba(102,228,242,.55); outline-offset: 4px; border-radius: 999px; }
+
+.custom-slider {
+  position: relative;
+  width: 100%;
+  height: 58px;
+  margin-top: 12px;
+  touch-action: pan-y;
+  user-select: none;
+}
+.custom-slider-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 14px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: rgba(255,255,255,.22);
+  border: 1px solid rgba(255,255,255,.22);
+  pointer-events: auto;
+}
+.custom-slider-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(102,228,242,.95), rgba(167,139,250,.8));
+  pointer-events: none;
+}
+.custom-slider-thumb {
+  position: absolute;
+  top: 50%;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 4px solid #071024;
+  background: #66e4f2;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35), 0 0 0 4px rgba(102,228,242,.18);
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  touch-action: none;
+  z-index: 2;
+}
+.custom-slider-thumb:active { cursor: grabbing; transform: translate(-50%, -50%) scale(1.05); }
+.custom-slider-thumb:focus-visible { outline: 3px solid rgba(102,228,242,.65); outline-offset: 4px; }
+
 .results { display: grid; gap: 18px; }
 .payment { background: linear-gradient(160deg, rgba(102,228,242,.15), rgba(255,255,255,.075)); border-color: rgba(102,228,242,.35); padding: 28px; }
 .payment small { display: block; color: var(--accent2); letter-spacing: .16em; text-transform: uppercase; font-weight: 800; margin-bottom: 8px; }
@@ -234,6 +278,10 @@ th { position: sticky; top: 0; z-index: 1; background: #11172b; color: var(--sof
   input[type=range]::-webkit-slider-thumb { width: 48px; height: 48px; margin-top: -16px; }
   input[type=range]::-moz-range-track { height: 18px; }
   input[type=range]::-moz-range-thumb { width: 48px; height: 48px; }
+  .custom-slider { height: 64px; margin-top: 10px; }
+  .custom-slider-track { height: 12px; }
+  .custom-slider-thumb { width: 50px; height: 50px; }
+
   .results { margin-top: 8px; }
   .side-ad { display: none; }
   .payment { padding: 22px; }
