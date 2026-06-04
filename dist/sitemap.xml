@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://checkmypayments.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://checkmypayments.com/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://checkmypayments.com/privacy</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://checkmypayments.com/terms</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://checkmypayments.com/contact</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://checkmypayments.com/mortgage-calculator</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkmypayments.com/car-loan-calculator</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://checkmypayments.com/amortization-calculator</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://checkmypayments.com/extra-payment-calculator</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://checkmypayments.com/affordability-calculator</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
-  <url><loc>https://checkmypayments.com/pmi-calculator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.checkmypayments.com/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.checkmypayments.com/about</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.checkmypayments.com/privacy</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://www.checkmypayments.com/terms</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://www.checkmypayments.com/contact</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://www.checkmypayments.com/mortgage-calculator</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.checkmypayments.com/car-loan-calculator</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.checkmypayments.com/amortization-calculator</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://www.checkmypayments.com/extra-payment-calculator</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://www.checkmypayments.com/affordability-calculator</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://www.checkmypayments.com/pmi-calculator</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
 </urlset>

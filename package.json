@@ -1,6 +1,6 @@
 {
   "name": "check-my-payments",
-  "version": "19.0.0",
+  "version": "21.0.0",
   "private": true,
   "description": "Stable bilingual Check My Payments loan calculator with SEO pages, scenario comparison, affordability guidance, monthly amortization, CSV export and professional PDF reports.",
   "engines": {
