@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://loan-calculator-neon-two.vercel.app/sitemap.xml
+Sitemap: https://checkmypayments.com/sitemap.xml

@@ -9,4 +9,4 @@ http.createServer((req, res) => {
   const target = fs.existsSync(file) ? file : path.join(base, 'index.html');
   res.writeHead(200, { 'Content-Type': mime[path.extname(target)] || 'text/plain' });
   fs.createReadStream(target).pipe(res);
-}).listen(4173, () => console.log('LoanFlow preview running at http://localhost:4173'));
+}).listen(4173, () => console.log('Check My Payments preview running at http://localhost:4173'));

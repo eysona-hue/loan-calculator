@@ -1,6 +1,6 @@
-# LoanFlow v18 Mobile Input Fix
+# Check My Payments
 
-Stable bilingual LoanFlow calculator with corrected mobile number input behavior.
+Stable bilingual loan calculator for Check My Payments.
 
 ## What changed
 
