@@ -1,5 +1,6 @@
 const CONTACT_EMAIL = 'loancal@altmail.kr';
 const SITE_URL = 'https://www.checkmypayments.com';
+const APP_VERSION = '22.0.0';
 
 const palette = ['#66e4f2', '#a78bfa', '#fbbf24', '#34d399', '#fb7185', '#60a5fa'];
 const state = {
@@ -500,9 +501,13 @@ function page(kind) {
   return `<main class="card page"><h1>${title}</h1><p>${body}</p>${extra}<p class="fine-print">${L.disclaimer}</p></main>`;
 }
 function aboutExtra() {
-  return state.lang === 'es'
+  const versionNote = state.lang === 'es'
+    ? `<div class="version-note"><strong>Versión del sitio</strong><span>v${APP_VERSION}</span></div>`
+    : `<div class="version-note"><strong>Site version</strong><span>v${APP_VERSION}</span></div>`;
+  const body = state.lang === 'es'
     ? `<h2>Qué hace esta herramienta</h2><ul><li>Calcula pagos de préstamos de vivienda y auto.</li><li>Muestra amortización mensual completa.</li><li>Compara escenarios y capacidad de pago.</li><li>Genera CSV y reportes PDF para compartir.</li><li>No ofrece préstamos ni aprobación de crédito.</li></ul>`
     : `<h2>What this tool does</h2><ul><li>Calculates home and auto loan payments.</li><li>Shows a complete monthly amortization schedule.</li><li>Compares scenarios and affordability.</li><li>Generates CSV and PDF reports to share.</li><li>Does not offer loans or credit approvals.</li></ul>`;
+  return body + versionNote;
 }
 function privacyExtra() {
   return state.lang === 'es'
