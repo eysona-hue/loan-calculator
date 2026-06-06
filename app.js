@@ -1,6 +1,6 @@
 const CONTACT_EMAIL = 'loancal@altmail.kr';
 const SITE_URL = 'https://www.checkmypayments.com';
-const APP_VERSION = '22.0.0';
+const APP_VERSION = '23.0.0';
 
 const palette = ['#66e4f2', '#a78bfa', '#fbbf24', '#34d399', '#fb7185', '#60a5fa'];
 const state = {
@@ -308,6 +308,7 @@ function calcPage() {
           ${metric('shield', state.loanType === 'home' ? L.metrics.ratioHome : L.metrics.ratioCar, `${num(state.loanType === 'home' ? housingRatio : totalDebtRatio)}%`)}
           ${metric('clock', L.metrics.noExtra, noExtraPayoff)}
         </div>
+        ${smartSummaryCard(L, r, noExtra, housingRatio, totalDebtRatio, downPct)}
         <div class="actions"><button class="primary-btn" id="pdfBtn">${L.buttons.pdf}</button><button class="secondary-btn" id="csvBtn">${L.buttons.csv}</button></div>
       </aside>
     </main>
@@ -418,6 +419,90 @@ function affordabilityStatus(housingRatio, totalDebtRatio, lang) {
   if (housingRatio <= 33 && totalDebtRatio <= 43) return { className: 'stretch', title: lang === 'es' ? 'Zona de cuidado' : 'Stretch zone', message: lang === 'es' ? 'El pago puede ser posible, pero deja menos margen para ahorro, emergencias y gastos variables.' : 'The payment may be possible, but it leaves less room for savings, emergencies, and variable expenses.' };
   return { className: 'risk', title: lang === 'es' ? 'Zona riesgosa' : 'Risk zone', message: lang === 'es' ? 'Este escenario luce pesado frente al ingreso indicado. Considera bajar el precio, aumentar inicial o extender plazo.' : 'This scenario looks heavy compared with the income entered. Consider a lower price, larger down payment, or longer term.' };
 }
+
+function comfortScore(r, housingRatio, totalDebtRatio, downPct) {
+  let score = 100;
+  if (housingRatio > 28) score -= (housingRatio - 28) * 1.15;
+  if (totalDebtRatio > 36) score -= (totalDebtRatio - 36) * 1.05;
+  if (state.loanType === 'home' && downPct < 20) score -= (20 - downPct) * 0.45;
+  if (r.principal > 0) {
+    const interestLoad = (r.totalInterest / r.principal) * 100;
+    if (interestLoad > 100) score -= Math.min((interestLoad - 100) * 0.08, 12);
+  }
+  score = Math.round(Math.max(0, Math.min(100, score)));
+  const es = state.lang === 'es';
+  if (score >= 80) return { score, className: 'strong', title: es ? 'Fuerte' : 'Strong', message: es ? 'El escenario luce cómodo según las guías usadas.' : 'This scenario looks comfortable using the planning guides.' };
+  if (score >= 65) return { score, className: 'steady', title: es ? 'Manejable' : 'Manageable', message: es ? 'El escenario parece posible, pero conviene confirmar costos reales.' : 'This scenario appears manageable, but real costs should be verified.' };
+  if (score >= 50) return { score, className: 'watch', title: es ? 'Con cuidado' : 'Watch closely', message: es ? 'El pago puede sentirse pesado si cambian los gastos o ingresos.' : 'The payment may feel tight if expenses or income change.' };
+  return { score, className: 'caution', title: es ? 'Alto riesgo' : 'High caution', message: es ? 'Este escenario necesita revisión cuidadosa antes de decidir.' : 'This scenario needs careful review before deciding.' };
+}
+
+function smartSummaryText(L, r, noExtra, housingRatio, totalDebtRatio, downPct) {
+  const score = comfortScore(r, housingRatio, totalDebtRatio, downPct);
+  const extra = Math.max(Number(state.inputs.extraPayment) || 0, 0);
+  const monthsSaved = Math.max(noExtra.payoffMonth - r.payoffMonth, 0);
+  if (state.lang === 'es') {
+    const extraPart = extra > 0
+      ? `Con el pago extra de ${money(extra)}, podrías ahorrar cerca de ${money(r.interestSaved)} en interés y terminar aproximadamente ${formatMonths(monthsSaved)} antes.`
+      : 'No se incluye pago extra en este escenario.';
+    return `Tu primer pago mensual estimado es ${money(r.monthlyTotal)}. El pago requerido es ${money(r.requiredMonthlyPayment)}. ${extraPart} La lectura de capacidad de pago es ${score.title.toLowerCase()} con un ratio de vivienda de ${num(housingRatio)}% y un ratio total de deuda de ${num(totalDebtRatio)}%.`;
+  }
+  const extraPart = extra > 0
+    ? `With the extra payment of ${money(extra)}, you could save about ${money(r.interestSaved)} in interest and finish about ${formatMonths(monthsSaved)} sooner.`
+    : 'No extra payment is included in this scenario.';
+  return `Your estimated first monthly payment is ${money(r.monthlyTotal)}. The required payment is ${money(r.requiredMonthlyPayment)}. ${extraPart} The affordability reading is ${score.title.toLowerCase()} with a housing ratio of ${num(housingRatio)}% and a total debt ratio of ${num(totalDebtRatio)}%.`;
+}
+
+function smartSummaryCard(L, r, noExtra, housingRatio, totalDebtRatio, downPct) {
+  const score = comfortScore(r, housingRatio, totalDebtRatio, downPct);
+  const text = smartSummaryText(L, r, noExtra, housingRatio, totalDebtRatio, downPct);
+  const title = state.lang === 'es' ? 'Resumen inteligente' : 'Smart summary';
+  const scoreLabel = state.lang === 'es' ? 'Puntaje de comodidad' : 'Comfort score';
+  const share = state.lang === 'es' ? 'Copiar enlace del cálculo' : 'Copy calculation link';
+  const note = state.lang === 'es' ? 'Guía educativa. No es aprobación ni cotización de préstamo.' : 'Educational guide only. Not a loan approval or lender quote.';
+  return `<div class="card smart-summary ${score.className}">
+    <div class="summary-main">
+      <div><small>${title}</small><p>${text}</p><em>${note}</em></div>
+      <div class="score-orb" style="--score:${score.score}"><strong>${score.score}</strong><span>${scoreLabel}</span></div>
+    </div>
+    <button class="secondary-btn share-btn" id="shareBtn" type="button">${share}</button>
+  </div>`;
+}
+
+function buildShareUrl() {
+  const params = new URLSearchParams();
+  params.set('type', state.loanType);
+  params.set('lang', state.lang);
+  ['price','downPayment','rate','years','taxes','insurance','hoa','extraPayment','pmiAnnualRate','grossIncome','monthlyDebt'].forEach(key => params.set(key, String(state.inputs[key])));
+  return `${SITE_URL}/?${params.toString()}`;
+}
+
+async function copyShareLink() {
+  const url = buildShareUrl();
+  try {
+    await navigator.clipboard.writeText(url);
+    alert(state.lang === 'es' ? 'Enlace del cálculo copiado.' : 'Calculation link copied.');
+  } catch (_) {
+    window.prompt(state.lang === 'es' ? 'Copia este enlace:' : 'Copy this link:', url);
+  }
+}
+
+function applyUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  if (![...params.keys()].length) return;
+  const type = params.get('type');
+  if (type === 'home' || type === 'car') state.loanType = type;
+  const lang = params.get('lang');
+  if (lang === 'en' || lang === 'es') { state.lang = lang; localStorage.setItem('check_my_payments_lang', lang); }
+  ['price','downPayment','rate','years','taxes','insurance','hoa','extraPayment','pmiAnnualRate','grossIncome','monthlyDebt'].forEach(key => {
+    if (params.has(key)) {
+      const value = Number(params.get(key));
+      if (Number.isFinite(value)) state.inputs[key] = Math.max(value, 0);
+    }
+  });
+  if (state.inputs.downPayment > state.inputs.price) state.inputs.downPayment = state.inputs.price;
+}
+
 function ratioBar(label, value, guide) {
   const width = Math.min(value, 80) / 80 * 100;
   return `<div class="ratio-row"><div><span>${label}</span><strong>${num(value)}%</strong></div><div class="ratio-track"><i style="width:${width}%"></i><em style="left:${Math.min(guide/80*100,100)}%"></em></div><small>${state.lang === 'es' ? 'Guía' : 'Guide'}: ${guide}%</small></div>`;
@@ -584,7 +669,7 @@ function printReport(L, r, housingRatio, totalDebtRatio) {
   const nextTitle = state.lang === 'es' ? 'Próximos pasos recomendados' : 'Recommended next steps';
   const scheduleTitle = state.lang === 'es' ? 'Calendario mensual de amortización' : 'Monthly amortization schedule';
   const promo = state.lang === 'es' ? `Crea tu propio reporte gratis en https://www.checkmypayments.com` : `Create your own free loan report at https://www.checkmypayments.com`;
-  return `<section class="report-cover"><div><small>${generated}</small><h1>${title}</h1><p>${state.lang === 'es' ? 'Un resumen claro para comparar pagos, interés, capacidad de pago y amortización mensual.' : 'A clear summary for comparing payments, interest, affordability, and monthly amortization.'}</p></div><div class="report-cover-box"><strong>${money(r.monthlyTotal)}</strong><span>${L.firstPayment}</span></div></section><p class="report-disclaimer">${L.disclaimer}</p><h2>${summaryTitle}</h2><div class="report-grid">${bigStat(state.lang === 'es' ? 'Tipo' : 'Loan Type', state.loanType === 'home' ? L.homeLoan : L.carLoan)}${bigStat(L.metrics.amount, money(r.principal))}${bigStat(L.metrics.interest, money(r.totalInterest))}${bigStat(L.metrics.saved, money(r.interestSaved))}${bigStat(L.metrics.payoff, formatMonths(r.payoffMonth))}${bigStat(L.bigStats.totalPaid, money(r.totalPaidIncludingDownPayment))}</div><h2>${paymentTitle}</h2><table class="report-mini-table"><thead><tr><th>${state.lang === 'es' ? 'Categoría' : 'Category'}</th><th>${state.lang === 'es' ? 'Monto' : 'Amount'}</th><th>%</th></tr></thead><tbody>${reportPaymentRows(L, r)}</tbody></table><h2>${state.lang === 'es' ? 'Lectura de capacidad de pago' : 'Affordability reading'}</h2><p><strong>${score.title}.</strong> ${score.message} ${state.lang === 'es' ? 'Ratio de vivienda' : 'Housing ratio'}: ${num(housingRatio)}%. ${state.lang === 'es' ? 'Ratio total de deuda' : 'Total debt ratio'}: ${num(totalDebtRatio)}%.</p><h2>${scenarioTitle}</h2><table class="report-mini-table"><thead><tr><th>${state.lang === 'es' ? 'Escenario' : 'Scenario'}</th><th>${state.lang === 'es' ? 'Pago mensual' : 'Monthly payment'}</th><th>${state.lang === 'es' ? 'Interés total' : 'Total interest'}</th><th>${state.lang === 'es' ? 'Pago final' : 'Payoff'}</th><th>${state.lang === 'es' ? 'Total pagado' : 'Total paid'}</th></tr></thead><tbody>${reportScenarioRows()}</tbody></table><h2>${nextTitle}</h2>${reportNextSteps(score)}<h2>${scheduleTitle}</h2><table><thead><tr><th>Month</th><th>Starting Balance</th><th>Payment</th><th>Principal</th><th>Interest</th><th>PMI</th><th>Ending Balance</th></tr></thead><tbody>${rows}</tbody></table><p class="report-note"><strong>${promo}</strong><br>${SITE_URL} | ${CONTACT_EMAIL}</p>`;
+  return `<section class="report-cover"><div><small>${generated}</small><h1>${title}</h1><p>${state.lang === 'es' ? 'Un resumen claro para comparar pagos, interés, capacidad de pago y amortización mensual.' : 'A clear summary for comparing payments, interest, affordability, and monthly amortization.'}</p></div><div class="report-cover-box"><strong>${money(r.monthlyTotal)}</strong><span>${L.firstPayment}</span></div></section><p class="report-disclaimer">${L.disclaimer}</p><h2>${state.lang === 'es' ? 'Resumen inteligente' : 'Smart summary'}</h2><p class="report-smart">${smartSummaryText(L, r, loanCalc(state.inputs, state.loanType, 0), housingRatio, totalDebtRatio, r.price ? (r.down / r.price) * 100 : 0)}</p><h2>${summaryTitle}</h2><div class="report-grid">${bigStat(state.lang === 'es' ? 'Tipo' : 'Loan Type', state.loanType === 'home' ? L.homeLoan : L.carLoan)}${bigStat(L.metrics.amount, money(r.principal))}${bigStat(L.metrics.interest, money(r.totalInterest))}${bigStat(L.metrics.saved, money(r.interestSaved))}${bigStat(L.metrics.payoff, formatMonths(r.payoffMonth))}${bigStat(L.bigStats.totalPaid, money(r.totalPaidIncludingDownPayment))}</div><h2>${paymentTitle}</h2><table class="report-mini-table"><thead><tr><th>${state.lang === 'es' ? 'Categoría' : 'Category'}</th><th>${state.lang === 'es' ? 'Monto' : 'Amount'}</th><th>%</th></tr></thead><tbody>${reportPaymentRows(L, r)}</tbody></table><h2>${state.lang === 'es' ? 'Lectura de capacidad de pago' : 'Affordability reading'}</h2><p><strong>${score.title}.</strong> ${score.message} ${state.lang === 'es' ? 'Ratio de vivienda' : 'Housing ratio'}: ${num(housingRatio)}%. ${state.lang === 'es' ? 'Ratio total de deuda' : 'Total debt ratio'}: ${num(totalDebtRatio)}%.</p><h2>${scenarioTitle}</h2><table class="report-mini-table"><thead><tr><th>${state.lang === 'es' ? 'Escenario' : 'Scenario'}</th><th>${state.lang === 'es' ? 'Pago mensual' : 'Monthly payment'}</th><th>${state.lang === 'es' ? 'Interés total' : 'Total interest'}</th><th>${state.lang === 'es' ? 'Pago final' : 'Payoff'}</th><th>${state.lang === 'es' ? 'Total pagado' : 'Total paid'}</th></tr></thead><tbody>${reportScenarioRows()}</tbody></table><h2>${nextTitle}</h2>${reportNextSteps(score)}<h2>${scheduleTitle}</h2><table><thead><tr><th>Month</th><th>Starting Balance</th><th>Payment</th><th>Principal</th><th>Interest</th><th>PMI</th><th>Ending Balance</th></tr></thead><tbody>${rows}</tbody></table><p class="report-note"><strong>${promo}</strong><br>${SITE_URL} | ${CONTACT_EMAIL}</p>`;
 }
 function formatMonths(m) { const L = currentText(); const y = Math.floor(m / 12); const mo = m % 12; return state.lang === 'es' ? `${y}a ${mo}m` : `${y}y ${mo}m`; }
 
@@ -593,9 +678,9 @@ function exportCsv() {
   const r = loanCalc(state.inputs, state.loanType);
   const header = state.lang === 'es' ? ['Mes','Año','Balance Inicial','Pago Total','Principal Pagado','Interés Pagado','PMI Pagado','Balance Final'] : ['Month','Year','Starting Balance','Total Payment','Principal Paid','Interest Paid','PMI Paid','Ending Balance'];
   const summary = state.lang === 'es' ? [
-    ['Reporte Check My Payments'], ['Tipo de préstamo', state.loanType === 'home' ? L.homeLoan : L.carLoan], ['Precio', csvNum(r.price)], ['Inicial', csvNum(r.down)], ['Monto del préstamo', csvNum(r.principal)], ['Tasa', csvNum(r.rate)], ['Plazo en años', csvNum(r.years)], ['Primer pago mensual estimado', csvNum(r.monthlyTotal)], ['Interés total', csvNum(r.totalInterest)], [''], header
+    ['Reporte Check My Payments'], ['Sitio web', SITE_URL], ['Tipo de préstamo', state.loanType === 'home' ? L.homeLoan : L.carLoan], ['Precio', csvNum(r.price)], ['Inicial', csvNum(r.down)], ['Monto del préstamo', csvNum(r.principal)], ['Tasa', csvNum(r.rate)], ['Plazo en años', csvNum(r.years)], ['Primer pago mensual estimado', csvNum(r.monthlyTotal)], ['Interés total', csvNum(r.totalInterest)], [''], header
   ] : [
-    ['Check My Payments Report'], ['Loan type', state.loanType === 'home' ? L.homeLoan : L.carLoan], ['Price', csvNum(r.price)], ['Down payment', csvNum(r.down)], ['Loan amount', csvNum(r.principal)], ['Rate', csvNum(r.rate)], ['Term in years', csvNum(r.years)], ['Estimated first monthly payment', csvNum(r.monthlyTotal)], ['Total interest', csvNum(r.totalInterest)], [''], header
+    ['Check My Payments Report'], ['Website', SITE_URL], ['Loan type', state.loanType === 'home' ? L.homeLoan : L.carLoan], ['Price', csvNum(r.price)], ['Down payment', csvNum(r.down)], ['Loan amount', csvNum(r.principal)], ['Rate', csvNum(r.rate)], ['Term in years', csvNum(r.years)], ['Estimated first monthly payment', csvNum(r.monthlyTotal)], ['Total interest', csvNum(r.totalInterest)], [''], header
   ];
   const rows = r.schedule.map(row => [row.month, row.year, csvNum(row.startBalance), csvNum(row.totalPayment), csvNum(row.principalPaid), csvNum(row.interestPaid), csvNum(row.pmiPaid), csvNum(row.endingBalance)]);
   const csv = '\ufeffsep=,\r\n' + [...summary, ...rows].map(row => row.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(',')).join('\r\n');
@@ -767,6 +852,7 @@ function attachEvents() {
   document.querySelectorAll('[data-slice]').forEach(slice => slice.addEventListener('click', () => { state.selectedSlice = Number(slice.dataset.slice); }));
   document.getElementById('csvBtn')?.addEventListener('click', exportCsv);
   document.getElementById('pdfBtn')?.addEventListener('click', printPdf);
+  document.getElementById('shareBtn')?.addEventListener('click', copyShareLink);
 }
 
 function sliderPercent(key) {
@@ -895,10 +981,13 @@ function runInternalCalculationAudit() {
   for (const test of cases) {
     const r = loanCalc(test.inputs, test.loanType);
     const last = r.schedule[r.schedule.length - 1];
-    if (r.principal < -0.01 || r.totalInterest < -0.01 || (last && Math.abs(last.endingBalance) > 0.02)) {
+    const principalPaid = r.schedule.reduce((sum, row) => sum + row.principalPaid, 0);
+    const componentDiff = Math.abs(r.monthlyTotal - (r.basePayment + r.taxesMonthly + r.insuranceMonthly + r.hoaMonthly + (r.schedule[0]?.pmiPaid || 0) + (Number(test.inputs.extraPayment) || 0)));
+    if (r.principal < -0.01 || r.totalInterest < -0.01 || (last && Math.abs(last.endingBalance) > 0.02) || Math.abs(principalPaid - r.principal) > 0.05 || componentDiff > 0.05) {
       console.warn('Check My Payments calculation audit warning', test, r);
     }
   }
 }
+applyUrlParams();
 runInternalCalculationAudit();
 render();

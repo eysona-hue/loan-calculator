@@ -598,3 +598,65 @@ th { position: sticky; top: 0; z-index: 1; background: #11172b; color: var(--sof
   .donut-center strong { font-size: 20px; }
   .donut-center span { font-size: 11px; max-width: 110px; }
 }
+
+
+/* v23 smart summary, comfort score and readability polish */
+.smart-summary {
+  padding: 20px;
+  border-color: rgba(102,228,242,.34);
+  background: linear-gradient(160deg, rgba(8,16,35,.92), rgba(20,44,62,.76));
+}
+.smart-summary.strong { border-color: rgba(52,211,153,.52); }
+.smart-summary.steady { border-color: rgba(102,228,242,.46); }
+.smart-summary.watch { border-color: rgba(251,191,36,.56); }
+.smart-summary.caution { border-color: rgba(251,113,133,.62); }
+.summary-main {
+  display: grid;
+  grid-template-columns: 1fr 112px;
+  gap: 18px;
+  align-items: center;
+}
+.smart-summary small {
+  display: block;
+  color: #9ff6ff;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-size: 12px;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+.smart-summary p {
+  color: #eef6ff;
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 650;
+}
+.smart-summary em {
+  display: block;
+  color: #b9c7dc;
+  font-style: normal;
+  font-size: 12px;
+  margin-top: 9px;
+}
+.score-orb {
+  width: 104px;
+  height: 104px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: conic-gradient(#66e4f2 calc(var(--score) * 1%), rgba(255,255,255,.12) 0);
+  box-shadow: inset 0 0 0 10px rgba(7,16,36,.96), 0 12px 28px rgba(0,0,0,.28);
+  color: #fff;
+}
+.score-orb strong { display: block; font-size: 28px; line-height: .95; }
+.score-orb span { display: block; margin-top: 4px; max-width: 74px; color: #dceafe; font-size: 10px; line-height: 1.15; text-transform: uppercase; letter-spacing: .06em; }
+.share-btn { width: 100%; margin-top: 14px; background: rgba(255,255,255,.1); color: #f8fbff; border-color: rgba(255,255,255,.18); font-weight: 850; }
+.share-btn:hover { background: rgba(102,228,242,.16); border-color: rgba(102,228,242,.42); }
+.report-smart { background: #eefaff; border: 1px solid #a5f3fc; padding: 12px 14px; border-radius: 12px; color: #0f172a; font-weight: 600; }
+@media (max-width: 760px) {
+  .summary-main { grid-template-columns: 1fr; }
+  .score-orb { width: 96px; height: 96px; justify-self: start; }
+  .smart-summary { padding: 18px; }
+  .smart-summary p { font-size: 14px; }
+}
