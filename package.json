@@ -1,8 +1,8 @@
 {
   "name": "check-my-payments",
-  "version": "23.0.0",
+  "version": "23.1.0",
   "private": true,
-  "description": "Stable bilingual Check My Payments loan calculator version 23 with smart summary, comfort score, share links and readability audit.",
+  "description": "Stable bilingual Check My Payments loan calculator version 23.1 with permanent Google Analytics global tag.",
   "engines": {
     "node": "20.x"
   },

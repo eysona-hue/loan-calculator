@@ -1,6 +1,6 @@
 # Check My Payments
 
-Stable bilingual loan calculator for Check My Payments. Version 23 adds smart summary, comfort score, shareable calculation links and readability polish.
+Stable bilingual loan calculator for Check My Payments. Version 23.1 adds smart summary, comfort score, shareable calculation links and readability polish.
 
 ## What changed
 
@@ -25,4 +25,8 @@ loancal@altmail.kr
 Mobile sliders are now thumb-only. Touching the track while scrolling will not change values; dragging the circular handle still works with finger, mouse, and trackpad.
 
 
-Version: 23.0.0
+Version: 23.1.0
+
+
+## Analytics
+Google Analytics is installed globally with Measurement ID `G-R3GM5FZB6T` and should remain part of future builds unless intentionally removed or replaced.
