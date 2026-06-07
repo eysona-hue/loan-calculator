@@ -1,6 +1,6 @@
 const CONTACT_EMAIL = 'loancal@altmail.kr';
 const SITE_URL = 'https://www.checkmypayments.com';
-const APP_VERSION = '24.0.0';
+const APP_VERSION = '24.1.0';
 
 const palette = ['#66e4f2', '#a78bfa', '#fbbf24', '#34d399', '#fb7185', '#60a5fa'];
 const state = {
@@ -546,20 +546,39 @@ function affordabilityStatus(housingRatio, totalDebtRatio, lang) {
 }
 
 function comfortScore(r, housingRatio, totalDebtRatio, downPct) {
+  const es = state.lang === 'es';
+  const safeHousing = Number.isFinite(housingRatio) ? Math.max(housingRatio, 0) : 999;
+  const safeDebt = Number.isFinite(totalDebtRatio) ? Math.max(totalDebtRatio, 0) : 999;
+  const safeDown = Number.isFinite(downPct) ? Math.max(downPct, 0) : 0;
   let score = 100;
-  if (housingRatio > 28) score -= (housingRatio - 28) * 1.15;
-  if (totalDebtRatio > 36) score -= (totalDebtRatio - 36) * 1.05;
-  if (state.loanType === 'home' && downPct < 20) score -= (20 - downPct) * 0.45;
+
+  // Main affordability factors. These intentionally use smooth deductions so
+  // the score changes consistently as users move inputs up or down.
+  const housingOver = Math.max(0, safeHousing - 28);
+  const debtOver = Math.max(0, safeDebt - 36);
+  score -= Math.min(housingOver * 2.4, 34);
+  score -= Math.min(debtOver * 2.1, 34);
+
+  // Extra pressure once ratios move beyond the looser 33/43 stretch area.
+  score -= Math.min(Math.max(0, safeHousing - 33) * 1.2, 10);
+  score -= Math.min(Math.max(0, safeDebt - 43) * 1.1, 10);
+
+  // Down payment strength, mostly for mortgages where PMI and lower equity matter.
+  if (state.loanType === 'home' && safeDown < 20) score -= Math.min((20 - safeDown) * 0.65, 13);
+
+  // Long term interest burden. This is capped so it informs the score without
+  // overwhelming the more important monthly affordability ratios.
   if (r.principal > 0) {
     const interestLoad = (r.totalInterest / r.principal) * 100;
-    if (interestLoad > 100) score -= Math.min((interestLoad - 100) * 0.08, 12);
+    score -= Math.min(Math.max(0, interestLoad - 75) * 0.05, 9);
   }
+
   score = Math.round(Math.max(0, Math.min(100, score)));
-  const es = state.lang === 'es';
-  if (score >= 80) return { score, className: 'strong', title: es ? 'Fuerte' : 'Strong', message: es ? 'El escenario luce cómodo según las guías usadas.' : 'This scenario looks comfortable using the planning guides.' };
-  if (score >= 65) return { score, className: 'steady', title: es ? 'Manejable' : 'Manageable', message: es ? 'El escenario parece posible, pero conviene confirmar costos reales.' : 'This scenario appears manageable, but real costs should be verified.' };
-  if (score >= 50) return { score, className: 'watch', title: es ? 'Con cuidado' : 'Watch closely', message: es ? 'El pago puede sentirse pesado si cambian los gastos o ingresos.' : 'The payment may feel tight if expenses or income change.' };
-  return { score, className: 'caution', title: es ? 'Alto riesgo' : 'High caution', message: es ? 'Este escenario necesita revisión cuidadosa antes de decidir.' : 'This scenario needs careful review before deciding.' };
+  if (score >= 85) return { score, className: 'strong', color: '#34d399', title: es ? 'Excelente' : 'Excellent', message: es ? 'El escenario luce muy cómodo según las guías usadas.' : 'This scenario looks very comfortable using the planning guides.' };
+  if (score >= 70) return { score, className: 'steady', color: '#84cc16', title: es ? 'Fuerte' : 'Strong', message: es ? 'El escenario luce cómodo, pero confirma costos reales.' : 'This scenario looks comfortable, but real costs should be verified.' };
+  if (score >= 55) return { score, className: 'watch', color: '#fbbf24', title: es ? 'Manejable' : 'Manageable', message: es ? 'El escenario parece posible, pero deja menos margen.' : 'This scenario appears possible, but leaves less room.' };
+  if (score >= 40) return { score, className: 'tight', color: '#fb923c', title: es ? 'Ajustado' : 'Tight', message: es ? 'El pago puede sentirse pesado si cambian gastos o ingresos.' : 'The payment may feel tight if expenses or income change.' };
+  return { score, className: 'caution', color: '#fb7185', title: es ? 'Alto riesgo' : 'High caution', message: es ? 'Este escenario necesita revisión cuidadosa antes de decidir.' : 'This scenario needs careful review before deciding.' };
 }
 
 function smartSummaryText(L, r, noExtra, housingRatio, totalDebtRatio, downPct) {
@@ -583,12 +602,17 @@ function smartSummaryCard(L, r, noExtra, housingRatio, totalDebtRatio, downPct) 
   const text = smartSummaryText(L, r, noExtra, housingRatio, totalDebtRatio, downPct);
   const title = state.lang === 'es' ? 'Resumen inteligente' : 'Smart summary';
   const scoreLabel = state.lang === 'es' ? 'Puntaje de comodidad' : 'Comfort score';
+  const scoreNote = state.lang === 'es' ? 'Más alto es mejor' : 'Higher is better';
   const share = state.lang === 'es' ? 'Copiar enlace del cálculo' : 'Copy calculation link';
   const note = state.lang === 'es' ? 'Guía educativa. No es aprobación ni cotización de préstamo.' : 'Educational guide only. Not a loan approval or lender quote.';
   return `<div class="card smart-summary ${score.className}">
     <div class="summary-main">
       <div><small>${title}</small><p>${text}</p><em>${note}</em></div>
-      <div class="score-orb" style="--score:${score.score}"><strong>${score.score}</strong><span>${scoreLabel}</span></div>
+      <div class="score-wrap">
+        <div class="score-orb" style="--score:${score.score};--score-color:${score.color}"><strong>${score.score}</strong><span>${scoreLabel}</span></div>
+        <b>${score.title}</b>
+        <em>${scoreNote}</em>
+      </div>
     </div>
     <button class="secondary-btn share-btn" id="shareBtn" type="button">${share}</button>
   </div>`;

@@ -2,7 +2,7 @@
 
 Stable bilingual loan calculator for Check My Payments. Version 24 adds a true Loan A vs Loan B comparison tool while preserving the existing calculator, mobile fixes, SEO pages, PDF reports, CSV exports, canonical www domain setup, and global Google Analytics.
 
-## What changed in v24
+## What changed in v24.1
 
 - Added editable Loan B inputs inside the Compare tab.
 - Loan A uses the main calculator values.
@@ -23,7 +23,7 @@ npm run build
 
 loancal@altmail.kr
 
-Version: 24.0.0
+Version: 24.1.0
 
 ## Analytics
 
