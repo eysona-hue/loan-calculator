@@ -660,3 +660,109 @@ th { position: sticky; top: 0; z-index: 1; background: #11172b; color: var(--sof
   .smart-summary { padding: 18px; }
   .smart-summary p { font-size: 14px; }
 }
+
+
+/* v24: true Loan A vs Loan B comparison */
+.loan-ab-compare {
+  margin-top: 22px;
+  border-top: 1px solid rgba(255,255,255,.1);
+  padding-top: 22px;
+}
+.compare-header.compact { margin-bottom: 16px; }
+.secondary-btn.mini {
+  width: auto;
+  padding: 10px 14px;
+  white-space: nowrap;
+  font-size: 13px;
+}
+.ab-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, .9fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: stretch;
+}
+.loan-b-editor {
+  border-color: rgba(102,228,242,.28);
+  background: rgba(102,228,242,.06);
+}
+.compare-input-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.compare-field {
+  display: grid;
+  gap: 6px;
+  color: #dce8fb;
+  font-weight: 800;
+  font-size: 12px;
+}
+.compare-field > span {
+  color: #b9c7dc;
+}
+.compare-field div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(4,8,20,.62);
+  border-radius: 14px;
+  padding: 8px 10px;
+}
+.compare-field em {
+  color: #9fb0ca;
+  font-style: normal;
+  font-weight: 800;
+}
+.compare-field input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 15px;
+}
+.ab-winner-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.winner-tile {
+  border: 1px solid rgba(102,228,242,.2);
+  background: rgba(4,8,20,.5);
+  border-radius: 20px;
+  padding: 14px;
+}
+.winner-tile small,
+.winner-tile span {
+  display: block;
+  color: #b9c7dc;
+  line-height: 1.4;
+}
+.winner-tile strong {
+  display: block;
+  color: #ffffff;
+  margin: 6px 0;
+  font-size: 18px;
+}
+.compare-explainer {
+  margin: 16px 0 0;
+  color: #dbeafe;
+  background: rgba(102,228,242,.08);
+  border: 1px solid rgba(102,228,242,.22);
+  border-radius: 20px;
+  padding: 14px 16px;
+  line-height: 1.65;
+}
+@media (max-width: 1100px) {
+  .ab-grid { grid-template-columns: 1fr; }
+  .ab-winner-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .compare-header.compact .secondary-btn.mini { width: 100%; }
+  .ab-winner-grid { grid-template-columns: 1fr; }
+  .compare-field input { font-size: 16px; }
+}

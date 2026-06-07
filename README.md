@@ -1,14 +1,17 @@
 # Check My Payments
 
-Stable bilingual loan calculator for Check My Payments. Version 23.1 adds smart summary, comfort score, shareable calculation links and readability polish.
+Stable bilingual loan calculator for Check My Payments. Version 24 adds a true Loan A vs Loan B comparison tool while preserving the existing calculator, mobile fixes, SEO pages, PDF reports, CSV exports, canonical www domain setup, and global Google Analytics.
 
-## What changed
+## What changed in v24
 
-- Added Smart Summary in English and Spanish.
-- Added Comfort Score for quick affordability context.
-- Added Copy Calculation Link so users can share a scenario.
-- Preserved mobile typing fixes and thumb-only slider behavior.
-- Kept scenario comparison, affordability guidance, SEO pages, monthly CSV export, and professional PDF report.
+- Added editable Loan B inputs inside the Compare tab.
+- Loan A uses the main calculator values.
+- Loan B can be adjusted independently to compare two real loan options side by side.
+- Added winner tiles for lower monthly payment, lower total interest, faster payoff, and lower total paid.
+- Added a plain-language comparison explanation.
+- Added Loan A vs Loan B comparison to the printable PDF report.
+- Preserved permanent Google Analytics Measurement ID `G-R3GM5FZB6T`.
+- Preserved canonical site URL `https://www.checkmypayments.com`.
 
 ## Build
 
@@ -20,13 +23,8 @@ npm run build
 
 loancal@altmail.kr
 
-
-## v19 update
-Mobile sliders are now thumb-only. Touching the track while scrolling will not change values; dragging the circular handle still works with finger, mouse, and trackpad.
-
-
-Version: 23.1.0
-
+Version: 24.0.0
 
 ## Analytics
+
 Google Analytics is installed globally with Measurement ID `G-R3GM5FZB6T` and should remain part of future builds unless intentionally removed or replaced.

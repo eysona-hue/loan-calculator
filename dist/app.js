@@ -1,6 +1,6 @@
 const CONTACT_EMAIL = 'loancal@altmail.kr';
 const SITE_URL = 'https://www.checkmypayments.com';
-const APP_VERSION = '23.1.0';
+const APP_VERSION = '24.0.0';
 
 const palette = ['#66e4f2', '#a78bfa', '#fbbf24', '#34d399', '#fb7185', '#60a5fa'];
 const state = {
@@ -18,6 +18,19 @@ const state = {
     insurance: 1800,
     hoa: 0,
     extraPayment: 200,
+    pmiAnnualRate: 0.75,
+    grossIncome: 90000,
+    monthlyDebt: 600
+  },
+  compareB: {
+    price: 450000,
+    downPayment: 90000,
+    rate: 6.25,
+    years: 15,
+    taxes: 5200,
+    insurance: 1800,
+    hoa: 0,
+    extraPayment: 0,
     pmiAnnualRate: 0.75,
     grossIncome: 90000,
     monthlyDebt: 600
@@ -396,6 +409,7 @@ function comparisonPanel(L, r, noExtra, rateUp, housingRatio, totalDebtRatio) {
         <strong>${state.lang === 'es' ? 'Espacio estimado frente a guía 28/36:' : 'Estimated room vs 28/36 guide:'}</strong> ${money(estimatedRoom)} ${state.lang === 'es' ? 'mensual' : 'per month'}
       </div>
     </div>
+    ${manualLoanComparisonPanel()}
   </div>`;
 }
 function scenarioCard(item, bestMonthly, bestInterest) {
@@ -413,6 +427,117 @@ function scenarioCard(item, bestMonthly, bestInterest) {
       <div><small>${state.lang === 'es' ? 'Total pagado' : 'Total paid'}</small><b>${money(r.totalPaidIncludingDownPayment)}</b></div>
     </div>
   </article>`;
+}
+
+function manualLoanComparisonPanel() {
+  const L = currentText();
+  const aInputs = { ...state.inputs };
+  const bInputs = normalizeCompareB();
+  const a = loanCalc(aInputs, state.loanType);
+  const b = loanCalc(bInputs, state.loanType);
+  const monthlyDiff = b.monthlyTotal - a.monthlyTotal;
+  const interestDiff = b.totalInterest - a.totalInterest;
+  const payoffDiff = b.payoffMonth - a.payoffMonth;
+  const totalDiff = b.totalPaidIncludingDownPayment - a.totalPaidIncludingDownPayment;
+  const monthlyWinner = a.monthlyTotal <= b.monthlyTotal ? 'A' : 'B';
+  const interestWinner = a.totalInterest <= b.totalInterest ? 'A' : 'B';
+  const payoffWinner = a.payoffMonth <= b.payoffMonth ? 'A' : 'B';
+  return `<section class="loan-ab-compare">
+    <div class="compare-header compact">
+      <div>
+        <h2>${state.lang === 'es' ? 'Comparar dos préstamos' : 'Compare two loans'}</h2>
+        <p class="copy">${state.lang === 'es' ? 'El préstamo A usa los valores principales de arriba. Puedes ajustar el préstamo B para comparar dos opciones reales lado a lado.' : 'Loan A uses the main values above. Adjust Loan B to compare two real options side by side.'}</p>
+      </div>
+      <button type="button" class="secondary-btn mini" data-copy-to-b>${state.lang === 'es' ? 'Copiar A a B' : 'Copy A to B'}</button>
+    </div>
+    <div class="ab-grid">
+      ${loanSummaryCard('A', state.lang === 'es' ? 'Préstamo A' : 'Loan A', a, state.lang === 'es' ? 'Tus valores principales' : 'Main calculator values')}
+      <div class="scenario-card loan-b-editor">
+        <div class="scenario-title"><strong>${state.lang === 'es' ? 'Préstamo B' : 'Loan B'}</strong><span>${state.lang === 'es' ? 'Editable' : 'Editable'}</span></div>
+        <div class="compare-input-grid">
+          ${compareInput('price', state.loanType === 'home' ? L.labels.priceHome : L.labels.priceCar, '$')}
+          ${compareInput('downPayment', L.labels.downPayment, '$')}
+          ${compareInput('rate', L.labels.rate, '', '%')}
+          ${compareInput('years', L.labels.years, '', L.yearsUnit)}
+          ${compareInput('taxes', state.loanType === 'home' ? L.labels.taxesHome : L.labels.taxesCar, '$')}
+          ${compareInput('insurance', L.labels.insurance, '$')}
+          ${compareInput('hoa', state.loanType === 'home' ? L.labels.hoaHome : L.labels.hoaCar, '$')}
+          ${compareInput('extraPayment', L.labels.extra, '$')}
+          ${state.loanType === 'home' ? compareInput('pmiAnnualRate', L.labels.pmi, '', '%') : ''}
+        </div>
+      </div>
+      ${loanSummaryCard('B', state.lang === 'es' ? 'Resultado B' : 'Loan B result', b, state.lang === 'es' ? 'Resultado editable' : 'Editable result')}
+    </div>
+    <div class="ab-winner-grid">
+      ${winnerTile(state.lang === 'es' ? 'Pago mensual más bajo' : 'Lower monthly payment', monthlyWinner, Math.abs(monthlyDiff), state.lang === 'es' ? 'diferencia mensual' : 'monthly difference')}
+      ${winnerTile(state.lang === 'es' ? 'Menor interés total' : 'Lower total interest', interestWinner, Math.abs(interestDiff), state.lang === 'es' ? 'diferencia de interés' : 'interest difference')}
+      ${winnerTile(state.lang === 'es' ? 'Pago final más rápido' : 'Faster payoff', payoffWinner, Math.abs(payoffDiff), state.lang === 'es' ? 'meses de diferencia' : 'months difference', true)}
+      ${winnerTile(state.lang === 'es' ? 'Menor total pagado' : 'Lower total paid', totalDiff <= 0 ? 'B' : 'A', Math.abs(totalDiff), state.lang === 'es' ? 'diferencia total' : 'total difference')}
+    </div>
+    <p class="compare-explainer">${comparisonPlainLanguage(a, b)}</p>
+  </section>`;
+}
+
+function normalizeCompareB() {
+  const base = { ...state.inputs, ...state.compareB };
+  base.price = Math.max(Number(base.price) || 0, 0);
+  base.downPayment = Math.min(Math.max(Number(base.downPayment) || 0, 0), base.price);
+  ['rate','years','taxes','insurance','hoa','extraPayment','pmiAnnualRate','grossIncome','monthlyDebt'].forEach(k => { base[k] = Math.max(Number(base[k]) || 0, 0); });
+  if (base.years <= 0) base.years = 1;
+  state.compareB = { ...state.compareB, ...base };
+  return base;
+}
+
+function compareInput(key, label, prefix = '', suffix = '') {
+  const value = Number(state.compareB[key] ?? state.inputs[key] ?? 0);
+  return `<label class="compare-field"><span>${label}</span><div>${prefix ? `<em>${prefix}</em>` : ''}<input type="number" inputmode="decimal" autocomplete="off" data-compare-input="${key}" value="${value}">${suffix ? `<em>${suffix}</em>` : ''}</div></label>`;
+}
+
+function loanSummaryCard(letter, title, r, note) {
+  return `<article class="scenario-card loan-summary-card">
+    <div class="scenario-title"><strong>${title}</strong><span>${letter}</span></div>
+    <p>${note}</p>
+    <div class="scenario-numbers">
+      <div><small>${state.lang === 'es' ? 'Pago mensual' : 'Monthly payment'}</small><b>${money(r.monthlyTotal)}</b></div>
+      <div><small>${state.lang === 'es' ? 'Monto del préstamo' : 'Loan amount'}</small><b>${money(r.principal)}</b></div>
+      <div><small>${state.lang === 'es' ? 'Interés total' : 'Total interest'}</small><b>${money(r.totalInterest)}</b></div>
+      <div><small>${state.lang === 'es' ? 'Pago final' : 'Payoff'}</small><b>${formatMonths(r.payoffMonth)}</b></div>
+      <div><small>${state.lang === 'es' ? 'Total pagado' : 'Total paid'}</small><b>${money(r.totalPaidIncludingDownPayment)}</b></div>
+    </div>
+  </article>`;
+}
+
+function winnerTile(title, winner, amount, note, months = false) {
+  const value = months ? `${Math.round(amount)} ${state.lang === 'es' ? 'meses' : 'months'}` : money(amount);
+  return `<div class="winner-tile"><small>${title}</small><strong>${state.lang === 'es' ? 'Gana' : 'Winner'} ${winner}</strong><span>${value} ${note}</span></div>`;
+}
+
+function comparisonPlainLanguage(a, b) {
+  const monthlyDiff = Math.abs(b.monthlyTotal - a.monthlyTotal);
+  const interestDiff = Math.abs(b.totalInterest - a.totalInterest);
+  const lowerMonthly = a.monthlyTotal <= b.monthlyTotal ? 'A' : 'B';
+  const lowerInterest = a.totalInterest <= b.totalInterest ? 'A' : 'B';
+  if (state.lang === 'es') {
+    return `Lectura rápida: el préstamo ${lowerMonthly} tiene el pago mensual más bajo por aproximadamente ${money(monthlyDiff)}, mientras que el préstamo ${lowerInterest} genera menos interés total por aproximadamente ${money(interestDiff)}. Usa esta comparación para equilibrar flujo de caja mensual contra costo total.`;
+  }
+  return `Quick read: Loan ${lowerMonthly} has the lower monthly payment by about ${money(monthlyDiff)}, while Loan ${lowerInterest} produces less total interest by about ${money(interestDiff)}. Use this comparison to balance monthly cash flow against total cost.`;
+}
+
+function setCompareBValue(key, value, shouldRender = true) {
+  const numeric = Number(value);
+  state.compareB[key] = Number.isFinite(numeric) ? numeric : 0;
+  if (key === 'price') {
+    state.compareB.price = Math.max(state.compareB.price, 0);
+    if (state.compareB.downPayment > state.compareB.price) state.compareB.downPayment = state.compareB.price;
+  }
+  if (key === 'downPayment') state.compareB.downPayment = Math.min(Math.max(state.compareB.downPayment, 0), Math.max(Number(state.compareB.price) || 0, 0));
+  if (['rate','years','taxes','insurance','hoa','extraPayment','pmiAnnualRate','grossIncome','monthlyDebt'].includes(key)) state.compareB[key] = Math.max(state.compareB[key], 0);
+  if (shouldRender) render();
+}
+
+function copyCurrentToCompareB() {
+  state.compareB = { ...state.inputs };
+  render();
 }
 function affordabilityStatus(housingRatio, totalDebtRatio, lang) {
   if (housingRatio <= 28 && totalDebtRatio <= 36) return { className: 'safe', title: lang === 'es' ? 'Zona cómoda' : 'Comfort zone', message: lang === 'es' ? 'Según la guía 28/36, este escenario parece relativamente cómodo. Confirma siempre con un prestamista.' : 'Using the 28/36 guide, this scenario appears relatively comfortable. Always confirm with a lender.' };
@@ -650,6 +775,12 @@ function reportPaymentRows(L, r) {
 function reportScenarioRows() {
   return reportScenarios().map(item => `<tr><td>${item.label}</td><td>${money2(item.result.monthlyTotal)}</td><td>${money2(item.result.totalInterest)}</td><td>${formatMonths(item.result.payoffMonth)}</td><td>${money2(item.result.totalPaidIncludingDownPayment)}</td></tr>`).join('');
 }
+function reportManualComparisonRows() {
+  const a = loanCalc(state.inputs, state.loanType);
+  const b = loanCalc(normalizeCompareB(), state.loanType);
+  const labels = state.lang === 'es' ? ['Préstamo A', 'Préstamo B'] : ['Loan A', 'Loan B'];
+  return [a,b].map((result, index) => `<tr><td>${labels[index]}</td><td>${money2(result.monthlyTotal)}</td><td>${money2(result.totalInterest)}</td><td>${formatMonths(result.payoffMonth)}</td><td>${money2(result.totalPaidIncludingDownPayment)}</td></tr>`).join('');
+}
 
 function reportNextSteps(score) {
   if (state.lang === 'es') {
@@ -669,7 +800,7 @@ function printReport(L, r, housingRatio, totalDebtRatio) {
   const nextTitle = state.lang === 'es' ? 'Próximos pasos recomendados' : 'Recommended next steps';
   const scheduleTitle = state.lang === 'es' ? 'Calendario mensual de amortización' : 'Monthly amortization schedule';
   const promo = state.lang === 'es' ? `Crea tu propio reporte gratis en https://www.checkmypayments.com` : `Create your own free loan report at https://www.checkmypayments.com`;
-  return `<section class="report-cover"><div><small>${generated}</small><h1>${title}</h1><p>${state.lang === 'es' ? 'Un resumen claro para comparar pagos, interés, capacidad de pago y amortización mensual.' : 'A clear summary for comparing payments, interest, affordability, and monthly amortization.'}</p></div><div class="report-cover-box"><strong>${money(r.monthlyTotal)}</strong><span>${L.firstPayment}</span></div></section><p class="report-disclaimer">${L.disclaimer}</p><h2>${state.lang === 'es' ? 'Resumen inteligente' : 'Smart summary'}</h2><p class="report-smart">${smartSummaryText(L, r, loanCalc(state.inputs, state.loanType, 0), housingRatio, totalDebtRatio, r.price ? (r.down / r.price) * 100 : 0)}</p><h2>${summaryTitle}</h2><div class="report-grid">${bigStat(state.lang === 'es' ? 'Tipo' : 'Loan Type', state.loanType === 'home' ? L.homeLoan : L.carLoan)}${bigStat(L.metrics.amount, money(r.principal))}${bigStat(L.metrics.interest, money(r.totalInterest))}${bigStat(L.metrics.saved, money(r.interestSaved))}${bigStat(L.metrics.payoff, formatMonths(r.payoffMonth))}${bigStat(L.bigStats.totalPaid, money(r.totalPaidIncludingDownPayment))}</div><h2>${paymentTitle}</h2><table class="report-mini-table"><thead><tr><th>${state.lang === 'es' ? 'Categoría' : 'Category'}</th><th>${state.lang === 'es' ? 'Monto' : 'Amount'}</th><th>%</th></tr></thead><tbody>${reportPaymentRows(L, r)}</tbody></table><h2>${state.lang === 'es' ? 'Lectura de capacidad de pago' : 'Affordability reading'}</h2><p><strong>${score.title}.</strong> ${score.message} ${state.lang === 'es' ? 'Ratio de vivienda' : 'Housing ratio'}: ${num(housingRatio)}%. ${state.lang === 'es' ? 'Ratio total de deuda' : 'Total debt ratio'}: ${num(totalDebtRatio)}%.</p><h2>${scenarioTitle}</h2><table class="report-mini-table"><thead><tr><th>${state.lang === 'es' ? 'Escenario' : 'Scenario'}</th><th>${state.lang === 'es' ? 'Pago mensual' : 'Monthly payment'}</th><th>${state.lang === 'es' ? 'Interés total' : 'Total interest'}</th><th>${state.lang === 'es' ? 'Pago final' : 'Payoff'}</th><th>${state.lang === 'es' ? 'Total pagado' : 'Total paid'}</th></tr></thead><tbody>${reportScenarioRows()}</tbody></table><h2>${nextTitle}</h2>${reportNextSteps(score)}<h2>${scheduleTitle}</h2><table><thead><tr><th>Month</th><th>Starting Balance</th><th>Payment</th><th>Principal</th><th>Interest</th><th>PMI</th><th>Ending Balance</th></tr></thead><tbody>${rows}</tbody></table><p class="report-note"><strong>${promo}</strong><br>${SITE_URL} | ${CONTACT_EMAIL}</p>`;
+  return `<section class="report-cover"><div><small>${generated}</small><h1>${title}</h1><p>${state.lang === 'es' ? 'Un resumen claro para comparar pagos, interés, capacidad de pago y amortización mensual.' : 'A clear summary for comparing payments, interest, affordability, and monthly amortization.'}</p></div><div class="report-cover-box"><strong>${money(r.monthlyTotal)}</strong><span>${L.firstPayment}</span></div></section><p class="report-disclaimer">${L.disclaimer}</p><h2>${state.lang === 'es' ? 'Resumen inteligente' : 'Smart summary'}</h2><p class="report-smart">${smartSummaryText(L, r, loanCalc(state.inputs, state.loanType, 0), housingRatio, totalDebtRatio, r.price ? (r.down / r.price) * 100 : 0)}</p><h2>${summaryTitle}</h2><div class="report-grid">${bigStat(state.lang === 'es' ? 'Tipo' : 'Loan Type', state.loanType === 'home' ? L.homeLoan : L.carLoan)}${bigStat(L.metrics.amount, money(r.principal))}${bigStat(L.metrics.interest, money(r.totalInterest))}${bigStat(L.metrics.saved, money(r.interestSaved))}${bigStat(L.metrics.payoff, formatMonths(r.payoffMonth))}${bigStat(L.bigStats.totalPaid, money(r.totalPaidIncludingDownPayment))}</div><h2>${paymentTitle}</h2><table class="report-mini-table"><thead><tr><th>${state.lang === 'es' ? 'Categoría' : 'Category'}</th><th>${state.lang === 'es' ? 'Monto' : 'Amount'}</th><th>%</th></tr></thead><tbody>${reportPaymentRows(L, r)}</tbody></table><h2>${state.lang === 'es' ? 'Lectura de capacidad de pago' : 'Affordability reading'}</h2><p><strong>${score.title}.</strong> ${score.message} ${state.lang === 'es' ? 'Ratio de vivienda' : 'Housing ratio'}: ${num(housingRatio)}%. ${state.lang === 'es' ? 'Ratio total de deuda' : 'Total debt ratio'}: ${num(totalDebtRatio)}%.</p><h2>${scenarioTitle}</h2><table class="report-mini-table"><thead><tr><th>${state.lang === 'es' ? 'Escenario' : 'Scenario'}</th><th>${state.lang === 'es' ? 'Pago mensual' : 'Monthly payment'}</th><th>${state.lang === 'es' ? 'Interés total' : 'Total interest'}</th><th>${state.lang === 'es' ? 'Pago final' : 'Payoff'}</th><th>${state.lang === 'es' ? 'Total pagado' : 'Total paid'}</th></tr></thead><tbody>${reportScenarioRows()}</tbody></table><h2>${state.lang === 'es' ? 'Comparación préstamo A vs B' : 'Loan A vs Loan B comparison'}</h2><table class="report-mini-table"><thead><tr><th>${state.lang === 'es' ? 'Escenario' : 'Scenario'}</th><th>${state.lang === 'es' ? 'Pago mensual' : 'Monthly payment'}</th><th>${state.lang === 'es' ? 'Interés total' : 'Total interest'}</th><th>${state.lang === 'es' ? 'Pago final' : 'Payoff'}</th><th>${state.lang === 'es' ? 'Total pagado' : 'Total paid'}</th></tr></thead><tbody>${reportManualComparisonRows()}</tbody></table><h2>${nextTitle}</h2>${reportNextSteps(score)}<h2>${scheduleTitle}</h2><table><thead><tr><th>Month</th><th>Starting Balance</th><th>Payment</th><th>Principal</th><th>Interest</th><th>PMI</th><th>Ending Balance</th></tr></thead><tbody>${rows}</tbody></table><p class="report-note"><strong>${promo}</strong><br>${SITE_URL} | ${CONTACT_EMAIL}</p>`;
 }
 function formatMonths(m) { const L = currentText(); const y = Math.floor(m / 12); const mo = m % 12; return state.lang === 'es' ? `${y}a ${mo}m` : `${y}y ${mo}m`; }
 
@@ -771,6 +902,17 @@ function attachEvents() {
       }
     });
   });
+
+  document.querySelectorAll('[data-compare-input]').forEach(input => {
+    input.addEventListener('focus', () => { state.isTyping = true; });
+    input.addEventListener('input', () => { setCompareBValue(input.dataset.compareInput, input.value, false); });
+    input.addEventListener('change', () => { state.isTyping = false; setCompareBValue(input.dataset.compareInput, input.value, true); });
+    input.addEventListener('blur', () => { state.isTyping = false; setCompareBValue(input.dataset.compareInput, input.value, true); });
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { state.isTyping = false; input.blur(); setCompareBValue(input.dataset.compareInput, input.value, true); }
+    });
+  });
+  document.querySelector('[data-copy-to-b]')?.addEventListener('click', copyCurrentToCompareB);
 
   document.querySelectorAll('.custom-slider-track').forEach(track => {
     // Intentional mobile safety: touching the line/track does nothing.
@@ -900,8 +1042,13 @@ function setInputValue(key, value, shouldRender = true) {
 function setMode(mode) {
   state.loanType = mode;
   state.selectedSlice = 0;
-  if (mode === 'home') Object.assign(state.inputs, { price:450000, downPayment:90000, rate:6.75, years:30, taxes:5200, insurance:1800, hoa:0, extraPayment:200, pmiAnnualRate:.75, grossIncome:90000, monthlyDebt:600 });
-  else Object.assign(state.inputs, { price:38000, downPayment:5000, rate:7.25, years:5, taxes:950, insurance:1800, hoa:0, extraPayment:50, pmiAnnualRate:0, grossIncome:65000, monthlyDebt:400 });
+  if (mode === 'home') {
+    Object.assign(state.inputs, { price:450000, downPayment:90000, rate:6.75, years:30, taxes:5200, insurance:1800, hoa:0, extraPayment:200, pmiAnnualRate:.75, grossIncome:90000, monthlyDebt:600 });
+    Object.assign(state.compareB, { price:450000, downPayment:90000, rate:6.25, years:15, taxes:5200, insurance:1800, hoa:0, extraPayment:0, pmiAnnualRate:.75, grossIncome:90000, monthlyDebt:600 });
+  } else {
+    Object.assign(state.inputs, { price:38000, downPayment:5000, rate:7.25, years:5, taxes:950, insurance:1800, hoa:0, extraPayment:50, pmiAnnualRate:0, grossIncome:65000, monthlyDebt:400 });
+    Object.assign(state.compareB, { price:38000, downPayment:5000, rate:6.95, years:4, taxes:950, insurance:1800, hoa:0, extraPayment:0, pmiAnnualRate:0, grossIncome:65000, monthlyDebt:400 });
+  }
   render();
 }
 function reset() { setMode(state.loanType); }
