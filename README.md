@@ -1,30 +1,34 @@
-# Check My Payments
+# Check My Payments v24.2.0
 
-Stable bilingual loan calculator for Check My Payments. Version 24 adds a true Loan A vs Loan B comparison tool while preserving the existing calculator, mobile fixes, SEO pages, PDF reports, CSV exports, canonical www domain setup, and global Google Analytics.
+Small infrastructure update for Check My Payments.
 
-## What changed in v24.1
+## Purpose
 
-- Added editable Loan B inputs inside the Compare tab.
-- Loan A uses the main calculator values.
-- Loan B can be adjusted independently to compare two real loan options side by side.
-- Added winner tiles for lower monthly payment, lower total interest, faster payoff, and lower total paid.
-- Added a plain-language comparison explanation.
-- Added Loan A vs Loan B comparison to the printable PDF report.
-- Preserved permanent Google Analytics Measurement ID `G-R3GM5FZB6T`.
-- Preserved canonical site URL `https://www.checkmypayments.com`.
+Version 24.2 confirms and preserves the permanent global Google Analytics installation.
 
-## Build
+## Google Analytics
+
+Measurement ID: `G-R3GM5FZB6T`
+
+The official Google tag is installed globally in `index.html` inside the document `<head>`, so it loads on every page of the static single-page website, including all routed pages such as `/about`, `/privacy`, `/terms`, `/contact`, and the calculator guide pages.
+
+This Analytics tag should remain a permanent core part of future builds unless it is intentionally removed or replaced.
+
+## Version
+
+Visible site version: `v24.2.0`
+Package version: `24.2.0`
+
+## Notes
+
+No calculator logic, design, layout, mobile behavior, colors, typography, or user-facing text was changed, except for the visible version number.
+
+## Checks
+
+Run:
 
 ```bash
 npm run build
+node --check app.js
+npm audit --omit=dev
 ```
-
-## Contact
-
-loancal@altmail.kr
-
-Version: 24.1.0
-
-## Analytics
-
-Google Analytics is installed globally with Measurement ID `G-R3GM5FZB6T` and should remain part of future builds unless intentionally removed or replaced.
