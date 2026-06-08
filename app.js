@@ -1,6 +1,6 @@
 const CONTACT_EMAIL = 'loancal@altmail.kr';
 const SITE_URL = 'https://www.checkmypayments.com';
-const APP_VERSION = '24.2.0';
+const APP_VERSION = '24.3.0';
 
 const palette = ['#66e4f2', '#a78bfa', '#fbbf24', '#34d399', '#fb7185', '#60a5fa'];
 const state = {
@@ -100,67 +100,839 @@ const t = {
 
 
 const seoPages = {
-  '/mortgage-calculator': {
-    en: {
-      title: 'Mortgage Calculator with Taxes, PMI and Amortization',
-      description: 'Estimate a home loan payment with principal, interest, property taxes, insurance, PMI, HOA, extra payments and a monthly amortization schedule.',
-      heading: 'Mortgage Calculator',
-      intro: 'Use Check My Payments to estimate the real monthly cost of a home loan, not just principal and interest. The calculator can include property taxes, homeowners insurance, HOA dues, PMI, extra payments and a full monthly amortization schedule.',
-      sections: [
-        ['What this mortgage calculator includes', ['Principal and interest payment using the standard fixed rate amortization formula.', 'Property taxes and homeowners insurance as monthly estimated costs.', 'PMI estimate when the down payment is below 20 percent.', 'HOA dues when applicable.', 'Extra monthly payments to estimate interest savings and faster payoff.']],
-        ['How to use it well', ['Start with a realistic home price and down payment.', 'Use an interest rate close to what a lender has quoted or test several rates.', 'Enter taxes, insurance and HOA instead of leaving them out.', 'Review the payment breakdown and amortization schedule before making a decision.']],
-        ['Important note', ['This tool provides estimates only. A real lender quote may include APR, closing costs, escrow rules, discount points, mortgage insurance rules and local taxes that change the final payment.']]
+  "/mortgage-calculator": {
+    "en": {
+      "title": "Mortgage Calculator | Estimate Your Monthly Home Payment",
+      "description": "Estimate a monthly mortgage payment with principal, interest, property taxes, insurance, PMI, HOA, amortization, extra payments and a PDF report.",
+      "heading": "Mortgage Calculator",
+      "intro": "Use this mortgage calculator to estimate a realistic first monthly home payment before you speak with a lender or make an offer. It includes principal and interest plus common housing costs such as taxes, insurance, HOA and PMI when applicable.",
+      "sections": [
+        [
+          "Who should use it",
+          [
+            "Home buyers comparing prices, down payments, interest rates and loan terms.",
+            "Homeowners considering a refinance or a faster payoff strategy.",
+            "Families who want a simple way to see how the monthly payment changes before making a financial decision."
+          ]
+        ],
+        [
+          "Inputs that matter most",
+          [
+            "Home price and down payment determine the loan amount.",
+            "Interest rate and loan term determine the principal and interest payment.",
+            "Taxes, insurance, HOA and PMI can materially change the real monthly housing cost."
+          ]
+        ],
+        [
+          "How to read the result",
+          [
+            "The first monthly payment combines principal, interest and estimated monthly housing costs.",
+            "The amortization schedule shows how the balance falls over time.",
+            "The PDF report can be shared with family, advisers or lenders for discussion."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "How is a mortgage payment calculated?",
+          "The principal and interest payment uses the standard fixed-rate amortization formula. Taxes, insurance, HOA and estimated PMI are added separately so the payment feels closer to a real monthly cost."
+        ],
+        [
+          "Does a longer mortgage term save money?",
+          "A longer term usually lowers the monthly payment, but it usually increases total interest over the life of the loan."
+        ],
+        [
+          "Is this mortgage calculator financial advice?",
+          "No. It is an educational estimate only. Confirm rates, taxes, insurance, PMI and lender rules with qualified professionals before making decisions."
+        ]
+      ],
+      "related": [
+        "/pmi-calculator",
+        "/affordability-calculator",
+        "/extra-payment-calculator",
+        "/amortization-calculator"
       ]
     },
-    es: {
-      title: 'Calculadora de Hipoteca con Impuestos, PMI y Amortización',
-      description: 'Estima el pago de una hipoteca con principal, interés, impuestos, seguro, PMI, HOA, pagos extra y calendario mensual de amortización.',
-      heading: 'Calculadora de Hipoteca',
-      intro: 'Usa Check My Payments para estimar el costo mensual real de una hipoteca, no solo principal e interés. La calculadora puede incluir impuestos, seguro, HOA, PMI, pagos extra y amortización mensual completa.',
-      sections: [
-        ['Qué incluye esta calculadora', ['Pago de principal e interés con la fórmula estándar de amortización a tasa fija.', 'Impuestos y seguro como costos mensuales estimados.', 'PMI estimado cuando el inicial es menor de 20 por ciento.', 'HOA si aplica.', 'Pagos extra para estimar ahorro de interés y pago más rápido.']],
-        ['Cómo usarla bien', ['Empieza con un precio de vivienda y un inicial realistas.', 'Usa una tasa cercana a la cotización de un prestamista o prueba varias tasas.', 'Incluye impuestos, seguro y HOA en vez de dejarlos fuera.', 'Revisa el desglose del pago y el calendario de amortización antes de decidir.']],
-        ['Nota importante', ['Esta herramienta ofrece estimados solamente. Una cotización real puede incluir APR, costos de cierre, reglas de escrow, puntos, seguro hipotecario e impuestos locales que cambien el pago final.']]
+    "es": {
+      "title": "Calculadora de Hipoteca | Estima tu Pago Mensual de Vivienda",
+      "description": "Estima un pago mensual de hipoteca con principal, interés, impuestos, seguro, PMI, HOA, amortización, pagos extra y reporte PDF.",
+      "heading": "Calculadora de Hipoteca",
+      "intro": "Usa esta calculadora de hipoteca para estimar un primer pago mensual realista antes de hablar con un prestamista o hacer una oferta. Incluye principal e interés, más costos comunes como impuestos, seguro, HOA y PMI cuando aplica.",
+      "sections": [
+        [
+          "Quién debe usarla",
+          [
+            "Compradores comparando precios, inicial, tasas y plazos.",
+            "Propietarios evaluando refinanciar o pagar más rápido.",
+            "Familias que quieren ver cómo cambia el pago mensual antes de decidir."
+          ]
+        ],
+        [
+          "Datos más importantes",
+          [
+            "Precio e inicial determinan el monto del préstamo.",
+            "Tasa de interés y plazo determinan principal e interés.",
+            "Impuestos, seguro, HOA y PMI pueden cambiar mucho el costo mensual real."
+          ]
+        ],
+        [
+          "Cómo interpretar el resultado",
+          [
+            "El primer pago mensual combina principal, interés y costos estimados de vivienda.",
+            "La amortización muestra cómo baja el balance con el tiempo.",
+            "El reporte PDF puede compartirse para conversar con familia, asesores o prestamistas."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Cómo se calcula el pago hipotecario?",
+          "El pago de principal e interés usa la fórmula estándar de amortización fija. Impuestos, seguro, HOA y PMI estimado se agregan por separado."
+        ],
+        [
+          "¿Un plazo más largo ahorra dinero?",
+          "Normalmente baja el pago mensual, pero aumenta el interés total durante la vida del préstamo."
+        ],
+        [
+          "¿Esto es asesoría financiera?",
+          "No. Es un estimado educativo. Confirma tasas, impuestos, seguro, PMI y reglas del prestamista con profesionales calificados."
+        ]
+      ],
+      "related": [
+        "/pmi-calculator",
+        "/affordability-calculator",
+        "/extra-payment-calculator",
+        "/amortization-calculator"
       ]
     }
   },
-  '/car-loan-calculator': {
-    en: {
-      title: 'Car Loan Calculator with Fees, Insurance and Amortization',
-      description: 'Estimate auto loan payments, interest, fees, insurance, extra payments, payoff timing and a monthly amortization schedule.',
-      heading: 'Car Loan Calculator',
-      intro: 'Use Check My Payments to estimate an auto loan with the vehicle price, down payment, interest rate, loan term, registration fees, insurance and optional add ons.',
-      sections: [
-        ['What this car loan calculator helps you see', ['Estimated first monthly payment.', 'Total interest over the life of the loan.', 'How extra payments can shorten payoff time.', 'The monthly schedule showing interest, principal and remaining balance.']],
-        ['Smart car loan tips', ['Compare shorter and longer terms before accepting a loan.', 'A lower monthly payment can cost more in total interest.', 'Separate optional add ons from the vehicle price when possible so you can see the true cost.', 'Check whether insurance and registration fees fit your monthly budget.']]
+  "/car-loan-calculator": {
+    "en": {
+      "title": "Car Loan Calculator | Estimate Your Monthly Auto Payment",
+      "description": "Estimate a monthly car loan payment with vehicle price, down payment, interest rate, term, insurance, fees, extra payments and amortization.",
+      "heading": "Car Loan Calculator",
+      "intro": "Use this car loan calculator to estimate a monthly auto payment before visiting a dealer or comparing financing options. It helps you see how vehicle price, down payment, term, interest rate, insurance and fees affect total cost.",
+      "sections": [
+        [
+          "Who should use it",
+          [
+            "Car buyers comparing different vehicle prices and loan terms.",
+            "Drivers deciding whether a larger down payment makes sense.",
+            "Anyone who wants to see the total interest cost before financing a vehicle."
+          ]
+        ],
+        [
+          "Inputs that matter most",
+          [
+            "Vehicle price and down payment determine the amount financed.",
+            "Interest rate and term determine the monthly principal and interest payment.",
+            "Insurance, registration fees and add ons can make the real monthly cost higher than the loan payment alone."
+          ]
+        ],
+        [
+          "How to read the result",
+          [
+            "The monthly payment estimate includes financing plus optional monthly costs.",
+            "The amortization table shows each month of principal and interest.",
+            "The comparison tools help evaluate cash flow versus total cost."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "How is a car loan payment calculated?",
+          "The principal and interest payment uses the same fixed-rate amortization logic as other installment loans. Fees and insurance are shown as separate monthly planning costs."
+        ],
+        [
+          "Does a longer car loan term lower the payment?",
+          "Yes, a longer term usually lowers the monthly payment, but it can increase total interest and may keep you in debt longer."
+        ],
+        [
+          "Should I include insurance in a car loan calculation?",
+          "Including insurance helps estimate the real monthly cost of owning the vehicle, even though insurance is usually not part of the loan principal."
+        ]
+      ],
+      "related": [
+        "/amortization-calculator",
+        "/extra-payment-calculator",
+        "/",
+        "/personal-loan-calculator"
       ]
     },
-    es: {
-      title: 'Calculadora de Préstamo de Auto con Cargos, Seguro y Amortización',
-      description: 'Estima pagos de auto, interés, cargos, seguro, pagos extra, fecha final y amortización mensual.',
-      heading: 'Calculadora de Préstamo de Auto',
-      intro: 'Usa Check My Payments para estimar un préstamo de auto con precio del vehículo, inicial, tasa, plazo, registro, seguro y adicionales opcionales.',
-      sections: [
-        ['Qué te ayuda a ver', ['Primer pago mensual estimado.', 'Interés total durante la vida del préstamo.', 'Cómo los pagos extra pueden reducir el plazo.', 'Calendario mensual con interés, principal y balance restante.']],
-        ['Consejos útiles', ['Compara plazos cortos y largos antes de aceptar un préstamo.', 'Un pago mensual más bajo puede costar más en interés total.', 'Separa adicionales opcionales del precio del vehículo cuando sea posible.', 'Verifica si el seguro y los cargos caben en tu presupuesto mensual.']]
+    "es": {
+      "title": "Calculadora de Préstamo de Auto | Estima tu Pago Mensual",
+      "description": "Estima un pago mensual de auto con precio, inicial, tasa, plazo, seguro, cargos, pagos extra y amortización.",
+      "heading": "Calculadora de Préstamo de Auto",
+      "intro": "Usa esta calculadora para estimar un pago mensual de auto antes de visitar un dealer o comparar financiamiento. Ayuda a ver cómo precio, inicial, plazo, tasa, seguro y cargos afectan el costo total.",
+      "sections": [
+        [
+          "Quién debe usarla",
+          [
+            "Compradores comparando precios y plazos.",
+            "Personas evaluando si conviene dar más inicial.",
+            "Cualquiera que quiera ver el interés total antes de financiar un vehículo."
+          ]
+        ],
+        [
+          "Datos importantes",
+          [
+            "Precio e inicial determinan el monto financiado.",
+            "Tasa y plazo determinan principal e interés mensual.",
+            "Seguro, registro y adicionales pueden subir el costo mensual real."
+          ]
+        ],
+        [
+          "Cómo interpretar el resultado",
+          [
+            "El pago mensual incluye financiamiento y costos opcionales.",
+            "La tabla de amortización muestra principal e interés cada mes.",
+            "La comparación ayuda a evaluar flujo mensual contra costo total."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Cómo se calcula el pago de auto?",
+          "El pago de principal e interés usa amortización fija. Cargos y seguro se muestran como costos mensuales separados de planificación."
+        ],
+        [
+          "¿Un plazo más largo baja el pago?",
+          "Sí, normalmente baja el pago mensual, pero puede aumentar el interés total y alargar la deuda."
+        ],
+        [
+          "¿Debo incluir seguro?",
+          "Incluir seguro ayuda a estimar el costo mensual real de tener el vehículo, aunque normalmente no sea parte del principal del préstamo."
+        ]
+      ],
+      "related": [
+        "/amortization-calculator",
+        "/extra-payment-calculator",
+        "/",
+        "/personal-loan-calculator"
       ]
     }
   },
-  '/amortization-calculator': {
-    en: { title: 'Loan Amortization Calculator', description: 'View a monthly amortization schedule showing payment, principal, interest, PMI and remaining balance.', heading: 'Loan Amortization Calculator', intro: 'Amortization shows how each loan payment is divided between interest and principal. Early payments usually go more toward interest. Later payments go more toward reducing the balance.', sections: [['Why amortization matters', ['It helps you see the true cost of borrowing.', 'It shows how extra payments reduce interest.', 'It helps you compare loan terms and payoff dates.']], ['What Check My Payments shows', ['Every payment month.', 'Starting and ending balance.', 'Principal paid, interest paid and PMI if applicable.', 'CSV and PDF export options.']]] },
-    es: { title: 'Calculadora de Amortización de Préstamos', description: 'Ve un calendario mensual con pago, principal, interés, PMI y balance restante.', heading: 'Calculadora de Amortización', intro: 'La amortización muestra cómo cada pago se divide entre interés y principal. Al inicio, normalmente se paga más interés. Más adelante, más del pago reduce el balance.', sections: [['Por qué importa', ['Ayuda a ver el costo real de tomar dinero prestado.', 'Muestra cómo los pagos extra reducen interés.', 'Ayuda a comparar plazos y fechas de pago final.']], ['Qué muestra Check My Payments', ['Cada mes de pago.', 'Balance inicial y final.', 'Principal, interés y PMI si aplica.', 'Exportación en CSV y PDF.']]] }
+  "/amortization-calculator": {
+    "en": {
+      "title": "Loan Amortization Calculator | Principal and Interest Schedule",
+      "description": "View a monthly amortization schedule with starting balance, payment, principal, interest, PMI and ending balance for each month.",
+      "heading": "Loan Amortization Calculator",
+      "intro": "Use the amortization calculator to see how every monthly payment is divided between interest and principal. This helps explain why early payments often reduce the balance slowly and why extra payments can save interest.",
+      "sections": [
+        [
+          "What amortization shows",
+          [
+            "Each payment month in the loan schedule.",
+            "Starting balance, payment, principal, interest and ending balance.",
+            "How interest falls as the principal balance declines."
+          ]
+        ],
+        [
+          "Why it matters",
+          [
+            "It shows the true cost of borrowing over time.",
+            "It helps compare a shorter term against a lower monthly payment.",
+            "It makes extra payment savings easier to understand."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "What is amortization?",
+          "Amortization is the process of paying down a loan over time with scheduled payments that include interest and principal."
+        ],
+        [
+          "Why is early interest so high?",
+          "Interest is calculated on the remaining balance, so early payments often include more interest because the balance is still high."
+        ],
+        [
+          "Can I download the schedule?",
+          "Yes. Check My Payments can export the monthly amortization schedule as a CSV and include it in a PDF report."
+        ]
+      ],
+      "related": [
+        "/mortgage-calculator",
+        "/car-loan-calculator",
+        "/extra-payment-calculator"
+      ]
+    },
+    "es": {
+      "title": "Calculadora de Amortización | Calendario de Principal e Interés",
+      "description": "Ve un calendario mensual con balance inicial, pago, principal, interés, PMI y balance final para cada mes.",
+      "heading": "Calculadora de Amortización",
+      "intro": "Usa la calculadora de amortización para ver cómo cada pago mensual se divide entre interés y principal. Esto ayuda a entender por qué al inicio el balance baja lentamente y cómo pagos extra pueden ahorrar interés.",
+      "sections": [
+        [
+          "Qué muestra",
+          [
+            "Cada mes del calendario del préstamo.",
+            "Balance inicial, pago, principal, interés y balance final.",
+            "Cómo baja el interés cuando baja el principal."
+          ]
+        ],
+        [
+          "Por qué importa",
+          [
+            "Muestra el costo real de tomar dinero prestado.",
+            "Ayuda a comparar un plazo corto contra un pago mensual más bajo.",
+            "Hace más fácil entender el ahorro por pagos extra."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Qué es amortización?",
+          "Es el proceso de pagar un préstamo con pagos programados que incluyen interés y principal."
+        ],
+        [
+          "¿Por qué se paga tanto interés al inicio?",
+          "El interés se calcula sobre el balance pendiente, y al inicio el balance todavía es alto."
+        ],
+        [
+          "¿Puedo descargar el calendario?",
+          "Sí. Check My Payments puede exportar la amortización mensual en CSV e incluirla en el reporte PDF."
+        ]
+      ],
+      "related": [
+        "/mortgage-calculator",
+        "/car-loan-calculator",
+        "/extra-payment-calculator"
+      ]
+    }
   },
-  '/extra-payment-calculator': {
-    en: { title: 'Extra Payment Calculator', description: 'Calculate how extra monthly payments can reduce interest and shorten the loan payoff timeline.', heading: 'Extra Payment Calculator', intro: 'Even a small extra payment can reduce interest and shorten the payoff timeline because extra money goes directly toward principal in the calculator.', sections: [['What to test', ['Try an extra monthly payment of 50, 100 or 200 dollars.', 'Compare the payoff time with and without extra payments.', 'Look at total interest saved before deciding.']], ['Important note', ['Some lenders have rules about prepayment or how extra payments are applied. Confirm with your lender before relying on extra payments as a payoff strategy.']]] },
-    es: { title: 'Calculadora de Pagos Extra', description: 'Calcula cómo pagos extra mensuales pueden reducir interés y acortar el tiempo de pago.', heading: 'Calculadora de Pagos Extra', intro: 'Incluso un pago extra pequeño puede reducir interés y acortar el plazo porque el dinero extra se aplica directamente al principal en la calculadora.', sections: [['Qué probar', ['Prueba pagos extra de 50, 100 o 200 dólares mensuales.', 'Compara el plazo con y sin pagos extra.', 'Revisa el interés ahorrado antes de decidir.']], ['Nota importante', ['Algunos prestamistas tienen reglas sobre prepago o cómo se aplican pagos extra. Confirma con tu prestamista antes de depender de esta estrategia.']]] }
+  "/extra-payment-calculator": {
+    "en": {
+      "title": "Extra Payment Calculator | See How Much Interest You Can Save",
+      "description": "Calculate how extra monthly payments may reduce total interest, shorten payoff time and change your amortization schedule.",
+      "heading": "Extra Payment Calculator",
+      "intro": "Use the extra payment calculator to test how adding money to your monthly payment can reduce the balance faster. Even small extra payments can make a meaningful difference over a long loan term.",
+      "sections": [
+        [
+          "What to test",
+          [
+            "Try several extra payment amounts, such as 50, 100 or 200 dollars per month.",
+            "Compare the payoff date with and without extra payments.",
+            "Review interest saved before choosing a payoff strategy."
+          ]
+        ],
+        [
+          "Important limitation",
+          [
+            "Some lenders have prepayment rules or require extra payments to be marked for principal.",
+            "Always confirm how your lender applies extra payments before relying on a payoff plan."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "How do extra payments reduce interest?",
+          "Extra payments reduce principal faster. Since future interest is calculated on the remaining balance, a lower balance usually means less future interest."
+        ],
+        [
+          "Will every lender apply extra payments to principal?",
+          "Not always. Ask your lender how to designate extra payments and whether any prepayment rules apply."
+        ],
+        [
+          "Can extra payments shorten the loan?",
+          "Yes. If extra payments are applied to principal, they can shorten the payoff timeline and reduce total interest."
+        ]
+      ],
+      "related": [
+        "/mortgage-calculator",
+        "/car-loan-calculator",
+        "/amortization-calculator"
+      ]
+    },
+    "es": {
+      "title": "Calculadora de Pagos Extra | Mira Cuánto Interés Puedes Ahorrar",
+      "description": "Calcula cómo pagos extra mensuales pueden reducir interés total, acortar el plazo y cambiar la amortización.",
+      "heading": "Calculadora de Pagos Extra",
+      "intro": "Usa esta calculadora para probar cómo agregar dinero al pago mensual puede reducir el balance más rápido. Incluso pagos pequeños pueden marcar diferencia en préstamos largos.",
+      "sections": [
+        [
+          "Qué probar",
+          [
+            "Prueba pagos extra de 50, 100 o 200 dólares al mes.",
+            "Compara la fecha final con y sin pagos extra.",
+            "Revisa el interés ahorrado antes de elegir una estrategia."
+          ]
+        ],
+        [
+          "Limitación importante",
+          [
+            "Algunos prestamistas tienen reglas de prepago o requieren indicar que el extra va al principal.",
+            "Confirma cómo tu prestamista aplica pagos extra antes de depender de un plan."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Cómo reducen interés los pagos extra?",
+          "Reducen el principal más rápido. Como el interés futuro se calcula sobre el balance, un balance menor normalmente significa menos interés."
+        ],
+        [
+          "¿Todo prestamista aplica extras al principal?",
+          "No siempre. Pregunta cómo indicar pagos extra y si existen reglas de prepago."
+        ],
+        [
+          "¿Los pagos extra acortan el préstamo?",
+          "Sí. Si se aplican al principal, pueden acortar el plazo y reducir interés total."
+        ]
+      ],
+      "related": [
+        "/mortgage-calculator",
+        "/car-loan-calculator",
+        "/amortization-calculator"
+      ]
+    }
   },
-  '/affordability-calculator': {
-    en: { title: 'Loan Affordability Calculator', description: 'Estimate housing ratio, total debt ratio and whether a loan payment may feel comfortable, stretched or risky.', heading: 'Affordability Calculator', intro: 'Affordability is about more than the monthly payment. Check My Payments compares the estimated payment with gross income and other monthly debt to show whether the loan appears comfortable, stretched or risky.', sections: [['The 28 and 36 guideline', ['A common rule of thumb is to keep housing near 28 percent of gross income.', 'Another common rule is to keep total debt near 36 percent of gross income.', 'Real lender limits can be different, so this is only a planning guide.']], ['What to include', ['Mortgage or auto payment.', 'Taxes, insurance, HOA or fees.', 'Credit cards, student loans, car loans and other recurring debts.']]] },
-    es: { title: 'Calculadora de Capacidad de Pago', description: 'Estima ratio de vivienda, ratio total de deuda y si el préstamo parece cómodo, estirado o riesgoso.', heading: 'Calculadora de Capacidad de Pago', intro: 'La capacidad de pago es más que el pago mensual. Check My Payments compara el pago estimado con el ingreso bruto y otras deudas mensuales para indicar si el préstamo parece cómodo, estirado o riesgoso.', sections: [['Guía 28 y 36', ['Una guía común es mantener vivienda cerca del 28 por ciento del ingreso bruto.', 'Otra guía común es mantener deuda total cerca del 36 por ciento.', 'Los límites reales de prestamistas pueden ser diferentes. Esto es solo una guía de planificación.']], ['Qué incluir', ['Pago de hipoteca o auto.', 'Impuestos, seguro, HOA o cargos.', 'Tarjetas, préstamos estudiantiles, autos y otras deudas recurrentes.']]] }
+  "/affordability-calculator": {
+    "en": {
+      "title": "Loan Affordability Calculator | Estimate How Much You Can Borrow",
+      "description": "Estimate whether a loan payment may feel comfortable using income, other debts, housing ratio and total debt ratio planning guides.",
+      "heading": "Loan Affordability Calculator",
+      "intro": "Use the affordability calculator to compare the estimated payment with income and other monthly debt. The goal is to understand whether the payment may feel comfortable, stretched or risky before you borrow.",
+      "sections": [
+        [
+          "How affordability is estimated",
+          [
+            "Housing ratio compares the required housing payment with gross monthly income.",
+            "Total debt ratio compares the required payment plus other monthly debt with gross monthly income.",
+            "The comfort score is an educational guide, not lender approval."
+          ]
+        ],
+        [
+          "What to include",
+          [
+            "Mortgage or auto payment estimates.",
+            "Taxes, insurance, HOA, PMI or recurring fees.",
+            "Credit cards, student loans, car loans and other recurring debts."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "What is the 28/36 guideline?",
+          "It is a common planning rule that suggests keeping housing near 28 percent of gross income and total debt near 36 percent. Real lenders may use different rules."
+        ],
+        [
+          "Is the comfort score an approval decision?",
+          "No. The score is an educational planning tool and is not a loan approval or underwriting decision."
+        ],
+        [
+          "How can I improve affordability?",
+          "A lower price, larger down payment, lower rate, longer term or lower other debts may improve affordability."
+        ]
+      ],
+      "related": [
+        "/mortgage-calculator",
+        "/pmi-calculator",
+        "/",
+        "/personal-loan-calculator"
+      ]
+    },
+    "es": {
+      "title": "Calculadora de Capacidad de Pago | Estima Cuánto Puedes Pedir",
+      "description": "Estima si un pago puede sentirse cómodo usando ingreso, otras deudas y guías de ratio de vivienda y deuda total.",
+      "heading": "Calculadora de Capacidad de Pago",
+      "intro": "Usa esta calculadora para comparar el pago estimado con tus ingresos y otras deudas mensuales. La meta es entender si el pago se siente cómodo, ajustado o riesgoso antes de pedir prestado.",
+      "sections": [
+        [
+          "Cómo se estima",
+          [
+            "El ratio de vivienda compara el pago requerido con el ingreso bruto mensual.",
+            "El ratio total de deuda compara el pago requerido más otras deudas con el ingreso bruto mensual.",
+            "El puntaje de comodidad es educativo, no aprobación de préstamo."
+          ]
+        ],
+        [
+          "Qué incluir",
+          [
+            "Pago estimado de hipoteca o auto.",
+            "Impuestos, seguro, HOA, PMI o cargos recurrentes.",
+            "Tarjetas, préstamos estudiantiles, autos y otras deudas recurrentes."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Qué es la guía 28/36?",
+          "Es una regla común que sugiere mantener vivienda cerca de 28% del ingreso bruto y deuda total cerca de 36%. Prestamistas reales pueden usar otras reglas."
+        ],
+        [
+          "¿El puntaje es aprobación?",
+          "No. Es una herramienta educativa y no una decisión de aprobación o suscripción."
+        ],
+        [
+          "¿Cómo puedo mejorar la capacidad de pago?",
+          "Precio más bajo, mayor inicial, tasa menor, plazo más largo o menos deudas pueden mejorarla."
+        ]
+      ],
+      "related": [
+        "/mortgage-calculator",
+        "/pmi-calculator",
+        "/",
+        "/personal-loan-calculator"
+      ]
+    }
   },
-  '/pmi-calculator': {
-    en: { title: 'PMI Calculator for Mortgages', description: 'Estimate private mortgage insurance for home loans below 20 percent down and see when it may drop off.', heading: 'PMI Calculator', intro: 'Private mortgage insurance, often called PMI, may apply when a home buyer puts less than 20 percent down. Check My Payments estimates PMI as a monthly cost and removes it around 80 percent loan to value.', sections: [['How PMI is estimated', ['Check My Payments uses the annual PMI rate entered by the user.', 'The annual estimate is divided by 12 to estimate monthly PMI.', 'PMI is shown only while the balance is above about 80 percent of the original home value.']], ['Why PMI matters', ['PMI can materially change the first monthly payment.', 'A larger down payment may reduce or remove PMI.', 'Actual PMI depends on lender rules, credit profile and loan type.']]] },
-    es: { title: 'Calculadora de PMI para Hipotecas', description: 'Estima seguro hipotecario privado para hipotecas con menos de 20 por ciento inicial y cuándo puede desaparecer.', heading: 'Calculadora de PMI', intro: 'El seguro hipotecario privado, conocido como PMI, puede aplicar cuando el comprador aporta menos de 20 por ciento inicial. Check My Payments estima el PMI como costo mensual y lo elimina cerca de 80 por ciento LTV.', sections: [['Cómo se estima', ['Check My Payments usa la tasa anual de PMI indicada por el usuario.', 'El estimado anual se divide entre 12 para estimar el PMI mensual.', 'El PMI aparece solo mientras el balance esté por encima de aproximadamente 80 por ciento del valor original.']], ['Por qué importa', ['El PMI puede cambiar mucho el primer pago mensual.', 'Un inicial mayor puede reducir o eliminar PMI.', 'El PMI real depende de reglas del prestamista, crédito y tipo de préstamo.']]] }
+  "/pmi-calculator": {
+    "en": {
+      "title": "PMI Calculator | Estimate Private Mortgage Insurance",
+      "description": "Estimate private mortgage insurance for a home loan with less than 20 percent down and see how it affects the first monthly payment.",
+      "heading": "PMI Calculator",
+      "intro": "Use the PMI calculator to estimate how private mortgage insurance may affect a home loan when the down payment is below 20 percent. The calculator treats PMI as a monthly cost and removes it when the balance reaches about 80 percent loan to value.",
+      "sections": [
+        [
+          "When PMI may apply",
+          [
+            "PMI often applies to conventional mortgages with less than 20 percent down.",
+            "The actual amount depends on lender rules, loan type, credit profile and mortgage details.",
+            "This calculator estimates PMI from the annual rate entered by the user."
+          ]
+        ],
+        [
+          "How to interpret PMI",
+          [
+            "PMI increases the first monthly payment.",
+            "A larger down payment may reduce or remove PMI.",
+            "PMI may drop off later, so the first monthly payment may be higher than later payments."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "What is PMI?",
+          "PMI stands for private mortgage insurance. It may protect the lender when a borrower makes a smaller down payment."
+        ],
+        [
+          "When does PMI go away?",
+          "This calculator estimates PMI until the loan balance reaches about 80 percent of the original home value. Actual rules vary by loan and lender."
+        ],
+        [
+          "Can I avoid PMI?",
+          "A down payment of 20 percent or more may avoid PMI on many conventional loans, but confirm with the lender."
+        ]
+      ],
+      "related": [
+        "/mortgage-calculator",
+        "/affordability-calculator",
+        "/extra-payment-calculator"
+      ]
+    },
+    "es": {
+      "title": "Calculadora de PMI | Estima Seguro Hipotecario Privado",
+      "description": "Estima seguro hipotecario privado para una hipoteca con menos de 20% inicial y cómo afecta el primer pago mensual.",
+      "heading": "Calculadora de PMI",
+      "intro": "Usa esta calculadora para estimar cómo el PMI puede afectar una hipoteca cuando el inicial es menor de 20%. La calculadora trata PMI como costo mensual y lo elimina cuando el balance llega cerca de 80% LTV.",
+      "sections": [
+        [
+          "Cuándo puede aplicar",
+          [
+            "PMI suele aplicar en hipotecas convencionales con menos de 20% inicial.",
+            "El monto real depende de reglas del prestamista, tipo de préstamo, crédito y detalles de la hipoteca.",
+            "Esta calculadora estima PMI usando la tasa anual que ingresa el usuario."
+          ]
+        ],
+        [
+          "Cómo interpretarlo",
+          [
+            "PMI aumenta el primer pago mensual.",
+            "Un inicial mayor puede reducir o eliminar PMI.",
+            "PMI puede desaparecer luego, así que el primer pago puede ser mayor que pagos futuros."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Qué es PMI?",
+          "PMI significa seguro hipotecario privado. Puede proteger al prestamista cuando el prestatario da un inicial menor."
+        ],
+        [
+          "¿Cuándo desaparece PMI?",
+          "Esta calculadora estima PMI hasta que el balance llega cerca de 80% del valor original. Las reglas reales varían."
+        ],
+        [
+          "¿Puedo evitar PMI?",
+          "Un inicial de 20% o más puede evitar PMI en muchas hipotecas convencionales, pero confirma con el prestamista."
+        ]
+      ],
+      "related": [
+        "/mortgage-calculator",
+        "/affordability-calculator",
+        "/extra-payment-calculator"
+      ]
+    }
+  },
+  "/personal-loan-calculator": {
+    "en": {
+      "title": "Personal Loan Calculator | Estimate Monthly Payments and Interest",
+      "description": "Estimate personal loan payments, total interest and payoff timing using loan amount, interest rate, term and optional extra payments.",
+      "heading": "Personal Loan Calculator",
+      "intro": "Use this personal loan calculator to estimate the monthly payment for a fixed-rate installment loan. It can help compare terms, interest rates and extra payment strategies before you borrow.",
+      "sections": [
+        [
+          "What it can estimate",
+          [
+            "Monthly principal and interest payment.",
+            "Total interest over the life of the loan.",
+            "How extra payments may shorten the payoff timeline."
+          ]
+        ],
+        [
+          "What to verify",
+          [
+            "APR, origination fees and lender charges may change the true cost.",
+            "Some loans have prepayment rules or late fees.",
+            "This calculator is for planning, not a lender quote."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "Is a personal loan payment calculated like a car loan?",
+          "Many fixed-rate personal loans use the same installment amortization concept: payment depends on amount borrowed, interest rate and term."
+        ],
+        [
+          "Does APR matter?",
+          "Yes. APR may include certain fees and can be different from the interest rate. Confirm the lender APR before deciding."
+        ],
+        [
+          "Can I use this for debt consolidation?",
+          "You can estimate payment and interest, but compare fees, rates and payoff behavior carefully before consolidating debt."
+        ]
+      ],
+      "related": [
+        "/",
+        "/amortization-calculator",
+        "/extra-payment-calculator",
+        "/apr-vs-interest-rate"
+      ]
+    },
+    "es": {
+      "title": "Calculadora de Préstamo Personal | Estima Pagos e Interés",
+      "description": "Estima pagos de préstamo personal, interés total y plazo usando monto, tasa, término y pagos extra opcionales.",
+      "heading": "Calculadora de Préstamo Personal",
+      "intro": "Usa esta calculadora para estimar el pago mensual de un préstamo personal de tasa fija. Puede ayudar a comparar plazos, tasas y pagos extra antes de tomar prestado.",
+      "sections": [
+        [
+          "Qué puede estimar",
+          [
+            "Pago mensual de principal e interés.",
+            "Interés total durante el préstamo.",
+            "Cómo pagos extra pueden acortar el plazo."
+          ]
+        ],
+        [
+          "Qué verificar",
+          [
+            "APR, cargos de originación y costos del prestamista pueden cambiar el costo real.",
+            "Algunos préstamos tienen reglas de prepago o cargos por retraso.",
+            "Esta calculadora es de planificación, no cotización de prestamista."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Un préstamo personal se calcula como uno de auto?",
+          "Muchos préstamos personales de tasa fija usan amortización: el pago depende del monto, tasa y plazo."
+        ],
+        [
+          "¿Importa el APR?",
+          "Sí. El APR puede incluir ciertos cargos y ser diferente de la tasa de interés. Confirma el APR del prestamista."
+        ],
+        [
+          "¿Sirve para consolidar deuda?",
+          "Puedes estimar pago e interés, pero compara cargos, tasas y comportamiento de pago antes de consolidar."
+        ]
+      ],
+      "related": [
+        "/",
+        "/amortization-calculator",
+        "/extra-payment-calculator",
+        "/apr-vs-interest-rate"
+      ]
+    }
+  },
+  "/apr-vs-interest-rate": {
+    "en": {
+      "title": "APR vs Interest Rate | Understand the Difference Before You Borrow",
+      "description": "Learn the difference between APR and interest rate, why it matters for loan comparisons and how to use both when estimating payments.",
+      "heading": "APR vs Interest Rate",
+      "intro": "Interest rate and APR are related, but they are not always the same. This guide explains the difference in plain language so you can compare loan offers more carefully.",
+      "sections": [
+        [
+          "Simple difference",
+          [
+            "Interest rate is the cost used to calculate interest on the loan balance.",
+            "APR may include interest plus certain lender fees expressed as an annual cost.",
+            "A loan with a lower interest rate is not always the lowest-cost option if fees are high."
+          ]
+        ],
+        [
+          "How to use this with calculators",
+          [
+            "Use the interest rate to estimate monthly principal and interest.",
+            "Use APR to compare total borrowing cost between lender offers.",
+            "Ask the lender which fees are included in APR and which costs are separate."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "Should I enter APR or interest rate in the calculator?",
+          "For the monthly payment formula, enter the interest rate used by the lender to calculate the payment. Use APR separately to compare offer costs."
+        ],
+        [
+          "Can APR be higher than the interest rate?",
+          "Yes. APR is often higher when lender fees are included."
+        ],
+        [
+          "Does a lower APR always mean the best loan?",
+          "Not always. Consider monthly payment, fees, term, prepayment rules and how long you plan to keep the loan."
+        ]
+      ],
+      "related": [
+        "/",
+        "/personal-loan-calculator",
+        "/mortgage-calculator",
+        "/car-loan-calculator"
+      ]
+    },
+    "es": {
+      "title": "APR vs Tasa de Interés | Entiende la Diferencia Antes de Pedir Prestado",
+      "description": "Aprende la diferencia entre APR y tasa de interés, por qué importa al comparar préstamos y cómo usar ambos conceptos.",
+      "heading": "APR vs Tasa de Interés",
+      "intro": "La tasa de interés y el APR están relacionados, pero no siempre son iguales. Esta guía explica la diferencia en lenguaje simple para comparar ofertas con más cuidado.",
+      "sections": [
+        [
+          "Diferencia simple",
+          [
+            "La tasa de interés se usa para calcular interés sobre el balance.",
+            "El APR puede incluir interés más ciertos cargos del prestamista expresados como costo anual.",
+            "Una tasa menor no siempre significa menor costo total si los cargos son altos."
+          ]
+        ],
+        [
+          "Cómo usarlo con calculadoras",
+          [
+            "Usa la tasa de interés para estimar principal e interés mensual.",
+            "Usa APR para comparar costo total entre ofertas.",
+            "Pregunta qué cargos están incluidos en el APR y cuáles son separados."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Debo poner APR o tasa en la calculadora?",
+          "Para la fórmula mensual, ingresa la tasa que el prestamista usa para calcular el pago. Usa APR para comparar costos de ofertas."
+        ],
+        [
+          "¿El APR puede ser mayor que la tasa?",
+          "Sí. El APR suele ser mayor cuando incluye cargos."
+        ],
+        [
+          "¿Un APR menor siempre es mejor?",
+          "No siempre. Considera pago mensual, cargos, plazo, reglas de prepago y cuánto tiempo conservarás el préstamo."
+        ]
+      ],
+      "related": [
+        "/",
+        "/personal-loan-calculator",
+        "/mortgage-calculator",
+        "/car-loan-calculator"
+      ]
+    }
+  },
+  "/monthly-payment-calculator": {
+    "en": {
+      "title": "Monthly Payment Calculator | Estimate Loan Payments Before You Borrow",
+      "description": "Estimate monthly payments for fixed-rate loans and understand how loan amount, interest rate and term change the result.",
+      "heading": "Monthly Payment Calculator",
+      "intro": "Use this monthly payment calculator to estimate what a fixed-rate loan may cost each month. It is designed for simple planning before you compare lender quotes.",
+      "sections": [
+        [
+          "What changes the monthly payment",
+          [
+            "Borrowing more usually increases the payment.",
+            "A higher interest rate usually increases the payment.",
+            "A longer term may lower the payment but increase total interest."
+          ]
+        ],
+        [
+          "How to use the estimate",
+          [
+            "Test several prices, rates and terms.",
+            "Compare the required payment with your income and other debts.",
+            "Download a report or CSV to review the numbers later."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "What is a monthly payment calculator?",
+          "It estimates the amount due each month based on loan amount, interest rate and term, plus optional planning costs."
+        ],
+        [
+          "Why does term length matter?",
+          "Term length spreads repayment over more or fewer months, changing both payment size and total interest."
+        ],
+        [
+          "Are the numbers guaranteed?",
+          "No. They are estimates for education and planning only."
+        ]
+      ],
+      "related": [
+        "/",
+        "/mortgage-calculator",
+        "/car-loan-calculator",
+        "/amortization-calculator"
+      ]
+    },
+    "es": {
+      "title": "Calculadora de Pago Mensual | Estima Pagos Antes de Pedir Prestado",
+      "description": "Estima pagos mensuales para préstamos de tasa fija y entiende cómo monto, tasa y plazo cambian el resultado.",
+      "heading": "Calculadora de Pago Mensual",
+      "intro": "Usa esta calculadora para estimar cuánto puede costar cada mes un préstamo de tasa fija. Está diseñada para planificar antes de comparar cotizaciones.",
+      "sections": [
+        [
+          "Qué cambia el pago",
+          [
+            "Pedir más dinero normalmente aumenta el pago.",
+            "Una tasa más alta normalmente aumenta el pago.",
+            "Un plazo más largo puede bajar el pago pero subir el interés total."
+          ]
+        ],
+        [
+          "Cómo usar el estimado",
+          [
+            "Prueba varios precios, tasas y plazos.",
+            "Compara el pago requerido con ingreso y otras deudas.",
+            "Descarga un reporte o CSV para revisar luego."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Qué es una calculadora de pago mensual?",
+          "Estima cuánto se paga cada mes según monto, tasa y plazo, más costos opcionales de planificación."
+        ],
+        [
+          "¿Por qué importa el plazo?",
+          "El plazo distribuye el pago en más o menos meses, cambiando pago e interés total."
+        ],
+        [
+          "¿Los números están garantizados?",
+          "No. Son estimados educativos y de planificación."
+        ]
+      ],
+      "related": [
+        "/",
+        "/mortgage-calculator",
+        "/car-loan-calculator",
+        "/amortization-calculator"
+      ]
+    }
   }
 };
 
@@ -274,12 +1046,15 @@ function layout(content) {
 }
 function guideLinks() {
   const links = [
-    ['/mortgage-calculator', state.lang === 'es' ? 'Calculadora de Hipoteca' : 'Mortgage Calculator'],
-    ['/car-loan-calculator', state.lang === 'es' ? 'Calculadora de Auto' : 'Car Loan Calculator'],
+    ['/monthly-payment-calculator', state.lang === 'es' ? 'Pago Mensual' : 'Monthly Payment'],
+    ['/mortgage-calculator', state.lang === 'es' ? 'Hipoteca' : 'Mortgage'],
+    ['/car-loan-calculator', state.lang === 'es' ? 'Auto' : 'Car Loan'],
     ['/amortization-calculator', state.lang === 'es' ? 'Amortización' : 'Amortization'],
     ['/extra-payment-calculator', state.lang === 'es' ? 'Pagos Extra' : 'Extra Payments'],
     ['/affordability-calculator', state.lang === 'es' ? 'Capacidad de Pago' : 'Affordability'],
-    ['/pmi-calculator', 'PMI']
+    ['/pmi-calculator', 'PMI'],
+    ['/personal-loan-calculator', state.lang === 'es' ? 'Préstamo Personal' : 'Personal Loan'],
+    ['/apr-vs-interest-rate', state.lang === 'es' ? 'APR vs Tasa' : 'APR vs Rate']
   ];
   return links.map(([path, label]) => `<a href="${path}" data-nav="${path}">${label}</a>`).join('');
 }
@@ -329,6 +1104,7 @@ function calcPage() {
     ${tabs(L)}
     <section id="tabContent">${tabContent(L, r, noExtra, rateUp, housingRatio, totalDebtRatio)}</section>
     ${education(L)}
+    ${calculatorDirectory()}
     <div class="print-report" id="printReport">${printReport(L, r, housingRatio, totalDebtRatio)}</div>
   `;
 }
@@ -722,7 +1498,42 @@ function scheduleTable(L, r, full = false) {
   const rows = full ? r.schedule : r.schedule.slice(0, 24);
   return `<div class="card panel"><h2>${L.scheduleTitle}</h2><p class="copy">${L.scheduleSub}</p><div class="table-wrap"><table><thead><tr>${L.table.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(row => `<tr><td>${row.month}</td><td>${row.year}</td><td>${money2(row.startBalance)}</td><td>${money2(row.totalPayment)}</td><td>${money2(row.principalPaid)}</td><td>${money2(row.interestPaid)}</td><td>${money2(row.pmiPaid)}</td><td>${money2(row.endingBalance)}</td></tr>`).join('')}</tbody></table></div></div>`;
 }
-function education(L) { return `<section class="card education"><h2>${L.eduTitle}</h2><ul>${L.edu.map(x=>`<li>${x}</li>`).join('')}</ul><h2>${L.factorsTitle}</h2><ul>${L.factors.map(x=>`<li>${x}</li>`).join('')}</ul><h2>${L.formulaTitle}</h2><p>${L.formulaText}</p><p><strong>${L.disclaimer}</strong></p></section>`; }
+function education(L) { const faqs = homeFaq(); return `<section class="card education"><h2>${L.eduTitle}</h2><ul>${L.edu.map(x=>`<li>${x}</li>`).join('')}</ul><h2>${L.factorsTitle}</h2><ul>${L.factors.map(x=>`<li>${x}</li>`).join('')}</ul><h2>${L.formulaTitle}</h2><p>${L.formulaText}</p><p><strong>${L.disclaimer}</strong></p>${visibleFaq(faqs)}</section>`; }
+function homeFaq() { return state.lang === 'es' ? [["¿Cómo se calcula el pago mensual?","El pago de principal e interés usa la fórmula estándar de amortización fija. Costos como impuestos, seguro, PMI y HOA se agregan como estimados separados."],["¿Los resultados son una cotización?","No. Los resultados son estimados educativos y no sustituyen una cotización de un prestamista."],["¿Puedo compartir mi cálculo?","Sí. Puedes copiar un enlace del cálculo, descargar CSV o generar un reporte PDF."]] : [["How is the monthly payment calculated?","The principal and interest payment uses the standard fixed-rate amortization formula. Costs such as taxes, insurance, PMI and HOA are added as separate estimates."],["Are the results a lender quote?","No. Results are educational estimates and do not replace a lender quote."],["Can I share my calculation?","Yes. You can copy a calculation link, download CSV or generate a PDF report."]]; }
+
+function calculatorDirectory() {
+  const title = state.lang === 'es' ? 'Explora más calculadoras y guías' : 'Explore more calculators and guides';
+  const intro = state.lang === 'es'
+    ? 'Encuentra páginas específicas para diferentes preguntas: hipoteca, auto, amortización, pagos extra, PMI, capacidad de pago y APR.'
+    : 'Find focused pages for different questions: mortgage, car loans, amortization, extra payments, PMI, affordability and APR.';
+  return `<section class="card education calculator-directory"><h2>${title}</h2><p>${intro}</p><div class="directory-grid">${guideLinks()}</div></section>`;
+}
+function relatedLinks(paths) {
+  if (!paths || !paths.length) return '';
+  const title = state.lang === 'es' ? 'Calculadoras relacionadas' : 'Related calculators and guides';
+  return `<section class="internal-links"><h2>${title}</h2><div class="directory-grid">${paths.map(path => `<a href="${path}" data-nav="${path}">${pageLabel(path)}</a>`).join('')}</div></section>`;
+}
+function pageLabel(path) {
+  const labels = {
+    '/': state.lang === 'es' ? 'Calculadora Simple de Préstamos' : 'Simple Loan Calculator',
+    '/monthly-payment-calculator': state.lang === 'es' ? 'Calculadora de Pago Mensual' : 'Monthly Payment Calculator',
+    '/mortgage-calculator': state.lang === 'es' ? 'Calculadora de Hipoteca' : 'Mortgage Calculator',
+    '/car-loan-calculator': state.lang === 'es' ? 'Calculadora de Auto' : 'Car Loan Calculator',
+    '/amortization-calculator': state.lang === 'es' ? 'Calculadora de Amortización' : 'Amortization Calculator',
+    '/extra-payment-calculator': state.lang === 'es' ? 'Calculadora de Pagos Extra' : 'Extra Payment Calculator',
+    '/affordability-calculator': state.lang === 'es' ? 'Calculadora de Capacidad de Pago' : 'Affordability Calculator',
+    '/pmi-calculator': state.lang === 'es' ? 'Calculadora de PMI' : 'PMI Calculator',
+    '/personal-loan-calculator': state.lang === 'es' ? 'Calculadora de Préstamo Personal' : 'Personal Loan Calculator',
+    '/apr-vs-interest-rate': state.lang === 'es' ? 'APR vs Tasa de Interés' : 'APR vs Interest Rate'
+  };
+  return labels[path] || path;
+}
+function visibleFaq(faq) {
+  if (!faq || !faq.length) return '';
+  const title = state.lang === 'es' ? 'Preguntas frecuentes' : 'Frequently asked questions';
+  return `<section class="faq-section"><h2>${title}</h2>${faq.map(([q,a]) => `<details><summary>${q}</summary><p>${a}</p></details>`).join('')}</section>`;
+}
+
 function page(kind) {
   const L = currentText();
   const map = {
@@ -763,12 +1574,15 @@ function seoPage(path) {
   if (!page) return null;
   const data = page[state.lang] || page.en;
   return `<main class="card page seo-page">
+    <nav class="breadcrumbs"><a href="/" data-nav="/">${state.lang === 'es' ? 'Inicio' : 'Home'}</a><span>›</span><span>${data.heading}</span></nav>
     <div class="kicker">${icon('spark')} ${state.lang === 'es' ? 'Guía de Calculadora' : 'Calculator Guide'}</div>
     <h1>${data.heading}</h1>
     <p class="page-intro">${data.intro}</p>
     <a class="inline-cta" href="/" data-nav="/">${state.lang === 'es' ? 'Abrir calculadora' : 'Open calculator'}</a>
     ${data.sections.map(([title, items]) => `<section><h2>${title}</h2><ul>${items.map(item => `<li>${item}</li>`).join('')}</ul></section>`).join('')}
     <section class="trust-box"><h2>${state.lang === 'es' ? 'Transparencia de cálculo' : 'Calculation transparency'}</h2><p>${currentText().formulaText}</p><p>${currentText().disclaimer}</p></section>
+    ${visibleFaq(data.faq)}
+    ${relatedLinks(data.related)}
   </main>`;
 }
 
@@ -1105,7 +1919,7 @@ function updateSeo(path) {
   const page = seoPages[path]?.[state.lang] || seoPages[path]?.en;
   let title = state.lang === 'es' ? 'Check My Payments | Calculadora Simple de Préstamos' : 'Check My Payments | Simple Loan Calculator';
   let description = state.lang === 'es' ? 'Calcula préstamos de vivienda y auto con amortización mensual, PMI, capacidad de pago, CSV y reporte PDF.' : 'Plan home and car loans with monthly payments, amortization, PMI estimates, affordability ratios, CSV export and printable PDF reports.';
-  if (page) { title = `Check My Payments | ${page.title}`; description = page.description; }
+  if (page) { title = page.title; description = page.description; }
   if (path === '/about') { title = state.lang === 'es' ? 'Check My Payments | Acerca de' : 'Check My Payments | About'; description = state.lang === 'es' ? 'Conoce Check My Payments, una herramienta bilingüe para planificar préstamos de vivienda y auto.' : 'Learn about Check My Payments, a bilingual planning tool for home and auto loans.'; }
   if (path === '/privacy') { title = state.lang === 'es' ? 'Check My Payments | Privacidad' : 'Check My Payments | Privacy Policy'; description = state.lang === 'es' ? 'Política de privacidad de Check My Payments.' : 'Check My Payments privacy policy.'; }
   if (path === '/terms') { title = state.lang === 'es' ? 'Check My Payments | Términos' : 'Check My Payments | Terms of Use'; description = state.lang === 'es' ? 'Términos de uso de Check My Payments.' : 'Check My Payments terms of use.'; }
@@ -1117,6 +1931,7 @@ function updateSeo(path) {
   setMeta('og:url', SITE_URL + path, true);
   setMeta('twitter:title', title);
   setMeta('twitter:description', description);
+  setMeta('twitter:url', SITE_URL + path);
   let canonical = document.querySelector('link[rel="canonical"]');
   if (!canonical) { canonical = document.createElement('link'); canonical.rel = 'canonical'; document.head.appendChild(canonical); }
   canonical.href = SITE_URL + path;
@@ -1124,17 +1939,22 @@ function updateSeo(path) {
 }
 function updateSchema(path, title, description) {
   document.querySelectorAll('script[data-schema="checkmypayments"]').forEach(el => el.remove());
+  const pageData = seoPages[path]?.[state.lang] || seoPages[path]?.en;
   const graph = [
-    { '@type': 'WebSite', '@id': `${SITE_URL}/#website`, name: 'Check My Payments', url: SITE_URL, inLanguage: state.lang },
+    { '@type': 'WebSite', '@id': `${SITE_URL}/#website`, name: 'Check My Payments', url: SITE_URL, inLanguage: state.lang, potentialAction: { '@type': 'SearchAction', target: `${SITE_URL}/?q={search_term_string}`, 'query-input': 'required name=search_term_string' } },
     { '@type': 'Organization', '@id': `${SITE_URL}/#organization`, name: 'Check My Payments', url: SITE_URL, email: CONTACT_EMAIL },
-    { '@type': 'WebPage', '@id': `${SITE_URL}${path}#webpage`, url: `${SITE_URL}${path}`, name: title, description, isPartOf: { '@id': `${SITE_URL}/#website` }, inLanguage: state.lang }
+    { '@type': 'WebPage', '@id': `${SITE_URL}${path}#webpage`, url: `${SITE_URL}${path}`, name: title, description, isPartOf: { '@id': `${SITE_URL}/#website` }, inLanguage: state.lang },
+    { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: state.lang === 'es' ? 'Inicio' : 'Home', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: path === '/' ? (state.lang === 'es' ? 'Calculadora' : 'Calculator') : (pageData?.heading || title), item: `${SITE_URL}${path}` }
+    ] }
   ];
   if (path === '/' || path.includes('calculator')) {
     graph.push({ '@type': 'SoftwareApplication', name: 'Check My Payments', applicationCategory: 'FinanceApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, url: `${SITE_URL}${path}` });
-    graph.push({ '@type': 'FAQPage', mainEntity: [
-      { '@type': 'Question', name: state.lang === 'es' ? '¿Cómo calcula Check My Payments el pago mensual?' : 'How does Check My Payments calculate the monthly payment?', acceptedAnswer: { '@type': 'Answer', text: currentText().formulaText } },
-      { '@type': 'Question', name: state.lang === 'es' ? '¿Los resultados son una cotización de préstamo?' : 'Are the results a lender quote?', acceptedAnswer: { '@type': 'Answer', text: currentText().disclaimer } }
-    ]});
+  }
+  const faq = pageData?.faq || (path === '/' ? homeFaq() : null);
+  if (faq && faq.length) {
+    graph.push({ '@type': 'FAQPage', mainEntity: faq.map(([q,a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
   }
   const script = document.createElement('script');
   script.type = 'application/ld+json';

@@ -1,34 +1,29 @@
-# Check My Payments v24.2.0
+# Check My Payments v24.3
 
-Small infrastructure update for Check My Payments.
+Stable static website for https://www.checkmypayments.com.
 
-## Purpose
+## Permanent core infrastructure
 
-Version 24.2 confirms and preserves the permanent global Google Analytics installation.
+Do not remove or replace these unless intentionally decided:
 
-## Google Analytics
+- Google Analytics Measurement ID: `G-R3GM5FZB6T`
+- `robots.txt`
+- `sitemap.xml`
+- Canonical domain: `https://www.checkmypayments.com`
 
-Measurement ID: `G-R3GM5FZB6T`
+## Version 24.3 SEO improvements
 
-The official Google tag is installed globally in `index.html` inside the document `<head>`, so it loads on every page of the static single-page website, including all routed pages such as `/about`, `/privacy`, `/terms`, `/contact`, and the calculator guide pages.
+- Expanded calculator pages with unique titles, meta descriptions, H1s, visible helpful introductions, formula explanations and FAQs.
+- Added visible FAQ content to support compliant FAQPage structured data.
+- Added BreadcrumbList structured data and improved WebPage, WebSite, Organization and SoftwareApplication structured data.
+- Added internal links between related calculators and guides.
+- Added new focused pages for monthly payment calculator, personal loan calculator and APR vs interest rate.
+- Preserved Google Analytics, robots.txt, sitemap.xml and canonical www domain.
 
-This Analytics tag should remain a permanent core part of future builds unless it is intentionally removed or replaced.
-
-## Version
-
-Visible site version: `v24.2.0`
-Package version: `24.2.0`
-
-## Notes
-
-No calculator logic, design, layout, mobile behavior, colors, typography, or user-facing text was changed, except for the visible version number.
-
-## Checks
-
-Run:
+## Build
 
 ```bash
 npm run build
-node --check app.js
-npm audit --omit=dev
 ```
+
+The build copies the static site files into `dist` for Vercel.
