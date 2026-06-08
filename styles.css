@@ -952,3 +952,33 @@ th { position: sticky; top: 0; z-index: 1; background: #11172b; color: var(--sof
     text-align: center;
   }
 }
+
+
+/* v24.4.1 logo centering fix */
+.brand {
+  align-items: center;
+}
+.logo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.logo svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 25px;
+  height: 25px;
+  display: block;
+  transform: translate(-50%, -50%);
+  transform-origin: center center;
+  margin: 0;
+}
+@media (max-width: 720px) {
+  .logo svg {
+    width: 24px;
+    height: 24px;
+  }
+}

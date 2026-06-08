@@ -32,3 +32,8 @@ The build copies the static site files into `dist` for Vercel.
 ## Version 24.4 visual polish
 
 This release improves the Open Calculator button contrast, centers the brand calculator icon, adds a branded favicon, preserves Google Analytics G-R3GM5FZB6T, and keeps robots.txt and sitemap.xml as permanent core files.
+
+
+## Version 24.4.1 logo centering fix
+
+This follow-up patch tightens the brand icon alignment so the small calculator icon is mathematically centered inside its rounded container on desktop and mobile.
