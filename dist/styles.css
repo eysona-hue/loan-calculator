@@ -893,3 +893,62 @@ th { position: sticky; top: 0; z-index: 1; background: #11172b; color: var(--sof
     padding: 12px 14px;
   }
 }
+
+/* v24.4 visual polish: button contrast, brand icon alignment, favicon consistency */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 44px;
+  line-height: 1;
+  overflow: hidden;
+}
+.logo svg {
+  width: 25px;
+  height: 25px;
+  display: block;
+  transform: translateY(0);
+  stroke-width: 2.35;
+}
+.page a.inline-cta,
+.inline-cta {
+  color: #03111d !important;
+  background: linear-gradient(135deg, #7ff4ff 0%, #57ddec 52%, #39c6dc 100%);
+  border: 1px solid rgba(255,255,255,.38);
+  box-shadow: 0 14px 34px rgba(57,198,220,.24), inset 0 1px 0 rgba(255,255,255,.44);
+  text-shadow: none;
+  font-weight: 950;
+}
+.page a.inline-cta:hover,
+.inline-cta:hover {
+  color: #020b14 !important;
+  background: linear-gradient(135deg, #9af8ff 0%, #68e7f5 55%, #45d0e4 100%);
+  transform: translateY(-1px);
+}
+.page a.inline-cta:focus-visible,
+.inline-cta:focus-visible {
+  outline: 3px solid rgba(255,255,255,.88);
+  outline-offset: 4px;
+}
+.page a.inline-cta:active,
+.inline-cta:active {
+  transform: translateY(1px);
+}
+@media (max-width: 720px) {
+  .logo {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 15px;
+  }
+  .logo svg {
+    width: 24px;
+    height: 24px;
+  }
+  .page a.inline-cta,
+  .inline-cta {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}

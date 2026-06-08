@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Check My Payments calculator icon">
+  <defs>
+    <linearGradient id="bg" x1="8" y1="4" x2="58" y2="62" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#64e7f4"/>
+      <stop offset="0.55" stop-color="#18465e"/>
+      <stop offset="1" stop-color="#071024"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="17" y1="15" x2="47" y2="47" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f3fbff"/>
+      <stop offset="1" stop-color="#b9c9df"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="#071024"/>
+  <rect x="5" y="5" width="54" height="54" rx="16" fill="url(#bg)" opacity="0.96"/>
+  <rect x="17" y="12" width="30" height="40" rx="5" fill="none" stroke="url(#screen)" stroke-width="4.8"/>
+  <path d="M23 22h18" stroke="#e9fbff" stroke-width="4.6" stroke-linecap="round"/>
+  <circle cx="24" cy="32" r="3.2" fill="#d7e5f6"/>
+  <circle cx="32" cy="32" r="3.2" fill="#d7e5f6"/>
+  <circle cx="40" cy="32" r="3.2" fill="#d7e5f6"/>
+  <circle cx="24" cy="42" r="3.2" fill="#d7e5f6"/>
+  <circle cx="32" cy="42" r="3.2" fill="#66e4f2"/>
+  <circle cx="40" cy="42" r="3.2" fill="#d7e5f6"/>
+  <path d="M44.5 10.5l3.4 3.4 7.6-8.2" fill="none" stroke="#66e4f2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

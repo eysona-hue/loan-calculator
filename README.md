@@ -11,7 +11,7 @@ Do not remove or replace these unless intentionally decided:
 - `sitemap.xml`
 - Canonical domain: `https://www.checkmypayments.com`
 
-## Version 24.3 SEO improvements
+## Version 24.4 SEO improvements
 
 - Expanded calculator pages with unique titles, meta descriptions, H1s, visible helpful introductions, formula explanations and FAQs.
 - Added visible FAQ content to support compliant FAQPage structured data.
@@ -27,3 +27,8 @@ npm run build
 ```
 
 The build copies the static site files into `dist` for Vercel.
+
+
+## Version 24.4 visual polish
+
+This release improves the Open Calculator button contrast, centers the brand calculator icon, adds a branded favicon, preserves Google Analytics G-R3GM5FZB6T, and keeps robots.txt and sitemap.xml as permanent core files.
