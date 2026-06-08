@@ -37,3 +37,8 @@ This release improves the Open Calculator button contrast, centers the brand cal
 ## Version 24.4.1 logo centering fix
 
 This follow-up patch tightens the brand icon alignment so the small calculator icon is mathematically centered inside its rounded container on desktop and mobile.
+
+
+## Version 24.5 SEO content quality update
+
+Adds educational guide pages for loan payment calculation, amortization, interest rates, extra payments, PMI, loan term tradeoffs, principal versus interest, loan offer comparison, and total loan cost. Preserves Google Analytics G-R3GM5FZB6T, robots.txt, sitemap.xml, canonical www domain, calculator logic, favicon, and previous mobile/desktop behavior.

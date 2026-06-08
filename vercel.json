@@ -59,6 +59,50 @@
     {
       "source": "/apr-vs-interest-rate",
       "destination": "/index.html"
+    },
+    {
+      "source": "/how-to-calculate-monthly-loan-payments",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/how-extra-payments-reduce-interest",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/how-amortization-works",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/how-interest-rates-affect-payments",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/30-year-vs-15-year-mortgage",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/how-much-car-loan-can-i-afford",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/what-is-pmi",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/loan-term-vs-monthly-payment",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/principal-vs-interest",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/how-to-compare-loan-offers",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/how-to-estimate-total-loan-cost",
+      "destination": "/index.html"
     }
   ]
 }

@@ -1,6 +1,6 @@
 const CONTACT_EMAIL = 'loancal@altmail.kr';
 const SITE_URL = 'https://www.checkmypayments.com';
-const APP_VERSION = '24.4.1';
+const APP_VERSION = '24.5.0';
 
 const palette = ['#66e4f2', '#a78bfa', '#fbbf24', '#34d399', '#fb7185', '#60a5fa'];
 const state = {
@@ -41,8 +41,8 @@ const t = {
   en: {
     brandSub: 'A simple loan calculator to estimate monthly payments before you borrow', calc: 'Calculator', about: 'About', privacy: 'Privacy', terms: 'Terms', contact: 'Contact', reset: 'Reset',
     topAd: 'Future Google AdSense banner', sideAd: 'Future Google AdSense sidebar ad', midAd: 'Future Google AdSense in-content ad',
-    kicker: 'Smart calculator for home and auto loans', hero: 'Check My Payments',
-    lead: 'A simple loan calculator to help you estimate monthly payments, compare loan terms, and understand total cost before you borrow.',
+    kicker: 'Smart calculator for home and auto loans', hero: 'Simple Loan Calculator',
+    lead: 'Use Check My Payments to estimate monthly payments, compare loan terms, and understand total cost before you borrow.',
     startNote: 'Start here: enter your loan details below, then review the payment, charts, CSV, and PDF report.',
     homeLoan: 'Home Loan', homeSub: 'Mortgage, taxes, insurance, HOA', carLoan: 'Car Loan', carSub: 'Financing, insurance, fees, add ons',
     labels: { priceHome: 'Home Price', priceCar: 'Vehicle Price', downPayment: 'Down Payment', rate: 'Interest Rate', years: 'Loan Term', taxesHome: 'Annual Property Taxes', taxesCar: 'Annual Registration / Fees', insurance: 'Annual Insurance', hoaHome: 'Monthly HOA', hoaCar: 'Monthly Warranty / Add Ons', extra: 'Extra Monthly Payment', pmi: 'PMI Annual Rate', income: 'Gross Annual Income', debt: 'Other Monthly Debt' },
@@ -70,8 +70,8 @@ const t = {
   es: {
     brandSub: 'Calculadora simple para estimar pagos mensuales antes de tomar un préstamo', calc: 'Calculadora', about: 'Acerca de', privacy: 'Privacidad', terms: 'Términos', contact: 'Contacto', reset: 'Reiniciar',
     topAd: 'Espacio futuro para anuncio superior de Google AdSense', sideAd: 'Espacio futuro para anuncio lateral de Google AdSense', midAd: 'Espacio futuro para anuncio interno de Google AdSense',
-    kicker: 'Calculadora inteligente para préstamos de vivienda y autos', hero: 'Check My Payments',
-    lead: 'Una calculadora simple para estimar pagos mensuales, comparar plazos y entender el costo total antes de tomar un préstamo.',
+    kicker: 'Calculadora inteligente para préstamos de vivienda y autos', hero: 'Calculadora Simple de Préstamos',
+    lead: 'Usa Check My Payments para estimar pagos mensuales, comparar plazos y entender el costo total antes de tomar un préstamo.',
     startNote: 'Empieza aquí: ingresa los datos de tu préstamo abajo, luego revisa el pago, las gráficas, el CSV y el reporte PDF.',
     homeLoan: 'Préstamo de Vivienda', homeSub: 'Hipoteca, impuestos, seguro, HOA', carLoan: 'Préstamo de Auto', carSub: 'Financiamiento, seguro, cargos, adicionales',
     labels: { priceHome: 'Precio de la Vivienda', priceCar: 'Precio del Vehículo', downPayment: 'Inicial', rate: 'Tasa de Interés', years: 'Plazo del Préstamo', taxesHome: 'Impuestos Anuales de Propiedad', taxesCar: 'Registro / Cargos Anuales', insurance: 'Seguro Anual', hoaHome: 'HOA Mensual', hoaCar: 'Garantía / Adicionales Mensuales', extra: 'Pago Extra Mensual', pmi: 'Tasa Anual de PMI', income: 'Ingreso Bruto Anual', debt: 'Otras Deudas Mensuales' },
@@ -936,6 +936,1122 @@ const seoPages = {
   }
 };
 
+const seoExpansionPages = {
+  "/how-to-calculate-monthly-loan-payments": {
+    "en": {
+      "title": "How to Calculate Monthly Loan Payments | Check My Payments",
+      "description": "Learn how monthly loan payments are estimated using loan amount, interest rate, loan term and amortization, then use the calculator to test your numbers.",
+      "heading": "How to Calculate Monthly Loan Payments",
+      "intro": "Monthly loan payments are easier to understand when you separate the loan amount, interest rate, term and optional costs. This guide explains the basic logic in plain language and points you to the calculator for your own estimate.",
+      "sections": [
+        [
+          "What the payment depends on",
+          [
+            "The loan amount is usually the price minus your down payment.",
+            "The interest rate controls how much interest is charged each month.",
+            "The term controls how many months you have to repay the balance."
+          ]
+        ],
+        [
+          "How to use the calculator",
+          [
+            "Enter the price, down payment, rate and term first.",
+            "Then add taxes, insurance, HOA, fees or extra payments if they apply.",
+            "Compare the monthly payment with the total interest so you do not focus only on the lowest payment."
+          ]
+        ],
+        [
+          "Important estimate limits",
+          [
+            "A lender quote may include APR, closing costs, escrow rules or fees not shown here.",
+            "Use this as a planning tool, not as approval or a guaranteed loan offer."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "What is the basic payment formula?",
+          "Fixed-rate installment loans generally use an amortization formula that spreads principal and interest over the loan term."
+        ],
+        [
+          "Why does interest rate matter so much?",
+          "A higher rate increases the cost of borrowing and can raise both monthly payment and total interest."
+        ],
+        [
+          "Is this financial advice?",
+          "No. This guide and calculator are educational estimates only."
+        ]
+      ],
+      "related": [
+        "/monthly-payment-calculator",
+        "/amortization-calculator",
+        "/mortgage-calculator",
+        "/car-loan-calculator"
+      ]
+    },
+    "es": {
+      "title": "Cómo Calcular Pagos Mensuales de Préstamo | Check My Payments",
+      "description": "Aprende cómo se estiman pagos mensuales con monto, tasa, plazo y amortización, y usa la calculadora para probar tus números.",
+      "heading": "Cómo Calcular Pagos Mensuales de Préstamo",
+      "intro": "Los pagos mensuales se entienden mejor separando monto del préstamo, tasa, plazo y costos opcionales. Esta guía explica la lógica básica y te lleva a la calculadora.",
+      "sections": [
+        [
+          "De qué depende el pago",
+          [
+            "El monto suele ser el precio menos la inicial.",
+            "La tasa determina cuánto interés se cobra cada mes.",
+            "El plazo determina cuántos meses tienes para pagar."
+          ]
+        ],
+        [
+          "Cómo usar la calculadora",
+          [
+            "Ingresa precio, inicial, tasa y plazo primero.",
+            "Luego agrega impuestos, seguro, HOA, cargos o pagos extra si aplican.",
+            "Compara pago mensual con interés total, no solo el pago más bajo."
+          ]
+        ],
+        [
+          "Límites del estimado",
+          [
+            "Una cotización puede incluir APR, costos de cierre, reglas de escrow o cargos adicionales.",
+            "Úsalo para planificación, no como aprobación o oferta garantizada."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Cuál es la fórmula básica?",
+          "Los préstamos a tasa fija normalmente usan una fórmula de amortización que reparte principal e interés en el plazo."
+        ],
+        [
+          "¿Por qué importa tanto la tasa?",
+          "Una tasa más alta aumenta el costo de pedir prestado y puede subir el pago y el interés total."
+        ],
+        [
+          "¿Esto es asesoría financiera?",
+          "No. Es un estimado educativo solamente."
+        ]
+      ],
+      "related": [
+        "/monthly-payment-calculator",
+        "/amortization-calculator",
+        "/mortgage-calculator",
+        "/car-loan-calculator"
+      ]
+    }
+  },
+  "/how-extra-payments-reduce-interest": {
+    "en": {
+      "title": "How Extra Payments Reduce Loan Interest | Check My Payments",
+      "description": "Learn how extra monthly payments can reduce principal faster, lower total interest and shorten loan payoff time.",
+      "heading": "How Extra Payments Reduce Interest",
+      "intro": "Extra payments can be powerful because they usually go toward reducing the remaining balance. A lower balance means less interest is charged in future months.",
+      "sections": [
+        [
+          "Why extra payments help",
+          [
+            "Interest is calculated from the remaining balance.",
+            "When extra money reduces principal, future interest charges can fall.",
+            "Small extra payments can add up over long loan terms."
+          ]
+        ],
+        [
+          "What to check first",
+          [
+            "Confirm that your lender applies extra payments to principal.",
+            "Ask whether there are prepayment penalties or special instructions.",
+            "Keep emergency savings before committing to aggressive extra payments."
+          ]
+        ],
+        [
+          "How to compare",
+          [
+            "Use the extra payment calculator to compare no extra payment versus a monthly extra payment.",
+            "Review both interest saved and payoff time saved."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "Do extra payments always save interest?",
+          "They usually save interest on amortizing loans when applied to principal, but lender rules matter."
+        ],
+        [
+          "Should I pay extra every month?",
+          "It depends on your budget, emergency savings and other debt priorities."
+        ],
+        [
+          "Can this calculator guarantee savings?",
+          "No. It provides estimates based on the inputs you enter."
+        ]
+      ],
+      "related": [
+        "/extra-payment-calculator",
+        "/amortization-calculator",
+        "/mortgage-calculator",
+        "/car-loan-calculator"
+      ]
+    },
+    "es": {
+      "title": "Cómo los Pagos Extra Reducen Intereses | Check My Payments",
+      "description": "Aprende cómo pagos extra mensuales pueden reducir principal, bajar interés total y acortar el plazo del préstamo.",
+      "heading": "Cómo los Pagos Extra Reducen Intereses",
+      "intro": "Los pagos extra pueden ayudar porque normalmente reducen el balance pendiente. Un balance menor significa menos interés en meses futuros.",
+      "sections": [
+        [
+          "Por qué ayudan",
+          [
+            "El interés se calcula sobre el balance pendiente.",
+            "Cuando el extra reduce principal, los intereses futuros pueden bajar.",
+            "Pagos pequeños pueden acumularse durante plazos largos."
+          ]
+        ],
+        [
+          "Qué confirmar primero",
+          [
+            "Confirma que el prestamista aplique el extra a principal.",
+            "Pregunta si hay penalidades por prepago o instrucciones especiales.",
+            "Mantén ahorros de emergencia antes de pagar extra agresivamente."
+          ]
+        ],
+        [
+          "Cómo comparar",
+          [
+            "Compara sin pago extra contra un pago extra mensual.",
+            "Revisa interés ahorrado y tiempo reducido."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Los pagos extra siempre ahorran interés?",
+          "Normalmente sí si se aplican a principal, pero las reglas del prestamista importan."
+        ],
+        [
+          "¿Conviene pagar extra cada mes?",
+          "Depende de tu presupuesto, ahorros y otras deudas."
+        ],
+        [
+          "¿La calculadora garantiza ahorros?",
+          "No. Da estimados según los datos ingresados."
+        ]
+      ],
+      "related": [
+        "/extra-payment-calculator",
+        "/amortization-calculator",
+        "/mortgage-calculator",
+        "/car-loan-calculator"
+      ]
+    }
+  },
+  "/how-amortization-works": {
+    "en": {
+      "title": "How Amortization Works | Principal and Interest Explained",
+      "description": "Understand how amortization schedules split payments between interest and principal over time.",
+      "heading": "How Amortization Works",
+      "intro": "Amortization is the process of paying down a loan through scheduled payments. Each payment usually includes interest plus principal, but the mix changes over time.",
+      "sections": [
+        [
+          "Early payments",
+          [
+            "Early in a loan, more of the payment often goes to interest.",
+            "This happens because the balance is still high."
+          ]
+        ],
+        [
+          "Later payments",
+          [
+            "As the balance falls, more of each payment can reduce principal.",
+            "This is why payoff accelerates later in the schedule."
+          ]
+        ],
+        [
+          "How to use a schedule",
+          [
+            "Look at starting balance, interest, principal and ending balance month by month.",
+            "Use the schedule to understand total cost and payoff timing."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "What is an amortization schedule?",
+          "It is a table showing how each payment affects balance, principal and interest."
+        ],
+        [
+          "Why is early principal low?",
+          "Interest is based on the remaining balance, which is largest early in the loan."
+        ],
+        [
+          "Can extra payments change amortization?",
+          "Yes. Extra principal payments can reduce future interest and shorten the schedule."
+        ]
+      ],
+      "related": [
+        "/amortization-calculator",
+        "/extra-payment-calculator",
+        "/principal-vs-interest",
+        "/how-to-calculate-monthly-loan-payments"
+      ]
+    },
+    "es": {
+      "title": "Cómo Funciona la Amortización | Principal e Interés",
+      "description": "Entiende cómo una tabla de amortización divide los pagos entre interés y principal a través del tiempo.",
+      "heading": "Cómo Funciona la Amortización",
+      "intro": "La amortización es el proceso de pagar un préstamo con pagos programados. Cada pago suele incluir interés y principal, pero la mezcla cambia con el tiempo.",
+      "sections": [
+        [
+          "Pagos iniciales",
+          [
+            "Al inicio, más del pago suele ir a interés.",
+            "Esto ocurre porque el balance todavía es alto."
+          ]
+        ],
+        [
+          "Pagos posteriores",
+          [
+            "A medida que baja el balance, más del pago reduce principal.",
+            "Por eso el pago del balance acelera con el tiempo."
+          ]
+        ],
+        [
+          "Cómo leer la tabla",
+          [
+            "Revisa balance inicial, interés, principal y balance final cada mes.",
+            "Úsala para entender costo total y fecha de pago final."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Qué es una tabla de amortización?",
+          "Una tabla que muestra cómo cada pago afecta balance, principal e interés."
+        ],
+        [
+          "¿Por qué el principal es bajo al inicio?",
+          "Porque el interés se basa en el balance pendiente, que es mayor al inicio."
+        ],
+        [
+          "¿Los pagos extra cambian la amortización?",
+          "Sí. Pueden reducir interés futuro y acortar el calendario."
+        ]
+      ],
+      "related": [
+        "/amortization-calculator",
+        "/extra-payment-calculator",
+        "/principal-vs-interest",
+        "/how-to-calculate-monthly-loan-payments"
+      ]
+    }
+  },
+  "/how-interest-rates-affect-payments": {
+    "en": {
+      "title": "How Interest Rates Affect Monthly Payments | Check My Payments",
+      "description": "See why a higher interest rate can raise monthly payments and total interest, even when the loan amount stays the same.",
+      "heading": "How Interest Rates Affect Monthly Payments",
+      "intro": "Interest rate is one of the biggest drivers of loan cost. Even a small rate change can affect the payment and the total interest paid over the loan term.",
+      "sections": [
+        [
+          "Monthly payment effect",
+          [
+            "A higher rate increases the interest charged each month.",
+            "This usually raises the required payment for the same loan amount and term."
+          ]
+        ],
+        [
+          "Total cost effect",
+          [
+            "The longer the term, the more time interest has to accumulate.",
+            "Rate changes can be especially important on long mortgages."
+          ]
+        ],
+        [
+          "What to test",
+          [
+            "Compare your loan at the current rate, plus 0.50%, and minus 0.50%.",
+            "Review both monthly payment and total interest."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "Does a lower rate always save money?",
+          "Usually it lowers interest, but fees and APR should also be reviewed."
+        ],
+        [
+          "Should I use APR or interest rate?",
+          "Use the payment interest rate for the calculator and APR to compare broader offer costs."
+        ],
+        [
+          "Can rates change after a quote?",
+          "Yes. Confirm terms directly with a lender."
+        ]
+      ],
+      "related": [
+        "/apr-vs-interest-rate",
+        "/monthly-payment-calculator",
+        "/mortgage-calculator",
+        "/car-loan-calculator"
+      ]
+    },
+    "es": {
+      "title": "Cómo las Tasas Afectan los Pagos Mensuales | Check My Payments",
+      "description": "Mira por qué una tasa más alta puede subir pagos mensuales e interés total aunque el monto sea igual.",
+      "heading": "Cómo las Tasas Afectan los Pagos Mensuales",
+      "intro": "La tasa de interés es uno de los factores principales del costo de un préstamo. Un cambio pequeño puede afectar pago mensual e interés total.",
+      "sections": [
+        [
+          "Efecto en el pago",
+          [
+            "Una tasa más alta aumenta el interés mensual.",
+            "Esto normalmente sube el pago requerido para el mismo monto y plazo."
+          ]
+        ],
+        [
+          "Efecto en costo total",
+          [
+            "Mientras más largo el plazo, más tiempo se acumula interés.",
+            "Los cambios de tasa son muy importantes en hipotecas largas."
+          ]
+        ],
+        [
+          "Qué probar",
+          [
+            "Compara tu préstamo con la tasa actual, +0.50% y -0.50%.",
+            "Revisa pago mensual e interés total."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Una tasa menor siempre ahorra dinero?",
+          "Normalmente reduce interés, pero también debes revisar cargos y APR."
+        ],
+        [
+          "¿Uso APR o tasa?",
+          "Usa la tasa para calcular el pago y APR para comparar costos generales."
+        ],
+        [
+          "¿La tasa puede cambiar?",
+          "Sí. Confirma términos con el prestamista."
+        ]
+      ],
+      "related": [
+        "/apr-vs-interest-rate",
+        "/monthly-payment-calculator",
+        "/mortgage-calculator",
+        "/car-loan-calculator"
+      ]
+    }
+  },
+  "/30-year-vs-15-year-mortgage": {
+    "en": {
+      "title": "30-Year vs 15-Year Mortgage | Payment and Interest Tradeoffs",
+      "description": "Compare how 30-year and 15-year mortgages affect monthly payment, total interest and payoff speed.",
+      "heading": "30-Year vs 15-Year Mortgage",
+      "intro": "A 30-year mortgage usually offers a lower monthly payment, while a 15-year mortgage usually costs more each month but can reduce total interest and payoff time.",
+      "sections": [
+        [
+          "30-year mortgage",
+          [
+            "Usually lower monthly payment.",
+            "More flexibility for monthly cash flow.",
+            "Often more total interest because the loan lasts longer."
+          ]
+        ],
+        [
+          "15-year mortgage",
+          [
+            "Usually higher monthly payment.",
+            "Faster payoff and often much less total interest.",
+            "May feel tight if the payment leaves little budget room."
+          ]
+        ],
+        [
+          "How to decide",
+          [
+            "Compare both monthly payment and total interest.",
+            "Consider emergency savings, income stability and other debt."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "Is a 15-year mortgage always better?",
+          "Not always. It can save interest but may create a higher monthly burden."
+        ],
+        [
+          "Can extra payments make a 30-year loan act like a shorter loan?",
+          "Extra payments can shorten payoff while keeping the required payment lower, but discipline is required."
+        ],
+        [
+          "Should I compare both options?",
+          "Yes. Use the calculator to compare cash flow and total cost."
+        ]
+      ],
+      "related": [
+        "/mortgage-calculator",
+        "/extra-payment-calculator",
+        "/affordability-calculator",
+        "/loan-term-vs-monthly-payment"
+      ]
+    },
+    "es": {
+      "title": "Hipoteca a 30 Años vs 15 Años | Pago e Interés",
+      "description": "Compara cómo hipotecas de 30 y 15 años afectan pago mensual, interés total y velocidad de pago.",
+      "heading": "Hipoteca a 30 Años vs 15 Años",
+      "intro": "Una hipoteca a 30 años suele tener pago mensual menor. Una a 15 años suele costar más al mes, pero puede reducir interés total y tiempo de pago.",
+      "sections": [
+        [
+          "Hipoteca a 30 años",
+          [
+            "Pago mensual normalmente menor.",
+            "Más flexibilidad mensual.",
+            "Suele tener más interés total por durar más."
+          ]
+        ],
+        [
+          "Hipoteca a 15 años",
+          [
+            "Pago mensual normalmente más alto.",
+            "Pago final más rápido y menos interés total.",
+            "Puede ser apretada si deja poco margen en el presupuesto."
+          ]
+        ],
+        [
+          "Cómo decidir",
+          [
+            "Compara pago mensual e interés total.",
+            "Considera ahorros, estabilidad de ingresos y otras deudas."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Siempre es mejor 15 años?",
+          "No siempre. Puede ahorrar interés, pero sube el pago mensual."
+        ],
+        [
+          "¿Pagos extra pueden acortar una hipoteca de 30 años?",
+          "Sí. Pueden reducir el plazo manteniendo un pago requerido más bajo, pero requiere disciplina."
+        ],
+        [
+          "¿Debo comparar ambas?",
+          "Sí. Compara flujo mensual y costo total."
+        ]
+      ],
+      "related": [
+        "/mortgage-calculator",
+        "/extra-payment-calculator",
+        "/affordability-calculator",
+        "/loan-term-vs-monthly-payment"
+      ]
+    }
+  },
+  "/how-much-car-loan-can-i-afford": {
+    "en": {
+      "title": "How Much Car Loan Can I Afford? | Check My Payments",
+      "description": "Estimate a comfortable car payment by considering income, other debt, insurance, fees and total loan cost.",
+      "heading": "How Much Car Loan Can I Afford?",
+      "intro": "A car payment should be viewed alongside insurance, fees, maintenance, fuel and other debts. This guide helps you think beyond the advertised monthly payment.",
+      "sections": [
+        [
+          "Start with income and debt",
+          [
+            "Compare the payment to your monthly income.",
+            "Include other monthly debts before deciding if the payment is comfortable."
+          ]
+        ],
+        [
+          "Remember ownership costs",
+          [
+            "Insurance, registration, repairs and fuel can change affordability.",
+            "A lower payment with a long term may still cost more interest."
+          ]
+        ],
+        [
+          "Use a comfort margin",
+          [
+            "Leave room for emergencies and income changes.",
+            "Test a higher interest rate or shorter term before deciding."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "Should I include insurance?",
+          "Yes, including insurance gives a better view of the real monthly cost."
+        ],
+        [
+          "Is the lowest monthly payment always best?",
+          "No. A longer term can lower payment but increase total interest."
+        ],
+        [
+          "Can this tell me what a lender will approve?",
+          "No. It is a planning estimate, not an approval tool."
+        ]
+      ],
+      "related": [
+        "/car-loan-calculator",
+        "/affordability-calculator",
+        "/extra-payment-calculator",
+        "/loan-term-vs-monthly-payment"
+      ]
+    },
+    "es": {
+      "title": "¿Cuánto Préstamo de Auto Puedo Pagar? | Check My Payments",
+      "description": "Estima un pago de auto cómodo considerando ingresos, deudas, seguro, cargos y costo total.",
+      "heading": "¿Cuánto Préstamo de Auto Puedo Pagar?",
+      "intro": "Un pago de auto debe verse junto con seguro, cargos, mantenimiento, combustible y otras deudas. Esta guía ayuda a pensar más allá del pago anunciado.",
+      "sections": [
+        [
+          "Empieza con ingresos y deudas",
+          [
+            "Compara el pago con tu ingreso mensual.",
+            "Incluye otras deudas mensuales antes de decidir si es cómodo."
+          ]
+        ],
+        [
+          "Recuerda costos de uso",
+          [
+            "Seguro, registro, reparaciones y combustible cambian la capacidad de pago.",
+            "Un pago bajo con plazo largo puede costar más interés."
+          ]
+        ],
+        [
+          "Deja margen",
+          [
+            "Deja espacio para emergencias y cambios de ingreso.",
+            "Prueba una tasa más alta o plazo más corto antes de decidir."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Debo incluir seguro?",
+          "Sí. Da una visión más real del costo mensual."
+        ],
+        [
+          "¿El pago más bajo siempre es mejor?",
+          "No. Un plazo largo baja el pago pero puede subir interés total."
+        ],
+        [
+          "¿Esto dice si me aprobarán?",
+          "No. Es planificación, no aprobación."
+        ]
+      ],
+      "related": [
+        "/car-loan-calculator",
+        "/affordability-calculator",
+        "/extra-payment-calculator",
+        "/loan-term-vs-monthly-payment"
+      ]
+    }
+  },
+  "/what-is-pmi": {
+    "en": {
+      "title": "What Is PMI? | Private Mortgage Insurance Explained",
+      "description": "Learn what PMI is, when it may apply, how it affects monthly mortgage payments and why it may drop off later.",
+      "heading": "What Is PMI?",
+      "intro": "Private mortgage insurance, or PMI, is often required on conventional home loans when the down payment is less than 20 percent. It protects the lender, but the borrower usually pays for it.",
+      "sections": [
+        [
+          "When PMI may apply",
+          [
+            "PMI is common when the loan-to-value ratio is above 80%.",
+            "A larger down payment may reduce or avoid PMI."
+          ]
+        ],
+        [
+          "How PMI affects payments",
+          [
+            "PMI is added to the monthly housing cost.",
+            "It does not reduce principal or interest."
+          ]
+        ],
+        [
+          "When PMI may stop",
+          [
+            "PMI may drop off when the balance reaches around 80% of the original value, depending on loan rules.",
+            "Confirm rules with your lender or servicer."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "Is PMI the same as homeowners insurance?",
+          "No. Homeowners insurance protects the property and owner. PMI protects the lender."
+        ],
+        [
+          "Can PMI be avoided?",
+          "Often, a 20% down payment can avoid PMI on many conventional loans."
+        ],
+        [
+          "Is PMI included in the calculator?",
+          "The home loan calculator estimates PMI when down payment is under 20%."
+        ]
+      ],
+      "related": [
+        "/pmi-calculator",
+        "/mortgage-calculator",
+        "/affordability-calculator",
+        "/extra-payment-calculator"
+      ]
+    },
+    "es": {
+      "title": "¿Qué es PMI? | Seguro Hipotecario Privado Explicado",
+      "description": "Aprende qué es PMI, cuándo aplica, cómo afecta el pago mensual y por qué puede eliminarse más adelante.",
+      "heading": "¿Qué es PMI?",
+      "intro": "El seguro hipotecario privado, o PMI, suele requerirse en préstamos convencionales cuando la inicial es menor al 20%. Protege al prestamista, pero normalmente lo paga el prestatario.",
+      "sections": [
+        [
+          "Cuándo aplica",
+          [
+            "Es común cuando la relación préstamo-valor supera 80%.",
+            "Una inicial mayor puede reducir o evitar PMI."
+          ]
+        ],
+        [
+          "Cómo afecta el pago",
+          [
+            "El PMI se suma al costo mensual de vivienda.",
+            "No reduce principal ni interés."
+          ]
+        ],
+        [
+          "Cuándo puede terminar",
+          [
+            "Puede eliminarse cuando el balance llega cerca del 80% del valor original, según reglas del préstamo.",
+            "Confirma con el prestamista o administrador."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿PMI es lo mismo que seguro de vivienda?",
+          "No. El seguro protege la propiedad y dueño. PMI protege al prestamista."
+        ],
+        [
+          "¿Se puede evitar PMI?",
+          "Muchas veces una inicial de 20% evita PMI en préstamos convencionales."
+        ],
+        [
+          "¿La calculadora incluye PMI?",
+          "La calculadora de vivienda estima PMI cuando la inicial es menor al 20%."
+        ]
+      ],
+      "related": [
+        "/pmi-calculator",
+        "/mortgage-calculator",
+        "/affordability-calculator",
+        "/extra-payment-calculator"
+      ]
+    }
+  },
+  "/loan-term-vs-monthly-payment": {
+    "en": {
+      "title": "Loan Term vs Monthly Payment | Understand the Tradeoff",
+      "description": "Learn how a longer or shorter loan term changes monthly payment, total interest and payoff time.",
+      "heading": "Loan Term vs Monthly Payment",
+      "intro": "Loan term is the number of months or years used to repay the loan. It can make the monthly payment look easier, but it also changes the total cost.",
+      "sections": [
+        [
+          "Longer term",
+          [
+            "Usually lowers the monthly payment.",
+            "Often increases total interest because the loan lasts longer."
+          ]
+        ],
+        [
+          "Shorter term",
+          [
+            "Usually raises the monthly payment.",
+            "Often lowers total interest and pays the loan off faster."
+          ]
+        ],
+        [
+          "How to compare",
+          [
+            "Compare monthly payment, total interest and total paid.",
+            "Choose a payment that leaves room for other obligations."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "Does a longer term save money?",
+          "Usually no. It may lower monthly payment but can increase total interest."
+        ],
+        [
+          "Is a shorter term always better?",
+          "Not always if the higher payment creates budget stress."
+        ],
+        [
+          "What should I compare?",
+          "Compare payment, interest, payoff time and budget comfort together."
+        ]
+      ],
+      "related": [
+        "/monthly-payment-calculator",
+        "/extra-payment-calculator",
+        "/30-year-vs-15-year-mortgage",
+        "/car-loan-calculator"
+      ]
+    },
+    "es": {
+      "title": "Plazo del Préstamo vs Pago Mensual | Entiende el Intercambio",
+      "description": "Aprende cómo un plazo más largo o corto cambia el pago mensual, interés total y fecha final.",
+      "heading": "Plazo del Préstamo vs Pago Mensual",
+      "intro": "El plazo es la cantidad de meses o años para pagar el préstamo. Puede hacer que el pago parezca más fácil, pero cambia el costo total.",
+      "sections": [
+        [
+          "Plazo largo",
+          [
+            "Normalmente baja el pago mensual.",
+            "Suele aumentar el interés total porque dura más."
+          ]
+        ],
+        [
+          "Plazo corto",
+          [
+            "Normalmente sube el pago mensual.",
+            "Suele bajar el interés total y pagar más rápido."
+          ]
+        ],
+        [
+          "Cómo comparar",
+          [
+            "Compara pago mensual, interés total y total pagado.",
+            "Elige un pago que deje espacio para otras obligaciones."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Un plazo largo ahorra dinero?",
+          "Normalmente no. Puede bajar el pago, pero subir el interés total."
+        ],
+        [
+          "¿Un plazo corto siempre es mejor?",
+          "No si el pago más alto aprieta el presupuesto."
+        ],
+        [
+          "¿Qué debo comparar?",
+          "Pago, interés, fecha de pago final y comodidad del presupuesto juntos."
+        ]
+      ],
+      "related": [
+        "/monthly-payment-calculator",
+        "/extra-payment-calculator",
+        "/30-year-vs-15-year-mortgage",
+        "/car-loan-calculator"
+      ]
+    }
+  },
+  "/principal-vs-interest": {
+    "en": {
+      "title": "Principal vs Interest | Loan Payment Basics",
+      "description": "Understand the difference between principal and interest and why your payment mix changes over time.",
+      "heading": "Principal vs Interest",
+      "intro": "Principal is the money you borrowed. Interest is the cost of borrowing. In an amortizing loan, each payment usually includes both.",
+      "sections": [
+        [
+          "Principal",
+          [
+            "Principal is the loan balance that must be repaid.",
+            "Payments that reduce principal lower the future balance."
+          ]
+        ],
+        [
+          "Interest",
+          [
+            "Interest is the lender's charge for borrowing money.",
+            "Interest is generally based on the remaining balance and rate."
+          ]
+        ],
+        [
+          "Why the mix changes",
+          [
+            "Early payments often include more interest.",
+            "Later payments often reduce more principal as the balance gets smaller."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "Is principal the same as payment?",
+          "No. Payment includes principal plus interest and sometimes other costs."
+        ],
+        [
+          "Does paying principal save interest?",
+          "Extra principal payments can reduce future interest on many amortizing loans."
+        ],
+        [
+          "Where can I see the split?",
+          "Use the amortization calculator to see each month."
+        ]
+      ],
+      "related": [
+        "/amortization-calculator",
+        "/how-amortization-works",
+        "/extra-payment-calculator",
+        "/monthly-payment-calculator"
+      ]
+    },
+    "es": {
+      "title": "Principal vs Interés | Conceptos Básicos del Préstamo",
+      "description": "Entiende la diferencia entre principal e interés y por qué la mezcla del pago cambia con el tiempo.",
+      "heading": "Principal vs Interés",
+      "intro": "Principal es el dinero prestado. Interés es el costo de pedir prestado. En un préstamo amortizado, cada pago suele incluir ambos.",
+      "sections": [
+        [
+          "Principal",
+          [
+            "Principal es el balance que debe pagarse.",
+            "Pagos que reducen principal bajan el balance futuro."
+          ]
+        ],
+        [
+          "Interés",
+          [
+            "Interés es el cargo por pedir dinero prestado.",
+            "Generalmente se calcula sobre el balance pendiente y la tasa."
+          ]
+        ],
+        [
+          "Por qué cambia la mezcla",
+          [
+            "Al inicio suele haber más interés.",
+            "Luego más del pago reduce principal porque el balance baja."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Principal es igual al pago?",
+          "No. El pago incluye principal, interés y a veces otros costos."
+        ],
+        [
+          "¿Pagar principal ahorra interés?",
+          "Pagos extra a principal pueden reducir interés futuro en muchos préstamos amortizados."
+        ],
+        [
+          "¿Dónde veo la división?",
+          "Usa la calculadora de amortización para ver cada mes."
+        ]
+      ],
+      "related": [
+        "/amortization-calculator",
+        "/how-amortization-works",
+        "/extra-payment-calculator",
+        "/monthly-payment-calculator"
+      ]
+    }
+  },
+  "/how-to-compare-loan-offers": {
+    "en": {
+      "title": "How to Compare Loan Offers | Payment, APR and Total Cost",
+      "description": "Learn what to compare before choosing a loan offer, including monthly payment, APR, fees, total interest and payoff flexibility.",
+      "heading": "How to Compare Loan Offers",
+      "intro": "Comparing loan offers is not only about choosing the lowest monthly payment. You should also review rate, APR, fees, term, total interest and prepayment rules.",
+      "sections": [
+        [
+          "Compare the payment",
+          [
+            "Make sure each offer uses the same loan amount and term.",
+            "Include taxes, insurance or fees when they affect monthly budget."
+          ]
+        ],
+        [
+          "Compare total cost",
+          [
+            "APR and fees can change which offer is actually cheaper.",
+            "Total interest helps reveal long-term cost."
+          ]
+        ],
+        [
+          "Compare flexibility",
+          [
+            "Ask about prepayment penalties and extra payment rules.",
+            "Consider whether the payment still feels comfortable if income changes."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "Is the lowest payment best?",
+          "Not always. It can mean a longer term and more total interest."
+        ],
+        [
+          "Why compare APR?",
+          "APR can include certain fees and may help compare offers more completely."
+        ],
+        [
+          "Should I ask questions before signing?",
+          "Yes. Confirm fees, payment rules and total cost with the lender."
+        ]
+      ],
+      "related": [
+        "/apr-vs-interest-rate",
+        "/monthly-payment-calculator",
+        "/how-to-estimate-total-loan-cost",
+        "/loan-term-vs-monthly-payment"
+      ]
+    },
+    "es": {
+      "title": "Cómo Comparar Ofertas de Préstamo | Pago, APR y Costo Total",
+      "description": "Aprende qué comparar antes de elegir un préstamo: pago, APR, cargos, interés total y flexibilidad de pago.",
+      "heading": "Cómo Comparar Ofertas de Préstamo",
+      "intro": "Comparar préstamos no es solo elegir el pago mensual más bajo. También revisa tasa, APR, cargos, plazo, interés total y reglas de prepago.",
+      "sections": [
+        [
+          "Compara el pago",
+          [
+            "Asegúrate de usar el mismo monto y plazo.",
+            "Incluye impuestos, seguro o cargos si afectan el presupuesto mensual."
+          ]
+        ],
+        [
+          "Compara costo total",
+          [
+            "APR y cargos pueden cambiar cuál oferta es más barata.",
+            "El interés total revela el costo a largo plazo."
+          ]
+        ],
+        [
+          "Compara flexibilidad",
+          [
+            "Pregunta por penalidades y reglas de pagos extra.",
+            "Evalúa si el pago sigue siendo cómodo si cambia el ingreso."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿El pago más bajo es mejor?",
+          "No siempre. Puede significar plazo más largo y más interés total."
+        ],
+        [
+          "¿Por qué comparar APR?",
+          "APR puede incluir ciertos cargos y ayuda a comparar mejor."
+        ],
+        [
+          "¿Debo preguntar antes de firmar?",
+          "Sí. Confirma cargos, reglas de pago y costo total."
+        ]
+      ],
+      "related": [
+        "/apr-vs-interest-rate",
+        "/monthly-payment-calculator",
+        "/how-to-estimate-total-loan-cost",
+        "/loan-term-vs-monthly-payment"
+      ]
+    }
+  },
+  "/how-to-estimate-total-loan-cost": {
+    "en": {
+      "title": "How to Estimate Total Loan Cost | Check My Payments",
+      "description": "Learn how to estimate total loan cost by combining principal, interest, fees, insurance, PMI and other monthly costs.",
+      "heading": "How to Estimate Total Loan Cost",
+      "intro": "The monthly payment is important, but total loan cost shows the bigger picture. It helps you understand how much interest and optional costs may be paid over time.",
+      "sections": [
+        [
+          "Start with principal",
+          [
+            "Principal is the loan amount that must be repaid.",
+            "Down payment lowers the principal on many loans."
+          ]
+        ],
+        [
+          "Add interest",
+          [
+            "Total interest depends on rate, term and payoff speed.",
+            "Extra payments can reduce total interest when applied to principal."
+          ]
+        ],
+        [
+          "Remember other costs",
+          [
+            "Taxes, insurance, PMI, fees and add ons may affect monthly budget.",
+            "Some of these costs do not reduce loan balance."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "Is total paid the same as loan amount?",
+          "No. Total paid can include principal, interest and other costs."
+        ],
+        [
+          "Why does a longer term cost more?",
+          "A longer term gives interest more time to accumulate."
+        ],
+        [
+          "Can the calculator estimate total cost?",
+          "Yes, it estimates total interest and total paid based on your inputs."
+        ]
+      ],
+      "related": [
+        "/monthly-payment-calculator",
+        "/amortization-calculator",
+        "/extra-payment-calculator",
+        "/how-to-compare-loan-offers"
+      ]
+    },
+    "es": {
+      "title": "Cómo Estimar el Costo Total del Préstamo | Check My Payments",
+      "description": "Aprende a estimar costo total combinando principal, interés, cargos, seguro, PMI y otros costos mensuales.",
+      "heading": "Cómo Estimar el Costo Total del Préstamo",
+      "intro": "El pago mensual importa, pero el costo total muestra la imagen completa. Ayuda a entender cuánto interés y costos opcionales pueden pagarse.",
+      "sections": [
+        [
+          "Empieza con principal",
+          [
+            "Principal es el monto que debe pagarse.",
+            "La inicial reduce el principal en muchos préstamos."
+          ]
+        ],
+        [
+          "Agrega interés",
+          [
+            "El interés total depende de tasa, plazo y velocidad de pago.",
+            "Pagos extra pueden reducir interés si se aplican a principal."
+          ]
+        ],
+        [
+          "Recuerda otros costos",
+          [
+            "Impuestos, seguro, PMI, cargos y adicionales afectan el presupuesto mensual.",
+            "Algunos costos no reducen el balance."
+          ]
+        ]
+      ],
+      "faq": [
+        [
+          "¿Total pagado es igual al monto?",
+          "No. Puede incluir principal, interés y otros costos."
+        ],
+        [
+          "¿Por qué un plazo largo cuesta más?",
+          "Da más tiempo para acumular interés."
+        ],
+        [
+          "¿La calculadora estima costo total?",
+          "Sí, estima interés total y total pagado según tus datos."
+        ]
+      ],
+      "related": [
+        "/monthly-payment-calculator",
+        "/amortization-calculator",
+        "/extra-payment-calculator",
+        "/how-to-compare-loan-offers"
+      ]
+    }
+  }
+};
+Object.assign(seoPages, seoExpansionPages);
+
 function money(value) { return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number.isFinite(value) ? value : 0); }
 function money2(value) { return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number.isFinite(value) ? value : 0); }
 function num(value) { return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(Number.isFinite(value) ? value : 0); }
@@ -1054,7 +2170,14 @@ function guideLinks() {
     ['/affordability-calculator', state.lang === 'es' ? 'Capacidad de Pago' : 'Affordability'],
     ['/pmi-calculator', 'PMI'],
     ['/personal-loan-calculator', state.lang === 'es' ? 'Préstamo Personal' : 'Personal Loan'],
-    ['/apr-vs-interest-rate', state.lang === 'es' ? 'APR vs Tasa' : 'APR vs Rate']
+    ['/apr-vs-interest-rate', state.lang === 'es' ? 'APR vs Tasa' : 'APR vs Rate'],
+    ['/how-to-calculate-monthly-loan-payments', state.lang === 'es' ? 'Cómo calcular pagos' : 'How to Calculate Payments'],
+    ['/how-extra-payments-reduce-interest', state.lang === 'es' ? 'Pagos extra e interés' : 'Extra Payments and Interest'],
+    ['/how-amortization-works', state.lang === 'es' ? 'Cómo funciona amortización' : 'How Amortization Works'],
+    ['/how-interest-rates-affect-payments', state.lang === 'es' ? 'Tasas y pagos' : 'Interest Rates and Payments'],
+    ['/30-year-vs-15-year-mortgage', state.lang === 'es' ? '30 vs 15 años' : '30 vs 15 Year Mortgage'],
+    ['/what-is-pmi', state.lang === 'es' ? 'Qué es PMI' : 'What Is PMI'],
+    ['/how-to-compare-loan-offers', state.lang === 'es' ? 'Comparar ofertas' : 'Compare Loan Offers']
   ];
   return links.map(([path, label]) => `<a href="${path}" data-nav="${path}">${label}</a>`).join('');
 }
@@ -1504,8 +2627,8 @@ function homeFaq() { return state.lang === 'es' ? [["¿Cómo se calcula el pago 
 function calculatorDirectory() {
   const title = state.lang === 'es' ? 'Explora más calculadoras y guías' : 'Explore more calculators and guides';
   const intro = state.lang === 'es'
-    ? 'Encuentra páginas específicas para diferentes preguntas: hipoteca, auto, amortización, pagos extra, PMI, capacidad de pago y APR.'
-    : 'Find focused pages for different questions: mortgage, car loans, amortization, extra payments, PMI, affordability and APR.';
+    ? 'Encuentra páginas específicas para diferentes preguntas: hipoteca, auto, amortización, pagos extra, PMI, capacidad de pago, APR y guías educativas.'
+    : 'Find focused pages for different questions: mortgage, car loans, amortization, extra payments, PMI, affordability, APR and loan education guides.';
   return `<section class="card education calculator-directory"><h2>${title}</h2><p>${intro}</p><div class="directory-grid">${guideLinks()}</div></section>`;
 }
 function relatedLinks(paths) {
@@ -1524,7 +2647,18 @@ function pageLabel(path) {
     '/affordability-calculator': state.lang === 'es' ? 'Calculadora de Capacidad de Pago' : 'Affordability Calculator',
     '/pmi-calculator': state.lang === 'es' ? 'Calculadora de PMI' : 'PMI Calculator',
     '/personal-loan-calculator': state.lang === 'es' ? 'Calculadora de Préstamo Personal' : 'Personal Loan Calculator',
-    '/apr-vs-interest-rate': state.lang === 'es' ? 'APR vs Tasa de Interés' : 'APR vs Interest Rate'
+    '/apr-vs-interest-rate': state.lang === 'es' ? 'APR vs Tasa de Interés' : 'APR vs Interest Rate',
+    '/how-to-calculate-monthly-loan-payments': state.lang === 'es' ? 'Cómo calcular pagos mensuales' : 'How to Calculate Monthly Payments',
+    '/how-extra-payments-reduce-interest': state.lang === 'es' ? 'Cómo pagos extra reducen interés' : 'How Extra Payments Reduce Interest',
+    '/how-amortization-works': state.lang === 'es' ? 'Cómo funciona la amortización' : 'How Amortization Works',
+    '/how-interest-rates-affect-payments': state.lang === 'es' ? 'Cómo las tasas afectan pagos' : 'How Interest Rates Affect Payments',
+    '/30-year-vs-15-year-mortgage': state.lang === 'es' ? 'Hipoteca 30 vs 15 años' : '30-Year vs 15-Year Mortgage',
+    '/how-much-car-loan-can-i-afford': state.lang === 'es' ? 'Cuánto auto puedo pagar' : 'How Much Car Loan Can I Afford?',
+    '/what-is-pmi': state.lang === 'es' ? 'Qué es PMI' : 'What Is PMI?',
+    '/loan-term-vs-monthly-payment': state.lang === 'es' ? 'Plazo vs pago mensual' : 'Loan Term vs Monthly Payment',
+    '/principal-vs-interest': state.lang === 'es' ? 'Principal vs interés' : 'Principal vs Interest',
+    '/how-to-compare-loan-offers': state.lang === 'es' ? 'Cómo comparar ofertas' : 'How to Compare Loan Offers',
+    '/how-to-estimate-total-loan-cost': state.lang === 'es' ? 'Cómo estimar costo total' : 'How to Estimate Total Loan Cost',
   };
   return labels[path] || path;
 }
@@ -1920,10 +3054,10 @@ function updateSeo(path) {
   let title = state.lang === 'es' ? 'Check My Payments | Calculadora Simple de Préstamos' : 'Check My Payments | Simple Loan Calculator';
   let description = state.lang === 'es' ? 'Calcula préstamos de vivienda y auto con amortización mensual, PMI, capacidad de pago, CSV y reporte PDF.' : 'Plan home and car loans with monthly payments, amortization, PMI estimates, affordability ratios, CSV export and printable PDF reports.';
   if (page) { title = page.title; description = page.description; }
-  if (path === '/about') { title = state.lang === 'es' ? 'Check My Payments | Acerca de' : 'Check My Payments | About'; description = state.lang === 'es' ? 'Conoce Check My Payments, una herramienta bilingüe para planificar préstamos de vivienda y auto.' : 'Learn about Check My Payments, a bilingual planning tool for home and auto loans.'; }
-  if (path === '/privacy') { title = state.lang === 'es' ? 'Check My Payments | Privacidad' : 'Check My Payments | Privacy Policy'; description = state.lang === 'es' ? 'Política de privacidad de Check My Payments.' : 'Check My Payments privacy policy.'; }
-  if (path === '/terms') { title = state.lang === 'es' ? 'Check My Payments | Términos' : 'Check My Payments | Terms of Use'; description = state.lang === 'es' ? 'Términos de uso de Check My Payments.' : 'Check My Payments terms of use.'; }
-  if (path === '/contact') { title = state.lang === 'es' ? 'Check My Payments | Contacto' : 'Check My Payments | Contact'; description = state.lang === 'es' ? 'Contacta a Check My Payments para preguntas o correcciones.' : 'Contact Check My Payments for questions or corrections.'; }
+  if (path === '/about') { title = state.lang === 'es' ? 'Acerca de Check My Payments | Herramientas de Préstamos' : 'About Check My Payments | Simple Loan and Payment Tools'; description = state.lang === 'es' ? 'Conoce Check My Payments, una calculadora educativa para estimar pagos, amortización, PMI, capacidad de pago y costos de préstamos.' : 'Learn about Check My Payments, a simple educational calculator for estimating payments, amortization, PMI, affordability and loan costs.'; }
+  if (path === '/privacy') { title = state.lang === 'es' ? 'Política de Privacidad | Check My Payments' : 'Privacy Policy | Check My Payments'; description = state.lang === 'es' ? 'Lee cómo Check My Payments trata datos de cálculo, analíticas y privacidad para esta herramienta educativa.' : 'Read how Check My Payments handles calculator inputs, analytics and privacy for this educational loan planning tool.'; }
+  if (path === '/terms') { title = state.lang === 'es' ? 'Términos de Uso | Check My Payments' : 'Terms of Use | Check My Payments'; description = state.lang === 'es' ? 'Revisa los términos de uso de Check My Payments, incluyendo que los resultados son estimados educativos y no asesoría financiera.' : 'Review the terms for using Check My Payments, including that results are educational estimates and not financial advice.'; }
+  if (path === '/contact') { title = state.lang === 'es' ? 'Contacto | Check My Payments' : 'Contact Check My Payments'; description = state.lang === 'es' ? 'Contacta a Check My Payments para preguntas, sugerencias o correcciones sobre la calculadora.' : 'Contact Check My Payments with questions, suggestions or corrections about the calculator.'; }
   document.title = title;
   setMeta('description', description);
   setMeta('og:title', title, true);
