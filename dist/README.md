@@ -54,3 +54,16 @@ Recommended monitoring: use a weekly GitHub Action or Vercel Cron job to check o
 ### Student loan monitoring files
 
 Version 25 also includes `studentLoanSourceMonitor.json`, `scripts/check-student-loan-sources.js`, and `.github/workflows/check-student-loan-sources.yml`. These are monitor-only helpers. They check official StudentAid.gov pages weekly and should prompt human review before changing rates or formulas.
+
+
+## Version 25.1 student loan navigation, report and visual polish
+
+Version 25.1 improves discoverability and presentation of the Federal Student Loan Calculator without changing the original home, car, mortgage, or student loan calculation formulas.
+
+Changes:
+- Added a Student Loan option to the main homepage calculator selection area.
+- Kept the student loan calculator listed in the calculator directory and footer guide links.
+- Reorganized the student loan calculator inputs into Loan details, Repayment setup, and Payoff strategy groups.
+- Improved alignment, spacing, label readability, dropdown spacing, and mobile stacking in the student loan form.
+- Added a printable PDF report for federal student loan estimates.
+- Preserved Google Analytics G-R3GM5FZB6T, robots.txt, sitemap.xml, favicon, canonical URL structure, and existing calculator logic.

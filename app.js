@@ -1,6 +1,6 @@
 const CONTACT_EMAIL = 'loancal@altmail.kr';
 const SITE_URL = 'https://www.checkmypayments.com';
-const APP_VERSION = '25.0.0';
+const APP_VERSION = '25.1.0';
 
 const palette = ['#66e4f2', '#a78bfa', '#fbbf24', '#34d399', '#fb7185', '#60a5fa'];
 const state = {
@@ -2272,30 +2272,38 @@ function studentLoanPage() {
     </section>
     <section class="student-grid">
       <section class="card student-inputs">
-        <h2>${L.estimateTitle}</h2>
-        <p class="copy">${L.estimateIntro}</p>
-        ${studentField('loanAmount', L.loanAmount, '$', '', 1000, 250000, 500)}
-        ${studentSelect('loanType', L.loanType, studentLoanTypeOptions())}
-        ${studentField('annualRate', L.annualRate, '', '%', 0, 15, .01, L.rateHelp)}
-        ${studentSelect('repaymentYears', L.term, repaymentTermOptions())}
-        ${s.repaymentYears === 'custom' ? studentField('customYears', L.customYears, '', state.lang === 'es' ? 'años' : 'years', 1, 30, 1) : ''}
-        ${studentSelect('gracePeriod', L.gracePeriod, [['none', L.noGrace], ['six', L.sixGrace]])}
-        ${studentSelect('interestAccrual', L.accrual, [['subsidized', L.subsidized], ['unsubsidized', L.unsubsidized]])}
-        ${studentField('monthsBeforeRepayment', L.monthsBefore, '', state.lang === 'es' ? 'meses' : 'months', 0, 72, 1)}
-        ${studentField('extraPayment', L.extraPayment, '$', '', 0, 5000, 25)}
-        ${studentField('loanFeePercent', L.loanFee, '', '%', 0, 6, .001, L.feeHelp)}
+        <div class="student-form-heading"><h2>${L.estimateTitle}</h2><p class="copy">${L.estimateIntro}</p></div>
+        <div class="student-input-group"><h3>${L.groupLoanDetails}</h3>
+          ${studentField('loanAmount', L.loanAmount, '$', '', 1000, 250000, 500)}
+          ${studentSelect('loanType', L.loanType, studentLoanTypeOptions())}
+          ${studentField('annualRate', L.annualRate, '', '%', 0, 15, .01, L.rateHelp)}
+          ${studentField('loanFeePercent', L.loanFee, '', '%', 0, 6, .001, L.feeHelp)}
+        </div>
+        <div class="student-input-group"><h3>${L.groupRepayment}</h3>
+          ${studentSelect('repaymentYears', L.term, repaymentTermOptions())}
+          ${s.repaymentYears === 'custom' ? studentField('customYears', L.customYears, '', state.lang === 'es' ? 'años' : 'years', 1, 30, 1) : ''}
+          ${studentSelect('gracePeriod', L.gracePeriod, [['none', L.noGrace], ['six', L.sixGrace]])}
+          ${studentSelect('interestAccrual', L.accrual, [['subsidized', L.subsidized], ['unsubsidized', L.unsubsidized]])}
+          ${studentField('monthsBeforeRepayment', L.monthsBefore, '', state.lang === 'es' ? 'meses' : 'months', 0, 72, 1)}
+        </div>
+        <div class="student-input-group"><h3>${L.groupPayoff}</h3>
+          ${studentField('extraPayment', L.extraPayment, '$', '', 0, 5000, 25)}
+        </div>
         <div class="rate-note"><strong>${L.ratesLastChecked}</strong><span>${FEDERAL_STUDENT_LOAN_CONFIG.lastChecked}</span><a href="${source}" target="_blank" rel="noopener">${L.verifyRates}</a></div>
       </section>
       <aside class="student-results">
         <div class="card payment student-payment"><small>${L.monthlyPayment}</small><div class="amount">${money(result.monthlyTotal)}</div><p>${L.requiredPayment}: <strong>${money(result.requiredMonthlyPayment)}</strong>. ${L.extraPayment}: <strong>${money(result.extraPayment)}</strong>.</p></div>
-        <div class="student-metrics">
+        <div class="student-metrics priority">
+          ${metric('piggy', L.totalRepaid, money(result.totalRepaid))}
+          ${metric('chart', L.totalInterest, money(result.totalInterest))}
           ${metric('clock', L.dailyInterest, money2(result.dailyInterest))}
-          ${metric('chart', L.beforeRepaymentInterest, money(result.interestBeforeRepayment))}
-          ${metric('piggy', L.totalInterest, money(result.totalInterest))}
-          ${metric('calc', L.totalRepaid, money(result.totalRepaid))}
           ${metric('shield', L.numberPayments, String(result.numberOfPayments))}
+        </div>
+        <div class="student-metrics secondary">
+          ${metric('chart', L.beforeRepaymentInterest, money(result.interestBeforeRepayment))}
           ${metric('home', L.interestSaved, money(result.interestSaved))}
         </div>
+        <div class="student-actions"><button class="primary-btn" id="studentPdfBtn">${L.pdfReport}</button></div>
       </aside>
     </section>
     <section class="card education student-education">
@@ -2313,13 +2321,13 @@ function studentLoanPage() {
 function studentLoanTextEn() {
   return {
     kicker: 'Federal student loan estimate', estimateTitle: 'Estimate Your Federal Student Loan Payments', estimateIntro: 'Enter a loan amount, interest rate, repayment term and grace period assumption to estimate standard repayment costs.',
-    loanAmount: 'Loan amount', loanType: 'Loan type', annualRate: 'Annual interest rate', rateHelp: 'Use a preset rate or enter your own.', term: 'Repayment term', customYears: 'Custom term', gracePeriod: 'Grace period option', noGrace: 'No grace period', sixGrace: '6 month grace period', accrual: 'Interest during school or grace period', subsidized: 'Subsidized, no interest accrues during eligible periods', unsubsidized: 'Unsubsidized or PLUS, interest accrues before repayment', monthsBefore: 'Months before repayment begins', extraPayment: 'Extra monthly payment', loanFee: 'Optional loan fee', feeHelp: 'Educational estimate only; fees may be deducted before disbursement.', ratesLastChecked: 'Rates last checked', verifyRates: 'Verify at StudentAid.gov', monthlyPayment: 'Estimated monthly payment', requiredPayment: 'Required payment', dailyInterest: 'Daily interest accrual', beforeRepaymentInterest: 'Interest before repayment', totalInterest: 'Total repayment interest', totalRepaid: 'Total amount repaid', numberPayments: 'Number of payments', interestSaved: 'Interest saved from extra payments', disclaimerTitle: 'Educational estimate only.', disclaimer: 'This is not an official Department of Education tool, not financial advice, and not a loan quote. Federal loan rules, repayment plans, rates, fees, capitalization and forgiveness programs may change.', howInterestTitle: 'How Federal Student Loan Interest Works', howInterestText: 'Many federal student loans use simple daily interest. Interest can accrue each day based on the current principal balance and annual interest rate.', dailyFormula: 'Daily interest formula', dailyFormulaText: 'Current principal balance × annual interest rate ÷ 365.25', standardTitle: 'Standard Repayment Estimate', standardText: 'This calculator uses standard fixed-payment amortization over the selected term. It does not calculate income-driven payments.', notIncludedTitle: 'What This Calculator Does Not Include', notIncludedText: 'Version 1 does not calculate SAVE, IBR, PAYE, ICR, forgiveness, PSLF, deferment, forbearance or official servicer-specific rules.', officialTitle: 'Official Federal Student Loan Resources', officialText: 'For official repayment plan comparisons, use the'
+    loanAmount: 'Loan amount', loanType: 'Loan type', annualRate: 'Annual interest rate', rateHelp: 'Use a preset rate or enter your own.', term: 'Repayment term', customYears: 'Custom term', gracePeriod: 'Grace period option', noGrace: 'No grace period', sixGrace: '6 month grace period', accrual: 'Interest during school or grace period', subsidized: 'Subsidized, no interest accrues during eligible periods', unsubsidized: 'Unsubsidized or PLUS, interest accrues before repayment', monthsBefore: 'Months before repayment begins', extraPayment: 'Extra monthly payment', loanFee: 'Optional loan fee', feeHelp: 'Educational estimate only; fees may be deducted before disbursement.', ratesLastChecked: 'Rates last checked', verifyRates: 'Verify at StudentAid.gov', monthlyPayment: 'Estimated monthly payment', requiredPayment: 'Required payment', dailyInterest: 'Daily interest accrual', beforeRepaymentInterest: 'Interest before repayment', totalInterest: 'Total repayment interest', totalRepaid: 'Total amount repaid', numberPayments: 'Number of payments', interestSaved: 'Interest saved from extra payments', disclaimerTitle: 'Educational estimate only.', disclaimer: 'This is not an official Department of Education tool, not financial advice, and not a loan quote. Federal loan rules, repayment plans, rates, fees, capitalization and forgiveness programs may change.', howInterestTitle: 'How Federal Student Loan Interest Works', howInterestText: 'Many federal student loans use simple daily interest. Interest can accrue each day based on the current principal balance and annual interest rate.', dailyFormula: 'Daily interest formula', dailyFormulaText: 'Current principal balance × annual interest rate ÷ 365.25', standardTitle: 'Standard Repayment Estimate', standardText: 'This calculator uses standard fixed-payment amortization over the selected term. It does not calculate income-driven payments.', notIncludedTitle: 'What This Calculator Does Not Include', notIncludedText: 'Version 1 does not calculate SAVE, IBR, PAYE, ICR, forgiveness, PSLF, deferment, forbearance or official servicer-specific rules.', officialTitle: 'Official Federal Student Loan Resources', officialText: 'For official repayment plan comparisons, use the', groupLoanDetails: 'Loan details', groupRepayment: 'Repayment setup', groupPayoff: 'Payoff strategy', pdfReport: 'Download PDF Report'
   };
 }
 function studentLoanTextEs() {
   return {
     kicker: 'Estimado de préstamo estudiantil federal', estimateTitle: 'Estima tus pagos de préstamos estudiantiles federales', estimateIntro: 'Ingresa monto, tasa, plazo y período de gracia para estimar costos bajo repago estándar.',
-    loanAmount: 'Monto del préstamo', loanType: 'Tipo de préstamo', annualRate: 'Tasa de interés anual', rateHelp: 'Usa una tasa preset o escribe la tuya.', term: 'Plazo de repago', customYears: 'Plazo personalizado', gracePeriod: 'Opción de período de gracia', noGrace: 'Sin período de gracia', sixGrace: 'Período de gracia de 6 meses', accrual: 'Interés durante estudio o gracia', subsidized: 'Subsidiado, no acumula interés en períodos elegibles', unsubsidized: 'No subsidiado o PLUS, acumula interés antes del repago', monthsBefore: 'Meses antes de comenzar repago', extraPayment: 'Pago extra mensual', loanFee: 'Cargo opcional del préstamo', feeHelp: 'Estimado educativo; cargos pueden descontarse antes del desembolso.', ratesLastChecked: 'Tasas revisadas por última vez', verifyRates: 'Verificar en StudentAid.gov', monthlyPayment: 'Pago mensual estimado', requiredPayment: 'Pago requerido', dailyInterest: 'Interés diario', beforeRepaymentInterest: 'Interés antes del repago', totalInterest: 'Interés total de repago', totalRepaid: 'Monto total pagado', numberPayments: 'Número de pagos', interestSaved: 'Interés ahorrado por pagos extra', disclaimerTitle: 'Estimado educativo solamente.', disclaimer: 'No es una herramienta oficial del Departamento de Educación, no es asesoría financiera y no es una cotización. Las reglas, planes, tasas, cargos, capitalización y programas federales pueden cambiar.', howInterestTitle: 'Cómo funciona el interés federal estudiantil', howInterestText: 'Muchos préstamos estudiantiles federales usan interés diario simple. El interés puede acumularse cada día según el balance principal y la tasa anual.', dailyFormula: 'Fórmula de interés diario', dailyFormulaText: 'Balance principal actual × tasa anual ÷ 365.25', standardTitle: 'Estimado de repago estándar', standardText: 'Esta calculadora usa amortización de pago fijo estándar durante el plazo seleccionado. No calcula pagos basados en ingresos.', notIncludedTitle: 'Qué no incluye esta calculadora', notIncludedText: 'La Versión 1 no calcula SAVE, IBR, PAYE, ICR, perdón, PSLF, aplazamiento, indulgencia ni reglas específicas del administrador.', officialTitle: 'Recursos oficiales federales', officialText: 'Para comparaciones oficiales de planes de repago, usa el'
+    loanAmount: 'Monto del préstamo', loanType: 'Tipo de préstamo', annualRate: 'Tasa de interés anual', rateHelp: 'Usa una tasa preset o escribe la tuya.', term: 'Plazo de repago', customYears: 'Plazo personalizado', gracePeriod: 'Opción de período de gracia', noGrace: 'Sin período de gracia', sixGrace: 'Período de gracia de 6 meses', accrual: 'Interés durante estudio o gracia', subsidized: 'Subsidiado, no acumula interés en períodos elegibles', unsubsidized: 'No subsidiado o PLUS, acumula interés antes del repago', monthsBefore: 'Meses antes de comenzar repago', extraPayment: 'Pago extra mensual', loanFee: 'Cargo opcional del préstamo', feeHelp: 'Estimado educativo; cargos pueden descontarse antes del desembolso.', ratesLastChecked: 'Tasas revisadas por última vez', verifyRates: 'Verificar en StudentAid.gov', monthlyPayment: 'Pago mensual estimado', requiredPayment: 'Pago requerido', dailyInterest: 'Interés diario', beforeRepaymentInterest: 'Interés antes del repago', totalInterest: 'Interés total de repago', totalRepaid: 'Monto total pagado', numberPayments: 'Número de pagos', interestSaved: 'Interés ahorrado por pagos extra', disclaimerTitle: 'Estimado educativo solamente.', disclaimer: 'No es una herramienta oficial del Departamento de Educación, no es asesoría financiera y no es una cotización. Las reglas, planes, tasas, cargos, capitalización y programas federales pueden cambiar.', howInterestTitle: 'Cómo funciona el interés federal estudiantil', howInterestText: 'Muchos préstamos estudiantiles federales usan interés diario simple. El interés puede acumularse cada día según el balance principal y la tasa anual.', dailyFormula: 'Fórmula de interés diario', dailyFormulaText: 'Balance principal actual × tasa anual ÷ 365.25', standardTitle: 'Estimado de repago estándar', standardText: 'Esta calculadora usa amortización de pago fijo estándar durante el plazo seleccionado. No calcula pagos basados en ingresos.', notIncludedTitle: 'Qué no incluye esta calculadora', notIncludedText: 'La Versión 1 no calcula SAVE, IBR, PAYE, ICR, perdón, PSLF, aplazamiento, indulgencia ni reglas específicas del administrador.', officialTitle: 'Recursos oficiales federales', officialText: 'Para comparaciones oficiales de planes de repago, usa el', groupLoanDetails: 'Detalles del préstamo', groupRepayment: 'Configuración de repago', groupPayoff: 'Estrategia de pago', pdfReport: 'Descargar reporte PDF'
   };
 }
 function studentLoanTypeOptions() {
@@ -2424,9 +2432,10 @@ function calcPage() {
         <h1>${L.hero}</h1>
         <p class="lead">${L.lead}</p>
         <div class="mobile-start-note">${L.startNote}</div>
-        <div class="mode-toggle">
+        <div class="mode-toggle calculator-choice-grid">
           <button class="mode-btn ${state.loanType === 'home' ? 'active' : ''}" data-mode="home"><strong>${icon('home')} ${L.homeLoan}</strong><span>${L.homeSub}</span></button>
           <button class="mode-btn ${state.loanType === 'car' ? 'active' : ''}" data-mode="car"><strong>${icon('car')} ${L.carLoan}</strong><span>${L.carSub}</span></button>
+          <a class="mode-btn student-mode-link" href="/student-loan-calculator" data-nav="/student-loan-calculator"><strong>${icon('calc')} ${state.lang === 'es' ? 'Préstamo Estudiantil' : 'Student Loan'}</strong><span>${state.lang === 'es' ? 'Federal, interés diario y costo de repago' : 'Federal loans, daily interest and repayment cost'}</span></a>
         </div>
         <div class="card inputs">${inputs.map(field).join('')}</div>
       </section>
@@ -3054,6 +3063,65 @@ function reportStyles() {
   `;
 }
 
+
+function studentReportHtml(L, result) {
+  const s = state.studentLoan;
+  const loanLabel = (FEDERAL_STUDENT_LOAN_CONFIG.rates[s.loanType]?.label || s.loanType);
+  const generated = state.lang === 'es' ? 'Generado por Check My Payments' : 'Generated by Check My Payments';
+  const title = state.lang === 'es' ? 'Reporte de Préstamo Estudiantil Federal' : 'Federal Student Loan Estimate Report';
+  const subtitle = state.lang === 'es'
+    ? 'Estimado educativo de pago mensual, interés diario y costo total de repago.'
+    : 'Educational estimate of monthly payment, daily interest, and total repayment cost.';
+  const promo = state.lang === 'es' ? `Crea tu propio reporte gratis en ${SITE_URL}` : `Create your own free student loan report at ${SITE_URL}`;
+  const rows = result.schedule.slice(0, 360).map(row => `<tr><td>${row.month}</td><td>${money2(row.startBalance)}</td><td>${money2(row.payment)}</td><td>${money2(row.principalPaid)}</td><td>${money2(row.interest)}</td><td>${money2(row.endingBalance)}</td></tr>`).join('');
+  const assumptionsTitle = state.lang === 'es' ? 'Supuestos usados' : 'Assumptions used';
+  const costTitle = state.lang === 'es' ? 'Resumen de costo estimado' : 'Estimated cost summary';
+  const scheduleTitle = state.lang === 'es' ? 'Calendario mensual estimado' : 'Estimated monthly schedule';
+  const nextTitle = state.lang === 'es' ? 'Notas importantes' : 'Important notes';
+  const disclaimer = state.lang === 'es'
+    ? 'Este reporte es un estimado educativo. No es una herramienta oficial del Departamento de Educación, no es asesoría financiera y no determina tu pago real. Verifica siempre las tasas, cargos y opciones oficiales en StudentAid.gov.'
+    : 'This report is an educational estimate. It is not an official Department of Education tool, not financial advice, and does not determine your actual payment. Always verify official rates, fees, and repayment options at StudentAid.gov.';
+  return `<section class="report-cover"><div><small>${generated}</small><h1>${title}</h1><p>${subtitle}</p></div><div class="report-cover-box"><strong>${money(result.monthlyTotal)}</strong><span>${L.monthlyPayment}</span></div></section>
+    <p class="report-disclaimer">${disclaimer}</p>
+    <h2>${costTitle}</h2>
+    <div class="report-grid">
+      ${bigStat(L.monthlyPayment, money(result.monthlyTotal))}
+      ${bigStat(L.dailyInterest, money2(result.dailyInterest))}
+      ${bigStat(L.totalInterest, money(result.totalInterest))}
+      ${bigStat(L.totalRepaid, money(result.totalRepaid))}
+      ${bigStat(L.beforeRepaymentInterest, money(result.interestBeforeRepayment))}
+      ${bigStat(L.interestSaved, money(result.interestSaved))}
+    </div>
+    <h2>${assumptionsTitle}</h2>
+    <table class="report-mini-table"><tbody>
+      <tr><th>${L.loanAmount}</th><td>${money(Number(s.loanAmount) || 0)}</td></tr>
+      <tr><th>${L.loanType}</th><td>${loanLabel}</td></tr>
+      <tr><th>${L.annualRate}</th><td>${num(Number(s.annualRate) || 0)}%</td></tr>
+      <tr><th>${L.term}</th><td>${result.termYears} ${state.lang === 'es' ? 'años' : 'years'}</td></tr>
+      <tr><th>${L.monthsBefore}</th><td>${Number(s.monthsBeforeRepayment) || 0}</td></tr>
+      <tr><th>${L.extraPayment}</th><td>${money(Number(s.extraPayment) || 0)}</td></tr>
+      <tr><th>${L.ratesLastChecked}</th><td>${FEDERAL_STUDENT_LOAN_CONFIG.lastChecked}</td></tr>
+    </tbody></table>
+    <h2>${nextTitle}</h2>
+    <ol><li>${state.lang === 'es' ? 'Confirma la tasa actual y los cargos en StudentAid.gov.' : 'Confirm the current rate and fees at StudentAid.gov.'}</li><li>${state.lang === 'es' ? 'Usa el Federal Student Aid Loan Simulator para comparar planes oficiales.' : 'Use the Federal Student Aid Loan Simulator to compare official repayment plans.'}</li><li>${state.lang === 'es' ? 'Recuerda que planes basados en ingresos pueden calcular pagos de forma diferente.' : 'Remember that income-driven plans can calculate payments differently.'}</li></ol>
+    <h2>${scheduleTitle}</h2>
+    <table><thead><tr><th>${state.lang === 'es' ? 'Mes' : 'Month'}</th><th>${state.lang === 'es' ? 'Balance inicial' : 'Starting balance'}</th><th>${state.lang === 'es' ? 'Pago' : 'Payment'}</th><th>${state.lang === 'es' ? 'Principal' : 'Principal'}</th><th>${state.lang === 'es' ? 'Interés' : 'Interest'}</th><th>${state.lang === 'es' ? 'Balance final' : 'Ending balance'}</th></tr></thead><tbody>${rows}</tbody></table>
+    <p class="report-note"><strong>${promo}</strong><br>${SITE_URL} | ${CONTACT_EMAIL}</p>`;
+}
+
+function printStudentPdf() {
+  const L = state.lang === 'es' ? studentLoanTextEs() : studentLoanTextEn();
+  const result = studentLoanCalc(state.studentLoan);
+  const reportHtml = studentReportHtml(L, result);
+  const win = window.open('', '_blank');
+  if (!win) {
+    alert(state.lang === 'es' ? 'Permite ventanas emergentes para generar el reporte PDF.' : 'Please allow pop-ups to generate the PDF report.');
+    return;
+  }
+  win.document.write(`<!doctype html><html lang="${state.lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Check My Payments Student Loan Report</title><style>${reportStyles()}</style></head><body><div class="report-shell"><div class="print-actions"><button class="secondary" onclick="window.close()">Close</button><button class="primary" onclick="window.print()">Save / Print PDF</button></div><div class="report-header"><div><div class="report-logo">Check My Payments</div><div class="report-sub">${state.lang === 'es' ? 'Reporte educativo de préstamo estudiantil federal' : 'Educational federal student loan report'}</div></div><div class="report-url">${SITE_URL}<br>${CONTACT_EMAIL}</div></div>${reportHtml}</div><script>setTimeout(function(){ window.focus(); window.print(); }, 350);<\/script></body></html>`);
+  win.document.close();
+}
+
 function printPdf() {
   const L = currentText();
   const r = loanCalc(state.inputs, state.loanType);
@@ -3197,6 +3265,7 @@ function attachEvents() {
   document.querySelectorAll('[data-slice]').forEach(slice => slice.addEventListener('click', () => { state.selectedSlice = Number(slice.dataset.slice); }));
   document.getElementById('csvBtn')?.addEventListener('click', exportCsv);
   document.getElementById('pdfBtn')?.addEventListener('click', printPdf);
+  document.getElementById('studentPdfBtn')?.addEventListener('click', printStudentPdf);
   document.getElementById('shareBtn')?.addEventListener('click', copyShareLink);
 }
 
