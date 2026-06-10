@@ -25,4 +25,9 @@
   <url><loc>https://www.checkmypayments.com/privacy</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https://www.checkmypayments.com/terms</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
   <url><loc>https://www.checkmypayments.com/contact</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
+  <url>
+    <loc>https://www.checkmypayments.com/student-loan-calculator</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>

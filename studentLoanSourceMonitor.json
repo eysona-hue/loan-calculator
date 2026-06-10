@@ -1,0 +1,11 @@
+{
+  "lastConfigured": "2026-06-08",
+  "mode": "monitor-only",
+  "note": "This monitor checks official StudentAid.gov pages for availability and visible content changes. It does not automatically change calculator rates or formulas.",
+  "sources": [
+    "https://studentaid.gov/understand-aid/types/loans/interest-rates",
+    "https://studentaid.gov/manage-loans/repayment/plans",
+    "https://studentaid.gov/loan-simulator",
+    "https://studentaid.gov/announcements-events"
+  ]
+}

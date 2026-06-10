@@ -1,6 +1,6 @@
 const CONTACT_EMAIL = 'loancal@altmail.kr';
 const SITE_URL = 'https://www.checkmypayments.com';
-const APP_VERSION = '24.5.0';
+const APP_VERSION = '25.0.0';
 
 const palette = ['#66e4f2', '#a78bfa', '#fbbf24', '#34d399', '#fb7185', '#60a5fa'];
 const state = {
@@ -34,6 +34,35 @@ const state = {
     pmiAnnualRate: 0.75,
     grossIncome: 90000,
     monthlyDebt: 600
+  },
+  studentLoan: {
+    loanAmount: 15000,
+    annualRate: 6.39,
+    loanType: 'undergrad-subsidized',
+    repaymentYears: 10,
+    customYears: 10,
+    gracePeriod: 'six',
+    interestAccrual: 'subsidized',
+    monthsBeforeRepayment: 6,
+    extraPayment: 0,
+    loanFeePercent: 0
+  }
+};
+
+
+
+const FEDERAL_STUDENT_LOAN_CONFIG = {
+  lastChecked: '2026-06-08',
+  sourceUrl: 'https://studentaid.gov/understand-aid/types/loans/interest-rates',
+  repaymentSourceUrl: 'https://studentaid.gov/manage-loans/repayment/plans',
+  loanSimulatorUrl: 'https://studentaid.gov/loan-simulator',
+  notes: 'Rates are default educational presets for Direct Loans first disbursed on or after July 1, 2025 and before July 1, 2026. Users should verify current rates at StudentAid.gov.',
+  rates: {
+    'undergrad-subsidized': { label: 'Undergraduate Direct Subsidized', rate: 6.39, accrual: 'subsidized', fee: 1.057, effectiveStart: '2025-07-01', effectiveEnd: '2026-06-30' },
+    'undergrad-unsubsidized': { label: 'Undergraduate Direct Unsubsidized', rate: 6.39, accrual: 'unsubsidized', fee: 1.057, effectiveStart: '2025-07-01', effectiveEnd: '2026-06-30' },
+    'grad-unsubsidized': { label: 'Graduate Direct Unsubsidized', rate: 7.94, accrual: 'unsubsidized', fee: 1.057, effectiveStart: '2025-07-01', effectiveEnd: '2026-06-30' },
+    'parent-plus': { label: 'Parent PLUS', rate: 8.94, accrual: 'unsubsidized', fee: 4.228, effectiveStart: '2025-07-01', effectiveEnd: '2026-06-30' },
+    'other-federal': { label: 'Other federal loan', rate: 6.39, accrual: 'unsubsidized', fee: 0, effectiveStart: '2025-07-01', effectiveEnd: '2026-06-30' }
   }
 };
 
@@ -2052,6 +2081,46 @@ const seoExpansionPages = {
 };
 Object.assign(seoPages, seoExpansionPages);
 
+seoPages['/student-loan-calculator'] = {
+  en: {
+    title: 'Federal Student Loan Calculator | Check My Payments',
+    description: 'Estimate federal student loan monthly payments, daily interest, total interest, and total repayment cost with Check My Payments. Educational estimates only.',
+    heading: 'Federal Student Loan Calculator',
+    intro: 'Estimate what a federal student loan could cost over time. This Version 1 calculator focuses on standard repayment estimates, daily interest, interest before repayment, total interest, and total repayment cost. It is not an official Department of Education calculator.',
+    sections: [
+      ['How federal student loan interest works', ['Federal student loans often use simple daily interest.', 'Daily interest is estimated as current principal balance times the annual interest rate divided by 365.25.', 'Unsubsidized and PLUS loans can accrue interest before repayment begins. Subsidized loans may not accrue interest during eligible in-school or grace periods.']],
+      ['What this calculator does not include', ['This Version 1 calculator does not estimate SAVE, IBR, PAYE, ICR, PSLF, forgiveness, deferment, forbearance, or income-driven repayment payments.', 'Actual payments may vary by servicer, repayment plan, loan type, fees, capitalization rules, deferment, forbearance, and federal law changes.']],
+      ['Official federal resources', ['For official repayment plan comparisons, use the Federal Student Aid Loan Simulator at StudentAid.gov.', 'Verify current interest rates and fees at the Federal Student Aid interest rates and fees page.']]
+    ],
+    faq: [
+      ['Is this an official federal student loan calculator?', 'No. This is an educational estimate from Check My Payments. For official repayment options, use the Federal Student Aid Loan Simulator at StudentAid.gov.'],
+      ['How is daily interest estimated?', 'Daily interest is estimated as current principal balance times the annual interest rate divided by 365.25.'],
+      ['Does this include income-driven repayment?', 'No. Version 1 focuses on standard repayment estimates. Income-driven repayment can depend on income, family size, loan type and current federal rules.'],
+      ['Why might my servicer quote be different?', 'Actual payments may vary because of servicer rules, repayment plan, interest capitalization, loan fees, deferment, forbearance, timing and federal law changes.']
+    ],
+    related: ['/monthly-payment-calculator','/amortization-calculator','/extra-payment-calculator','/personal-loan-calculator','/how-to-calculate-monthly-loan-payments']
+  },
+  es: {
+    title: 'Calculadora Federal de Préstamos Estudiantiles | Check My Payments',
+    description: 'Estima pagos mensuales, interés diario, interés total y costo total de préstamos estudiantiles federales con Check My Payments. Solo estimados educativos.',
+    heading: 'Calculadora Federal de Préstamos Estudiantiles',
+    intro: 'Estima cuánto podría costar un préstamo estudiantil federal con el tiempo. Esta Versión 1 se enfoca en pago estándar, interés diario, interés antes de comenzar el repago, interés total y costo total. No es una calculadora oficial del Departamento de Educación.',
+    sections: [
+      ['Cómo funciona el interés de préstamos estudiantiles federales', ['Los préstamos estudiantiles federales suelen usar interés diario simple.', 'El interés diario se estima como balance principal actual por tasa anual dividido entre 365.25.', 'Préstamos no subsidiados y PLUS pueden acumular interés antes de comenzar el repago. Los subsidiados pueden no acumular interés durante períodos elegibles de estudio o gracia.']],
+      ['Qué no incluye esta calculadora', ['Esta Versión 1 no estima SAVE, IBR, PAYE, ICR, PSLF, perdón, aplazamiento, indulgencia ni pagos basados en ingresos.', 'Los pagos reales pueden variar por administrador, plan de repago, tipo de préstamo, cargos, reglas de capitalización y cambios de ley federal.']],
+      ['Recursos oficiales federales', ['Para comparar opciones oficiales de repago, usa el Federal Student Aid Loan Simulator en StudentAid.gov.', 'Verifica tasas y cargos actuales en la página oficial de Federal Student Aid.']]
+    ],
+    faq: [
+      ['¿Es esta una calculadora oficial federal?', 'No. Es un estimado educativo de Check My Payments. Para opciones oficiales, usa el Federal Student Aid Loan Simulator en StudentAid.gov.'],
+      ['¿Cómo se estima el interés diario?', 'El interés diario se estima como balance principal actual por tasa anual dividido entre 365.25.'],
+      ['¿Incluye pagos basados en ingresos?', 'No. La Versión 1 se enfoca en repago estándar. Los planes basados en ingresos dependen de ingresos, familia, tipo de préstamo y reglas federales actuales.'],
+      ['¿Por qué puede ser diferente la cotización del administrador?', 'Los pagos reales pueden variar por reglas del administrador, plan de repago, capitalización de interés, cargos, aplazamiento, indulgencia, fechas y cambios de ley federal.']
+    ],
+    related: ['/monthly-payment-calculator','/amortization-calculator','/extra-payment-calculator','/personal-loan-calculator','/how-to-calculate-monthly-loan-payments']
+  }
+};
+
+
 function money(value) { return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(Number.isFinite(value) ? value : 0); }
 function money2(value) { return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number.isFinite(value) ? value : 0); }
 function num(value) { return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(Number.isFinite(value) ? value : 0); }
@@ -2137,6 +2206,158 @@ function icon(name) {
 function navigate(path) { history.pushState({}, '', path); state.route = path; render(); window.scrollTo(0,0); }
 window.addEventListener('popstate', () => { state.route = window.location.pathname; render(); });
 
+
+
+function studentLoanCalc(inputs) {
+  const principal = Math.max(Number(inputs.loanAmount) || 0, 0);
+  const annualRate = Math.max(Number(inputs.annualRate) || 0, 0) / 100;
+  const termYears = inputs.repaymentYears === 'custom' ? Math.max(Number(inputs.customYears) || 1, 1) : Math.max(Number(inputs.repaymentYears) || 10, 1);
+  const termMonths = Math.max(Math.round(termYears * 12), 1);
+  const monthlyRate = annualRate / 12;
+  const dailyInterest = principal * annualRate / 365.25;
+  const monthsBefore = Math.max(Number(inputs.monthsBeforeRepayment) || 0, 0);
+  const accruesBeforeRepayment = inputs.interestAccrual !== 'subsidized';
+  const interestBeforeRepayment = accruesBeforeRepayment ? dailyInterest * monthsBefore * 30.4375 : 0;
+  const estimatedFee = principal * (Math.max(Number(inputs.loanFeePercent) || 0, 0) / 100);
+  const repaymentPrincipal = principal + interestBeforeRepayment;
+  const basePayment = monthlyRate > 0 ? repaymentPrincipal * (monthlyRate * Math.pow(1 + monthlyRate, termMonths)) / (Math.pow(1 + monthlyRate, termMonths) - 1) : repaymentPrincipal / termMonths;
+  const extra = Math.max(Number(inputs.extraPayment) || 0, 0);
+  const schedule = [];
+  let balance = repaymentPrincipal;
+  let totalInterest = 0;
+  let payoffMonth = 0;
+  const maxMonths = termMonths + 1200;
+  while (balance > 0.005 && payoffMonth < maxMonths) {
+    payoffMonth += 1;
+    const interest = monthlyRate > 0 ? balance * monthlyRate : 0;
+    let payment = Math.min(basePayment + extra, balance + interest);
+    let principalPaid = Math.max(payment - interest, 0);
+    balance = Math.max(balance - principalPaid, 0);
+    totalInterest += interest;
+    schedule.push({ month: payoffMonth, startBalance: balance + principalPaid, payment, principalPaid, interest, endingBalance: balance });
+  }
+  const noExtraInterest = (() => {
+    let b = repaymentPrincipal, interestTotal = 0, m = 0;
+    while (b > 0.005 && m < maxMonths) {
+      m += 1;
+      const interest = monthlyRate > 0 ? b * monthlyRate : 0;
+      const pmt = Math.min(basePayment, b + interest);
+      b = Math.max(b - Math.max(pmt - interest, 0), 0);
+      interestTotal += interest;
+    }
+    return interestTotal;
+  })();
+  return {
+    principal, annualRate: annualRate * 100, termYears, termMonths, dailyInterest, interestBeforeRepayment, estimatedFee,
+    repaymentPrincipal, basePayment, requiredMonthlyPayment: basePayment, monthlyTotal: basePayment + extra, extraPayment: extra,
+    totalInterest, totalRepaid: repaymentPrincipal + totalInterest + estimatedFee, numberOfPayments: payoffMonth,
+    interestSaved: Math.max(noExtraInterest - totalInterest, 0), payoffTime: payoffMonth, schedule
+  };
+}
+
+function studentLoanPage() {
+  const data = seoPages['/student-loan-calculator']?.[state.lang] || seoPages['/student-loan-calculator'].en;
+  const s = state.studentLoan;
+  const result = studentLoanCalc(s);
+  const source = FEDERAL_STUDENT_LOAN_CONFIG.sourceUrl;
+  const sim = FEDERAL_STUDENT_LOAN_CONFIG.loanSimulatorUrl;
+  const L = state.lang === 'es' ? studentLoanTextEs() : studentLoanTextEn();
+  return `<main class="student-loan-page">
+    <section class="card page seo-page student-hero">
+      <nav class="breadcrumbs"><a href="/" data-nav="/">${state.lang === 'es' ? 'Inicio' : 'Home'}</a><span>›</span><span>${data.heading}</span></nav>
+      <div class="kicker">${icon('spark')} ${L.kicker}</div>
+      <h1>${data.heading}</h1>
+      <p class="page-intro">${data.intro}</p>
+      <div class="student-disclaimer"><strong>${L.disclaimerTitle}</strong><span>${L.disclaimer}</span></div>
+    </section>
+    <section class="student-grid">
+      <section class="card student-inputs">
+        <h2>${L.estimateTitle}</h2>
+        <p class="copy">${L.estimateIntro}</p>
+        ${studentField('loanAmount', L.loanAmount, '$', '', 1000, 250000, 500)}
+        ${studentSelect('loanType', L.loanType, studentLoanTypeOptions())}
+        ${studentField('annualRate', L.annualRate, '', '%', 0, 15, .01, L.rateHelp)}
+        ${studentSelect('repaymentYears', L.term, repaymentTermOptions())}
+        ${s.repaymentYears === 'custom' ? studentField('customYears', L.customYears, '', state.lang === 'es' ? 'años' : 'years', 1, 30, 1) : ''}
+        ${studentSelect('gracePeriod', L.gracePeriod, [['none', L.noGrace], ['six', L.sixGrace]])}
+        ${studentSelect('interestAccrual', L.accrual, [['subsidized', L.subsidized], ['unsubsidized', L.unsubsidized]])}
+        ${studentField('monthsBeforeRepayment', L.monthsBefore, '', state.lang === 'es' ? 'meses' : 'months', 0, 72, 1)}
+        ${studentField('extraPayment', L.extraPayment, '$', '', 0, 5000, 25)}
+        ${studentField('loanFeePercent', L.loanFee, '', '%', 0, 6, .001, L.feeHelp)}
+        <div class="rate-note"><strong>${L.ratesLastChecked}</strong><span>${FEDERAL_STUDENT_LOAN_CONFIG.lastChecked}</span><a href="${source}" target="_blank" rel="noopener">${L.verifyRates}</a></div>
+      </section>
+      <aside class="student-results">
+        <div class="card payment student-payment"><small>${L.monthlyPayment}</small><div class="amount">${money(result.monthlyTotal)}</div><p>${L.requiredPayment}: <strong>${money(result.requiredMonthlyPayment)}</strong>. ${L.extraPayment}: <strong>${money(result.extraPayment)}</strong>.</p></div>
+        <div class="student-metrics">
+          ${metric('clock', L.dailyInterest, money2(result.dailyInterest))}
+          ${metric('chart', L.beforeRepaymentInterest, money(result.interestBeforeRepayment))}
+          ${metric('piggy', L.totalInterest, money(result.totalInterest))}
+          ${metric('calc', L.totalRepaid, money(result.totalRepaid))}
+          ${metric('shield', L.numberPayments, String(result.numberOfPayments))}
+          ${metric('home', L.interestSaved, money(result.interestSaved))}
+        </div>
+      </aside>
+    </section>
+    <section class="card education student-education">
+      <h2>${L.howInterestTitle}</h2><p>${L.howInterestText}</p>
+      <div class="formula-box"><strong>${L.dailyFormula}</strong><span>${L.dailyFormulaText}</span></div>
+      <h2>${L.standardTitle}</h2><p>${L.standardText}</p>
+      <h2>${L.notIncludedTitle}</h2><p>${L.notIncludedText}</p>
+      <h2>${L.officialTitle}</h2><p>${L.officialText} <a href="${sim}" target="_blank" rel="noopener">Federal Student Aid Loan Simulator</a>.</p>
+      ${visibleFaq(data.faq)}
+      ${relatedLinks(data.related)}
+    </section>
+  </main>`;
+}
+
+function studentLoanTextEn() {
+  return {
+    kicker: 'Federal student loan estimate', estimateTitle: 'Estimate Your Federal Student Loan Payments', estimateIntro: 'Enter a loan amount, interest rate, repayment term and grace period assumption to estimate standard repayment costs.',
+    loanAmount: 'Loan amount', loanType: 'Loan type', annualRate: 'Annual interest rate', rateHelp: 'Use a preset rate or enter your own.', term: 'Repayment term', customYears: 'Custom term', gracePeriod: 'Grace period option', noGrace: 'No grace period', sixGrace: '6 month grace period', accrual: 'Interest during school or grace period', subsidized: 'Subsidized, no interest accrues during eligible periods', unsubsidized: 'Unsubsidized or PLUS, interest accrues before repayment', monthsBefore: 'Months before repayment begins', extraPayment: 'Extra monthly payment', loanFee: 'Optional loan fee', feeHelp: 'Educational estimate only; fees may be deducted before disbursement.', ratesLastChecked: 'Rates last checked', verifyRates: 'Verify at StudentAid.gov', monthlyPayment: 'Estimated monthly payment', requiredPayment: 'Required payment', dailyInterest: 'Daily interest accrual', beforeRepaymentInterest: 'Interest before repayment', totalInterest: 'Total repayment interest', totalRepaid: 'Total amount repaid', numberPayments: 'Number of payments', interestSaved: 'Interest saved from extra payments', disclaimerTitle: 'Educational estimate only.', disclaimer: 'This is not an official Department of Education tool, not financial advice, and not a loan quote. Federal loan rules, repayment plans, rates, fees, capitalization and forgiveness programs may change.', howInterestTitle: 'How Federal Student Loan Interest Works', howInterestText: 'Many federal student loans use simple daily interest. Interest can accrue each day based on the current principal balance and annual interest rate.', dailyFormula: 'Daily interest formula', dailyFormulaText: 'Current principal balance × annual interest rate ÷ 365.25', standardTitle: 'Standard Repayment Estimate', standardText: 'This calculator uses standard fixed-payment amortization over the selected term. It does not calculate income-driven payments.', notIncludedTitle: 'What This Calculator Does Not Include', notIncludedText: 'Version 1 does not calculate SAVE, IBR, PAYE, ICR, forgiveness, PSLF, deferment, forbearance or official servicer-specific rules.', officialTitle: 'Official Federal Student Loan Resources', officialText: 'For official repayment plan comparisons, use the'
+  };
+}
+function studentLoanTextEs() {
+  return {
+    kicker: 'Estimado de préstamo estudiantil federal', estimateTitle: 'Estima tus pagos de préstamos estudiantiles federales', estimateIntro: 'Ingresa monto, tasa, plazo y período de gracia para estimar costos bajo repago estándar.',
+    loanAmount: 'Monto del préstamo', loanType: 'Tipo de préstamo', annualRate: 'Tasa de interés anual', rateHelp: 'Usa una tasa preset o escribe la tuya.', term: 'Plazo de repago', customYears: 'Plazo personalizado', gracePeriod: 'Opción de período de gracia', noGrace: 'Sin período de gracia', sixGrace: 'Período de gracia de 6 meses', accrual: 'Interés durante estudio o gracia', subsidized: 'Subsidiado, no acumula interés en períodos elegibles', unsubsidized: 'No subsidiado o PLUS, acumula interés antes del repago', monthsBefore: 'Meses antes de comenzar repago', extraPayment: 'Pago extra mensual', loanFee: 'Cargo opcional del préstamo', feeHelp: 'Estimado educativo; cargos pueden descontarse antes del desembolso.', ratesLastChecked: 'Tasas revisadas por última vez', verifyRates: 'Verificar en StudentAid.gov', monthlyPayment: 'Pago mensual estimado', requiredPayment: 'Pago requerido', dailyInterest: 'Interés diario', beforeRepaymentInterest: 'Interés antes del repago', totalInterest: 'Interés total de repago', totalRepaid: 'Monto total pagado', numberPayments: 'Número de pagos', interestSaved: 'Interés ahorrado por pagos extra', disclaimerTitle: 'Estimado educativo solamente.', disclaimer: 'No es una herramienta oficial del Departamento de Educación, no es asesoría financiera y no es una cotización. Las reglas, planes, tasas, cargos, capitalización y programas federales pueden cambiar.', howInterestTitle: 'Cómo funciona el interés federal estudiantil', howInterestText: 'Muchos préstamos estudiantiles federales usan interés diario simple. El interés puede acumularse cada día según el balance principal y la tasa anual.', dailyFormula: 'Fórmula de interés diario', dailyFormulaText: 'Balance principal actual × tasa anual ÷ 365.25', standardTitle: 'Estimado de repago estándar', standardText: 'Esta calculadora usa amortización de pago fijo estándar durante el plazo seleccionado. No calcula pagos basados en ingresos.', notIncludedTitle: 'Qué no incluye esta calculadora', notIncludedText: 'La Versión 1 no calcula SAVE, IBR, PAYE, ICR, perdón, PSLF, aplazamiento, indulgencia ni reglas específicas del administrador.', officialTitle: 'Recursos oficiales federales', officialText: 'Para comparaciones oficiales de planes de repago, usa el'
+  };
+}
+function studentLoanTypeOptions() {
+  const labels = FEDERAL_STUDENT_LOAN_CONFIG.rates;
+  return Object.keys(labels).map(key => [key, labels[key].label]);
+}
+function repaymentTermOptions() {
+  const y = state.lang === 'es' ? 'años' : 'years';
+  return [['10', `10 ${y}`], ['15', `15 ${y}`], ['20', `20 ${y}`], ['25', `25 ${y}`], ['custom', state.lang === 'es' ? 'Personalizado' : 'Custom number of years']];
+}
+function studentField(key, label, prefix = '', suffix = '', min = 0, max = 100000, step = 1, help = '') {
+  const value = state.studentLoan[key];
+  return `<div class="field student-field"><label>${label}${help ? `<span class="help">${help}</span>` : ''}</label><div class="input-wrap">${prefix ? `<span>${prefix}</span>` : ''}<input type="number" inputmode="decimal" autocomplete="off" data-student-input="${key}" value="${value}" min="${min}" max="${max}" step="${step}">${suffix ? `<span>${suffix}</span>` : ''}</div></div>`;
+}
+function studentSelect(key, label, options) {
+  const value = state.studentLoan[key];
+  return `<label class="student-select"><span>${label}</span><select data-student-select="${key}">${options.map(([v,l]) => `<option value="${v}" ${String(value) === String(v) ? 'selected' : ''}>${l}</option>`).join('')}</select></label>`;
+}
+function setStudentValue(key, value, shouldRender = true) {
+  if (['loanType','repaymentYears','gracePeriod','interestAccrual'].includes(key)) {
+    state.studentLoan[key] = value;
+    if (key === 'loanType') {
+      const preset = FEDERAL_STUDENT_LOAN_CONFIG.rates[value];
+      if (preset) {
+        state.studentLoan.annualRate = preset.rate;
+        state.studentLoan.loanFeePercent = 0;
+        state.studentLoan.interestAccrual = preset.accrual === 'subsidized' ? 'subsidized' : 'unsubsidized';
+        if (value === 'parent-plus') { state.studentLoan.gracePeriod = 'none'; state.studentLoan.monthsBeforeRepayment = 0; }
+      }
+    }
+    if (key === 'gracePeriod') state.studentLoan.monthsBeforeRepayment = value === 'six' ? 6 : 0;
+  } else {
+    const n = Number(value);
+    state.studentLoan[key] = Number.isFinite(n) ? Math.max(n, 0) : 0;
+  }
+  if (shouldRender) render();
+}
+
 function layout(content) {
   const L = currentText();
   return `
@@ -2170,6 +2391,7 @@ function guideLinks() {
     ['/affordability-calculator', state.lang === 'es' ? 'Capacidad de Pago' : 'Affordability'],
     ['/pmi-calculator', 'PMI'],
     ['/personal-loan-calculator', state.lang === 'es' ? 'Préstamo Personal' : 'Personal Loan'],
+    ['/student-loan-calculator', state.lang === 'es' ? 'Préstamo Estudiantil Federal' : 'Federal Student Loan'],
     ['/apr-vs-interest-rate', state.lang === 'es' ? 'APR vs Tasa' : 'APR vs Rate'],
     ['/how-to-calculate-monthly-loan-payments', state.lang === 'es' ? 'Cómo calcular pagos' : 'How to Calculate Payments'],
     ['/how-extra-payments-reduce-interest', state.lang === 'es' ? 'Pagos extra e interés' : 'Extra Payments and Interest'],
@@ -2647,6 +2869,7 @@ function pageLabel(path) {
     '/affordability-calculator': state.lang === 'es' ? 'Calculadora de Capacidad de Pago' : 'Affordability Calculator',
     '/pmi-calculator': state.lang === 'es' ? 'Calculadora de PMI' : 'PMI Calculator',
     '/personal-loan-calculator': state.lang === 'es' ? 'Calculadora de Préstamo Personal' : 'Personal Loan Calculator',
+    '/student-loan-calculator': state.lang === 'es' ? 'Calculadora Federal de Préstamos Estudiantiles' : 'Federal Student Loan Calculator',
     '/apr-vs-interest-rate': state.lang === 'es' ? 'APR vs Tasa de Interés' : 'APR vs Interest Rate',
     '/how-to-calculate-monthly-loan-payments': state.lang === 'es' ? 'Cómo calcular pagos mensuales' : 'How to Calculate Monthly Payments',
     '/how-extra-payments-reduce-interest': state.lang === 'es' ? 'Cómo pagos extra reducen interés' : 'How Extra Payments Reduce Interest',
@@ -2886,6 +3109,14 @@ function attachEvents() {
   });
   document.querySelector('[data-copy-to-b]')?.addEventListener('click', copyCurrentToCompareB);
 
+  document.querySelectorAll('[data-student-input]').forEach(input => {
+    input.addEventListener('input', () => setStudentValue(input.dataset.studentInput, input.value, false));
+    input.addEventListener('change', () => setStudentValue(input.dataset.studentInput, input.value, true));
+    input.addEventListener('blur', () => setStudentValue(input.dataset.studentInput, input.value, true));
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') { input.blur(); setStudentValue(input.dataset.studentInput, input.value, true); } });
+  });
+  document.querySelectorAll('[data-student-select]').forEach(select => select.addEventListener('change', () => setStudentValue(select.dataset.studentSelect, select.value, true)));
+
   document.querySelectorAll('.custom-slider-track').forEach(track => {
     // Intentional mobile safety: touching the line/track does nothing.
     // Only the circular thumb can change the value, preventing accidental changes while scrolling.
@@ -3030,6 +3261,7 @@ function render() {
   let body = calcPage();
   const seoBody = seoPage(path);
   if (seoBody) body = seoBody;
+  if (path === '/student-loan-calculator') body = studentLoanPage();
   if (path === '/about') body = page('about');
   if (path === '/privacy') body = page('privacy');
   if (path === '/terms') body = page('terms');

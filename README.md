@@ -42,3 +42,15 @@ This follow-up patch tightens the brand icon alignment so the small calculator i
 ## Version 24.5 SEO content quality update
 
 Adds educational guide pages for loan payment calculation, amortization, interest rates, extra payments, PMI, loan term tradeoffs, principal versus interest, loan offer comparison, and total loan cost. Preserves Google Analytics G-R3GM5FZB6T, robots.txt, sitemap.xml, canonical www domain, calculator logic, favicon, and previous mobile/desktop behavior.
+
+
+## Version 25 Federal Student Loan Calculator
+
+Version 25 adds a Version 1 Federal Student Loan Calculator at `/student-loan-calculator`. It estimates monthly payment, daily interest, interest before repayment, total repayment interest, total repaid, number of payments, and savings from extra payments. It preserves Google Analytics G-R3GM5FZB6T, robots.txt, sitemap.xml, canonical www URLs, existing calculator logic, mobile behavior, and SEO pages. Federal student loan defaults are stored in `studentLoanRates.json` and mirrored in the app configuration. Rates last checked: 2026-06-08.
+
+Recommended monitoring: use a weekly GitHub Action or Vercel Cron job to check official StudentAid.gov source pages for changes and create a review note rather than silently changing core calculations.
+
+
+### Student loan monitoring files
+
+Version 25 also includes `studentLoanSourceMonitor.json`, `scripts/check-student-loan-sources.js`, and `.github/workflows/check-student-loan-sources.yml`. These are monitor-only helpers. They check official StudentAid.gov pages weekly and should prompt human review before changing rates or formulas.

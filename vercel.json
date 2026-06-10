@@ -103,6 +103,10 @@
     {
       "source": "/how-to-estimate-total-loan-cost",
       "destination": "/index.html"
+    },
+    {
+      "source": "/student-loan-calculator",
+      "destination": "/index.html"
     }
   ]
 }

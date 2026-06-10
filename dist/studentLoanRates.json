@@ -1,0 +1,15 @@
+{
+  "lastChecked": "2026-06-08",
+  "sourceUrl": "https://studentaid.gov/understand-aid/types/loans/interest-rates",
+  "repaymentSourceUrl": "https://studentaid.gov/manage-loans/repayment/plans",
+  "loanSimulatorUrl": "https://studentaid.gov/loan-simulator",
+  "notes": "Default educational presets for Direct Loans first disbursed on or after July 1, 2025 and before July 1, 2026. Verify current rates and fees at StudentAid.gov before making decisions.",
+  "rates": {
+    "undergrad-subsidized": { "label": "Undergraduate Direct Subsidized", "rate": 6.39, "accrual": "subsidized", "fee": 1.057, "effectiveStart": "2025-07-01", "effectiveEnd": "2026-06-30", "sourceUrl": "https://studentaid.gov/understand-aid/types/loans/interest-rates" },
+    "undergrad-unsubsidized": { "label": "Undergraduate Direct Unsubsidized", "rate": 6.39, "accrual": "unsubsidized", "fee": 1.057, "effectiveStart": "2025-07-01", "effectiveEnd": "2026-06-30", "sourceUrl": "https://studentaid.gov/understand-aid/types/loans/interest-rates" },
+    "grad-unsubsidized": { "label": "Graduate Direct Unsubsidized", "rate": 7.94, "accrual": "unsubsidized", "fee": 1.057, "effectiveStart": "2025-07-01", "effectiveEnd": "2026-06-30", "sourceUrl": "https://studentaid.gov/understand-aid/types/loans/interest-rates" },
+    "parent-plus": { "label": "Parent PLUS", "rate": 8.94, "accrual": "unsubsidized", "fee": 4.228, "effectiveStart": "2025-07-01", "effectiveEnd": "2026-06-30", "sourceUrl": "https://studentaid.gov/understand-aid/types/loans/interest-rates" },
+    "other-federal": { "label": "Other federal loan", "rate": 6.39, "accrual": "unsubsidized", "fee": 0, "effectiveStart": "2025-07-01", "effectiveEnd": "2026-06-30", "sourceUrl": "https://studentaid.gov/understand-aid/types/loans/interest-rates" }
+  },
+  "monitoringRecommendation": "Use a weekly GitHub Action or Vercel Cron monitor to check official StudentAid.gov source pages for changes. If a change is detected, create a review note rather than silently changing calculations."
+}

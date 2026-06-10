@@ -1,8 +1,8 @@
 {
   "name": "check-my-payments",
-  "version": "24.5.0",
+  "version": "25.0.0",
   "private": true,
-  "description": "Check My Payments version 24.5 with SEO content expansion, educational loan guides, analytics, sitemap, robots and calculator logic preserved.",
+  "description": "Check My Payments version 25 with Federal Student Loan Calculator V1, SEO content expansion, educational loan guides, analytics, sitemap, robots and calculator logic preserved.",
   "engines": {
     "node": "20.x"
   },

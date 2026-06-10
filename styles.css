@@ -982,3 +982,31 @@ th { position: sticky; top: 0; z-index: 1; background: #11172b; color: var(--sof
     height: 24px;
   }
 }
+
+
+/* v25 federal student loan calculator */
+.student-loan-page { display: grid; gap: 24px; }
+.student-hero { border-color: rgba(102,228,242,.28); }
+.student-disclaimer { margin-top: 18px; display: grid; gap: 6px; padding: 14px 16px; border: 1px solid rgba(251,191,36,.38); border-radius: 18px; background: rgba(251,191,36,.08); color: #f8fbff; }
+.student-disclaimer strong { color: #fde68a; }
+.student-disclaimer span { color: #e5efff; line-height: 1.55; }
+.student-grid { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 24px; align-items: start; }
+.student-inputs { display: grid; gap: 16px; }
+.student-inputs h2 { margin-bottom: 0; }
+.student-select { display: grid; gap: 9px; color: var(--text); font-weight: 850; }
+.student-select span { color: #eef7ff; }
+.student-select select { width: 100%; min-height: 54px; border-radius: 16px; border: 1px solid var(--line); background: #081121; color: #f8fbff; padding: 0 14px; font-size: 15px; font-weight: 800; outline: none; }
+.student-select select:focus { border-color: rgba(102,228,242,.8); box-shadow: 0 0 0 4px rgba(102,228,242,.14); }
+.student-field .input-wrap input { color: #f8fbff; }
+.student-results { display: grid; gap: 18px; }
+.student-payment { border-color: rgba(102,228,242,.34); background: linear-gradient(145deg, rgba(21,79,96,.65), rgba(255,255,255,.08)); }
+.student-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.rate-note { display: grid; grid-template-columns: auto 1fr; gap: 8px 12px; align-items: center; padding: 14px; border-radius: 16px; background: rgba(255,255,255,.06); border: 1px solid var(--line); }
+.rate-note strong { color: #dffaff; }
+.rate-note span { color: #fff; font-weight: 900; }
+.rate-note a { grid-column: 1 / -1; color: #8ef3ff; font-weight: 900; }
+.formula-box { display: grid; gap: 6px; padding: 15px 16px; margin: 16px 0; border-radius: 18px; background: rgba(102,228,242,.08); border: 1px solid rgba(102,228,242,.28); }
+.formula-box strong { color: #dffaff; }
+.formula-box span { color: #f8fbff; font-weight: 850; }
+@media (max-width: 980px) { .student-grid { grid-template-columns: 1fr; } }
+@media (max-width: 620px) { .student-metrics { grid-template-columns: 1fr; } .student-select select { font-size: 14px; } }
