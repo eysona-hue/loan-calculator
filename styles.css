@@ -1119,3 +1119,116 @@ th { position: sticky; top: 0; z-index: 1; background: #11172b; color: var(--sof
     grid-template-columns: 1fr;
   }
 }
+
+/* v25.12 student calculator professional visual polish */
+.student-inputs {
+  padding: 24px;
+  gap: 20px;
+  overflow: hidden;
+}
+.student-form-heading {
+  padding: 2px 4px 4px;
+  gap: 10px;
+}
+.student-form-heading h2 {
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+.student-form-heading .copy {
+  margin: 0;
+  max-width: 72ch;
+  line-height: 1.65;
+  color: var(--soft);
+}
+.student-input-group {
+  padding: 20px;
+  gap: 16px;
+}
+.student-input-group h3 {
+  padding-left: 1px;
+}
+.student-field label,
+.student-select .student-select-label {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 20px;
+  line-height: 1.35;
+  margin: 0 0 9px;
+  padding: 0;
+  color: var(--soft);
+  font-weight: 850;
+}
+.student-select > .student-select-control {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  line-height: normal;
+}
+.student-select > .student-select-control::after {
+  content: "";
+  position: absolute;
+  right: 21px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-right: 2.5px solid #dffaff;
+  border-bottom: 2.5px solid #dffaff;
+  transform: translateY(-68%) rotate(45deg);
+  pointer-events: none;
+  opacity: .95;
+}
+.student-select select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  display: block;
+  width: 100%;
+  min-height: 58px;
+  padding: 0 58px 0 18px;
+  border-radius: 18px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+}
+.student-select select::-ms-expand {
+  display: none;
+}
+.student-field .input-wrap {
+  min-height: 58px;
+  padding-left: 18px;
+  padding-right: 18px;
+  border-radius: 18px;
+}
+.student-results .card,
+.student-results .metric {
+  overflow: hidden;
+}
+@media (max-width: 620px) {
+  .student-inputs {
+    padding: 16px;
+    gap: 16px;
+  }
+  .student-input-group {
+    padding: 16px;
+  }
+  .student-form-heading {
+    padding: 0 2px 2px;
+  }
+  .student-field label,
+  .student-select .student-select-label {
+    display: grid;
+    gap: 6px;
+  }
+  .student-select > .student-select-control::after {
+    right: 18px;
+  }
+  .student-select select {
+    min-height: 56px;
+    padding-left: 16px;
+    padding-right: 52px;
+  }
+}

@@ -67,3 +67,8 @@ Changes:
 - Improved alignment, spacing, label readability, dropdown spacing, and mobile stacking in the student loan form.
 - Added a printable PDF report for federal student loan estimates.
 - Preserved Google Analytics G-R3GM5FZB6T, robots.txt, sitemap.xml, favicon, canonical URL structure, and existing calculator logic.
+
+
+## Version 25.12 student calculator visual polish
+
+This patch focuses on professional visual finishing for the Federal Student Loan Calculator page. It adds consistent inner padding to the student loan calculator form, improves the introductory text spacing, replaces native select arrows with a consistent custom dropdown control, and refines dropdown padding and alignment. Calculation logic is unchanged.

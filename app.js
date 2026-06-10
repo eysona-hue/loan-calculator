@@ -1,6 +1,6 @@
 const CONTACT_EMAIL = 'loancal@altmail.kr';
 const SITE_URL = 'https://www.checkmypayments.com';
-const APP_VERSION = '25.1.0';
+const APP_VERSION = '25.12.0';
 
 const palette = ['#66e4f2', '#a78bfa', '#fbbf24', '#34d399', '#fb7185', '#60a5fa'];
 const state = {
@@ -2320,7 +2320,7 @@ function studentLoanPage() {
 
 function studentLoanTextEn() {
   return {
-    kicker: 'Federal student loan estimate', estimateTitle: 'Estimate Your Federal Student Loan Payments', estimateIntro: 'Enter a loan amount, interest rate, repayment term and grace period assumption to estimate standard repayment costs.',
+    kicker: 'Federal student loan estimate', estimateTitle: 'Estimate Your Federal Student Loan Payments', estimateIntro: 'Enter a loan amount, interest rate, repayment term, and grace period assumption to estimate standard repayment costs.',
     loanAmount: 'Loan amount', loanType: 'Loan type', annualRate: 'Annual interest rate', rateHelp: 'Use a preset rate or enter your own.', term: 'Repayment term', customYears: 'Custom term', gracePeriod: 'Grace period option', noGrace: 'No grace period', sixGrace: '6 month grace period', accrual: 'Interest during school or grace period', subsidized: 'Subsidized, no interest accrues during eligible periods', unsubsidized: 'Unsubsidized or PLUS, interest accrues before repayment', monthsBefore: 'Months before repayment begins', extraPayment: 'Extra monthly payment', loanFee: 'Optional loan fee', feeHelp: 'Educational estimate only; fees may be deducted before disbursement.', ratesLastChecked: 'Rates last checked', verifyRates: 'Verify at StudentAid.gov', monthlyPayment: 'Estimated monthly payment', requiredPayment: 'Required payment', dailyInterest: 'Daily interest accrual', beforeRepaymentInterest: 'Interest before repayment', totalInterest: 'Total repayment interest', totalRepaid: 'Total amount repaid', numberPayments: 'Number of payments', interestSaved: 'Interest saved from extra payments', disclaimerTitle: 'Educational estimate only.', disclaimer: 'This is not an official Department of Education tool, not financial advice, and not a loan quote. Federal loan rules, repayment plans, rates, fees, capitalization and forgiveness programs may change.', howInterestTitle: 'How Federal Student Loan Interest Works', howInterestText: 'Many federal student loans use simple daily interest. Interest can accrue each day based on the current principal balance and annual interest rate.', dailyFormula: 'Daily interest formula', dailyFormulaText: 'Current principal balance × annual interest rate ÷ 365.25', standardTitle: 'Standard Repayment Estimate', standardText: 'This calculator uses standard fixed-payment amortization over the selected term. It does not calculate income-driven payments.', notIncludedTitle: 'What This Calculator Does Not Include', notIncludedText: 'Version 1 does not calculate SAVE, IBR, PAYE, ICR, forgiveness, PSLF, deferment, forbearance or official servicer-specific rules.', officialTitle: 'Official Federal Student Loan Resources', officialText: 'For official repayment plan comparisons, use the', groupLoanDetails: 'Loan details', groupRepayment: 'Repayment setup', groupPayoff: 'Payoff strategy', pdfReport: 'Download PDF Report'
   };
 }
@@ -2344,7 +2344,7 @@ function studentField(key, label, prefix = '', suffix = '', min = 0, max = 10000
 }
 function studentSelect(key, label, options) {
   const value = state.studentLoan[key];
-  return `<label class="student-select"><span>${label}</span><select data-student-select="${key}">${options.map(([v,l]) => `<option value="${v}" ${String(value) === String(v) ? 'selected' : ''}>${l}</option>`).join('')}</select></label>`;
+  return `<label class="student-select"><span class="student-select-label">${label}</span><span class="student-select-control"><select data-student-select="${key}">${options.map(([v,l]) => `<option value="${v}" ${String(value) === String(v) ? 'selected' : ''}>${l}</option>`).join('')}</select></span></label>`;
 }
 function setStudentValue(key, value, shouldRender = true) {
   if (['loanType','repaymentYears','gracePeriod','interestAccrual'].includes(key)) {
